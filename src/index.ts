@@ -1,7 +1,7 @@
 function main() {
     console.log("hello");
     
-    return true;
+    return;
 }
 
 export default main;
