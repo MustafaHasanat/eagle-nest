@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest --watchAll",
     "dev": "npx nodemon",
+    "commit": "git-cz",
     "start": "npm run build && node build/index.js",
     "build": "rimraf ./build && tsc",
     "semantic-release": "semantic-release --branches main"
@@ -27,12 +28,18 @@
   },
   "homepage": "https://github.com/MustafaHasanat/eagle-nest#readme",
   "devDependencies": {
-    "typescript": "^5.2.2",
     "@types/node": "^20.8.10",
+    "cz-conventional-changelog": "^3.3.0",
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
     "rimraf": "^5.0.5",
     "semantic-release": "^22.0.6",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

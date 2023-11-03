@@ -26,7 +26,7 @@ jobs:
         node-version: '20'
         cache: 'npm'
 
-    - name: Install and Test
+    - name: Install deps and Test
       run: |
         npm ci
         npm test
