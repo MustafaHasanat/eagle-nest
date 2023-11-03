@@ -1,5 +1,5 @@
-function eagle(string) {
+function eagle(string: string) {
 	return string === "true";
 }
 
-module.exports = eagle
+export default eagle
