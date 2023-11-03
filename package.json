@@ -1,8 +1,8 @@
 {
-  "name": "@hasanat/eagle-nest",
+  "name": "@mh/eagle-nest",
   "version": "1.0.0",
-  "description": "Build Nest.js common blocks and files insanly faster!",
-  "main": "index.js",
+  "description": "Build Nest.js common blocks and files insanely faster!",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/MustafaHasanat/eagle-nest/issues"
   },
-  "homepage": "https://github.com/MustafaHasanat/eagle-nest#readme"
+  "homepage": "https://github.com/MustafaHasanat/eagle-nest#readme",
+  "devDependencies": {
+    "@types/node": "^20.8.10"
+  }
 }
