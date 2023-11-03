@@ -1,5 +1,7 @@
-function eagle(string: string) {
-    return string === "true";
+function main() {
+    console.log("hello");
+    
+    return true;
 }
 
-export default eagle;
+export default main;
