@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/MustafaHasanat/eagle-nest#readme",
   "devDependencies": {
-    "@types/node": "^20.8.10",
     "semantic-release": "^22.0.6"
   }
 }
