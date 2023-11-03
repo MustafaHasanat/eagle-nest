@@ -1,4 +1,4 @@
-name: Release
+name: Publishing the package on NPM
 
 permissions:
     contents: read
