@@ -1,0 +1,25 @@
+{
+  "name": "@hasanat/eagle-nest",
+  "version": "1.0.0",
+  "description": "Build Nest.js common blocks and files insanly faster!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MustafaHasanat/eagle-nest.git"
+  },
+  "keywords": [
+    "nest",
+    "backend",
+    "blocks",
+    "api"
+  ],
+  "author": "Mustafa Alhasanat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MustafaHasanat/eagle-nest/issues"
+  },
+  "homepage": "https://github.com/MustafaHasanat/eagle-nest#readme"
+}
