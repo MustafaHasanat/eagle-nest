@@ -1,4 +1,11 @@
+# Dependency directories
 node_modules/
-build/
+jspm_packages/
+
+# Snowpack dependency directory (https://snowpack.dev/)
+web_modules/
+
+# TypeScript cache
+*.tsbuildinfo\
 
 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
