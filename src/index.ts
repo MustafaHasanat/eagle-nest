@@ -1,6 +1,5 @@
 function main() {
     console.log("hello");
-    
     return;
 }
 
