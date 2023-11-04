@@ -1,0 +1,4 @@
+        {
+            provide: APP_GUARD,
+            useClass: UserAuthGuard,
+        },
