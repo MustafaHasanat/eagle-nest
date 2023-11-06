@@ -14,6 +14,14 @@ const appConstants = {
             flags: "-caf, --create-app-files",
             desc: "Create the 'app.module.ts', 'app.controller.ts', and 'app.service.ts' files.",
         },
+        db: {
+            flags: "-db, --database",
+            desc: "Made the necessary changes for the database configuration.",
+        },
+        ct: {
+            flags: "-ct, --create-table",
+            desc: "Create the necessary files for the table (module, controller, service, dto, entity).",
+        },
     },
 };
 

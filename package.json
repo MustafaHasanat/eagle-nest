@@ -13,7 +13,6 @@
     "commit": "git-cz",
     "start": "npm run build && node dist/index.js",
     "build": "rimraf ./dist && tsc",
-
     "semantic-release": "semantic-release --branches main"
   },
   "repository": {
@@ -48,6 +47,8 @@
     ".": "./index.ts"
   },
   "dependencies": {
+    "@inquirer/confirm": "^2.0.14",
+    "@inquirer/input": "^1.2.13",
     "commander": "^11.1.0",
     "cz-conventional-changelog": "^3.3.0",
     "figlet": "^1.7.0",
