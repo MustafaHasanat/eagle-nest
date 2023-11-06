@@ -46,15 +46,27 @@ export default class Receiver {
         // selection for creating the main.ts file
         if (this.options.createMain) {
             await this.installer.installPackages([
-                "@nestjs/core",
-                "@nestjs/platform-express",
-                "@nestjs/swagger",
+                // "@nestjs/core",
+                // "@nestjs/platform-express",
+                // "@nestjs/swagger",
             ]);
-            await this.builder.createMain();
+            await this.builder.createMain(this.constants, this.utils);
+        }
+        // selection for creating the landing page
+        if (this.options.createLandingPage) {
+            await this.builder.createLandingPage(this.constants, this.utils);
+        }
+        // selection for creating the app files (module, service, controller, ...)
+        if (this.options.createAppFiles) {
+            await this.builder.createAppFiles(this.constants, this.utils);
         }
         // selection for configuring the database
-        if (this.options.createMain) {
-            // await this.builder.createMain();
+        if (this.options.database) {
+            await this.builder.database(this.constants, this.utils);
+        }
+        // selection for creating a new table files
+        if (this.options.createTable) {
+            await this.builder.createTable(this.constants, this.utils);
         }
     };
 }

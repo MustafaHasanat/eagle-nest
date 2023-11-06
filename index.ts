@@ -14,13 +14,15 @@ const utils = new Utils();
 const builder = new CliBuilder(constants, utils);
 const receiver = new Receiver(app, options, constants, utils, builder);
 
-const { cm, clp, caf } = constants.app.options;
+const { cm, clp, caf, ct, db } = constants.app.options;
 
 app.version(constants.app.version)
     .description(constants.app.description)
     .option(cm.flags, cm.desc)
     .option(clp.flags, clp.desc)
     .option(caf.flags, caf.desc)
+    .option(ct.flags, ct.desc)
+    .option(db.flags, db.desc)
     .alias("createMain")
     .action(receiver.action)
     .parse(process.argv);
