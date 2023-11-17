@@ -3,21 +3,20 @@
 
 import { Command } from "commander";
 import Receiver from "./receiver/index.js";
-import Constants from "./constants/index.js";
-import Utils from "./utils/index.js";
+import constants from "./constants/appConstants.js";
 import CliBuilder from "./cliBuilder/index.js";
+import Manipulator from "./manipulator/index.js";
 
 const app = new Command();
 const options = app.opts();
-const constants = new Constants();
-const utils = new Utils();
-const builder = new CliBuilder(constants, utils);
-const receiver = new Receiver(app, options, constants, utils, builder);
+const manipulator = new Manipulator();
+const builder = new CliBuilder(manipulator);
+const receiver = new Receiver(app, options, manipulator, builder);
 
-const { cm, clp, caf, ct, db } = constants.app.options;
+const { cm, clp, caf, ct, db } = constants.options;
 
-app.version(constants.app.version)
-    .description(constants.app.description)
+app.version(constants.version)
+    .description(constants.description)
     .option(cm.flags, cm.desc)
     .option(clp.flags, clp.desc)
     .option(caf.flags, caf.desc)

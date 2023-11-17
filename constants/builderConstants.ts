@@ -1,19 +1,112 @@
 import { existsSync } from "fs";
+import { strictNameValidator } from "../validators/stringValidators.js";
 
+const columnTypeChoices = [
+    {
+        name: "string",
+        value: "string",
+        description: "create a simple string column",
+    },
+    {
+        name: "number",
+        value: "number",
+    },
+    {
+        name: "boolean",
+        value: "boolean",
+    },
+    {
+        name: "enum",
+        value: "enum",
+    },
+    {
+        name: "date",
+        value: "date",
+    },
+    {
+        name: "object",
+        value: "object",
+    },
+    {
+        name: "array",
+        value: "array",
+    },
+];
+
+const columnAttributesChoices = [
+    {
+        name: "isUnique",
+        value: "isUnique",
+        description: "a unique column will never accept duplicate rows on it",
+    },
+];
+
+const relationChoices = [
+    {
+        name: "OneToOne",
+        value: "OneToOne",
+        description:
+            "'one-to-one' relation: each record of this table may have a link to only one record from the foreign one",
+    },
+    {
+        name: "OneToMany",
+        value: "OneToMany",
+        description:
+            "'one-to-many' relation: each record of this table may have multiple linked records from the foreign one",
+    },
+    {
+        name: "ManyToOne",
+        value: "ManyToOne",
+        description:
+            "'many-to-one' relation:  multiple records of this table may have a link to only one record from the foreign one",
+    },
+];
+
+// ----------------
+// helper functions
+// ----------------
 const trimmer = (input: string) => {
     return input.trim();
 };
 
-const getDestination = (fileName: string) => ({
+const getName = (
+    name: string,
+    validator: (name: string) => string | boolean = (name: string) => {
+        return !name ? "You must pick a name!" : true;
+    }
+) => ({
     type: "input",
-    name: "destination",
-    message: `Where do you want to locate your ${fileName}?`,
-    default: ".",
-    validate(destination: string) {
-        return !existsSync(destination) ? "Path doesn't exist!" : true;
-    },
+    name: name + "Name",
+    message: `What's the name of your ${name}?`,
+    validate: validator,
     filter: trimmer,
 });
+
+const getDestination = (props: {
+    targetName: string;
+    defaultDest?: string;
+    whenCallback?: Function;
+    transformerCallback?: Function;
+}) => {
+    const {
+        targetName,
+        defaultDest = "src",
+        whenCallback = () => true,
+        transformerCallback = (answer: string) => answer,
+    } = props;
+    return {
+        type: "input",
+        name: "destination",
+        message: `Where do you want to locate your ${targetName}?`,
+        default: defaultDest,
+        filter: trimmer,
+        validate(destination: string) {
+            return !existsSync(destination) ? "Path doesn't exist!" : true;
+        },
+        when: whenCallback(),
+        transformer: transformerCallback(),
+    };
+};
 
 const getFileLocation = (fileName: string, realName: string) => ({
     type: "input",
@@ -26,49 +119,108 @@ const getFileLocation = (fileName: string, realName: string) => ({
     filter: trimmer,
 });
 
+const overwritePermission = () => ({
+    type: "confirm",
+    name: "overwrite",
+    message: "May we overwrite the files if they exist at the directory?",
+    default: true,
+});
+
+const getChoices = (
+    name: string,
+    message: string,
+    choices: {
+        name: string;
+        value: string;
+        description?: string;
+    }[]
+) => ({
+    message,
+    name,
+    choices,
+    validate(choice: string) {
+        return !choice ? `You must pick a ${name}!` : true;
+    },
+});
+
+// -----------------
+// builder constants
+// -----------------
 const builderConstants = {
     // constants for the --create-main option
     createMain: {
-        projectName: {
-            type: "input",
-            name: "projectName",
-            message: "What's the name of your project?",
-            validate(projectName: string) {
-                return !projectName ? "You must pick a name!" : true;
-            },
-            filter: trimmer,
-        },
-        destination: getDestination("main.ts file"),
+        projectName: getName("project"),
+        destination: getDestination({ targetName: "main.ts file" }),
     },
     // constants for the --create-landing-page
     createLandingPage: {
-        projectName: {
-            type: "input",
-            name: "projectName",
-            message: "What's the name of your project?",
-            validate(projectName: string) {
-                return !projectName ? "You must pick a name!" : true;
-            },
-            filter: trimmer,
-        },
-        destination: {
-            ...getDestination("public folder"),
-            when: () => !existsSync(process.cwd() + "/public"),
-            transformer: (answer: string) => (answer === "." ? "" : answer),
-        },
+        projectName: getName("project"),
+        destination: getDestination({
+            targetName: "public folder",
+            defaultDest: ".",
+            whenCallback: () => !existsSync(process.cwd() + "/public"),
+            transformerCallback: (answer: string) =>
+                answer === "." ? "" : answer,
+        }),
     },
     // constants for the --create-app-files
     createAppFiles: {
-        destination: getDestination("app files"),
+        destination: getDestination({ targetName: "app files" }),
     },
     // constants for the --database
     database: {
-        destination: getDestination("db config files (root dir is recommended)"),
+        destination: getDestination({
+            targetName: "db config files (root dir is recommended)",
+            defaultDest: ".",
+        }),
         appModuleLocation: getFileLocation("appModule", "app.module.ts"),
-        dotEnvLocation: getFileLocation("dotEnv", ".env"),
+        overwrite: overwritePermission(),
     },
     // constants for the --create-table
-    createTable: {},
+    createTable: {
+        tableName: {
+            ...getName("table", (name: string) => {
+                return strictNameValidator(name) ? "Name is invalid!" : true;
+            }),
+            message: "What's the name of your table? (use camelCase to avoid errors)"
+        },
+        destination: getDestination({
+            targetName: "tables",
+            defaultDest: "src",
+        }),
+        newColumn: {
+            type: "confirm",
+            name: "newColumn",
+            message: "Do you want to create a column?",
+            default: true,
+        },
+        columnName: getName("columnName"),
+        columnType: getChoices(
+            "columnType",
+            "Select the type of the column",
+            columnTypeChoices
+        ),
+        columnAttributes: {
+            name: "columnAttributes",
+            message:
+                "Select the attributes that should be applied to this column (this is optional)",
+            choices: columnAttributesChoices,
+        },
+        newRelation: {
+            type: "confirm",
+            name: "newRelation",
+            message: "Do you want to create a new relation?",
+            default: true,
+        },
+        relationType: getChoices(
+            "relationType",
+            "Select the new relation",
+            relationChoices
+        ),
+        foreignTable: getName("foreignTable", (name: string) => {
+            return strictNameValidator(name) ? "Name is invalid!" : true;
+        }),
+    },
 };
 
 export default builderConstants;

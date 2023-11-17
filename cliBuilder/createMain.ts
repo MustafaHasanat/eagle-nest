@@ -1,15 +1,15 @@
 import inquirer from "inquirer";
-import Utils from "../utils/index.js";
-import Constants from "../constants/index.js";
+import Manipulator from "../manipulator/index.js";
+import constants from "../constants/builderConstants.js";
 
-const createMainBuilder = async (constants: Constants, utils: Utils) => {
+const createMainBuilder = async (manipulator: Manipulator) => {
     inquirer
         .prompt([
-            constants.builder.createMain.projectName,
-            constants.builder.createMain.destination,
+            constants.createMain.projectName,
+            constants.createMain.destination,
         ])
         .then(async (answers) => {
-            await utils.manipulator.cloneTemplates([
+            await manipulator.cloneTemplates([
                 {
                     target: "templates/base/typescript/app/main-file.txt",
                     dest: answers.destination,

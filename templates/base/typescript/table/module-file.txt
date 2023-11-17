@@ -1,0 +1,14 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { TABLE_NAMEService } from './TABLE_LOWER_NAME.service';
+import { TABLE_NAMEController } from './TABLE_LOWER_NAME.controller';
+import { User } from './entities/user.entity';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([User])],
+  controllers: [TABLE_NAMEController],
+  providers: [TABLE_NAMEService],
+  exports: [TABLE_NAMEService],
+})
+export class TABLE_NAMEModule {}

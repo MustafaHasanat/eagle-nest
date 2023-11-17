@@ -1,16 +1,16 @@
 import inquirer from "inquirer";
-import Utils from "../utils/index.js";
-import Constants from "../constants/index.js";
-import { pathConvertor } from "./helpers/index.js";
+import constants from "../constants/builderConstants.js";
+import { pathConvertor } from "./helpers/filesHelpers.js";
+import Manipulator from "../manipulator/index.js";
 
-const createLandingPageBuilder = async (constants: Constants, utils: Utils) => {
+const createLandingPageBuilder = async (manipulator: Manipulator) => {
     inquirer
         .prompt([
-            constants.builder.createLandingPage.projectName,
-            constants.builder.createLandingPage.destination,
+            constants.createLandingPage.projectName,
+            constants.createLandingPage.destination,
         ])
         .then(async (answers) => {
-            await utils.manipulator.cloneTemplates([
+            await manipulator.cloneTemplates([
                 {
                     target: "templates/base/html/landing-page.txt",
                     dest: pathConvertor(answers.destination, "public"),

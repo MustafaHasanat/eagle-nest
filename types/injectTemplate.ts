@@ -1,6 +1,6 @@
-type InjectTemplate = {
+type InjectionAction = {
     target: string;
-    injectable: string;
+    targetIsFile?: boolean;
     keyword: string;
     replacements?: {
         oldString: string;
@@ -8,4 +8,9 @@ type InjectTemplate = {
     }[];
 };
 
-export default InjectTemplate;
+type InjectTemplate = {
+    injectable: string;
+    actions: InjectionAction[];
+};
+
+export { InjectTemplate, InjectionAction };

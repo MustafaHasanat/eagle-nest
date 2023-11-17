@@ -1,0 +1,13 @@
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { IsUUID } from "class-validator";
+
+@Entity()
+export class TABLE_NAME {
+    @PrimaryGeneratedColumn("uuid")
+    @IsUUID()
+    id: string;
+
+    // --- columns ---
+
+    // --- relations ---
+}

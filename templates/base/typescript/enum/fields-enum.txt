@@ -1,0 +1,3 @@
+enum TABLE_NAMEFields {}
+
+export default TABLE_NAMEFields

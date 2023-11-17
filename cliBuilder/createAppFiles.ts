@@ -1,12 +1,12 @@
 import inquirer from "inquirer";
-import Utils from "../utils/index.js";
-import Constants from "../constants/index.js";
+import Manipulator from "../manipulator/index.js";
+import constants from "../constants/builderConstants.js";
 
-const createAppFilesBuilder = async (constants: Constants, utils: Utils) => {
+const createAppFilesBuilder = async (manipulator: Manipulator) => {
     inquirer
-        .prompt([constants.builder.createAppFiles.destination])
+        .prompt([constants.createAppFiles.destination])
         .then(async (answers) => {
-            await utils.manipulator.cloneTemplates([
+            await manipulator.cloneTemplates([
                 {
                     target: "templates/base/typescript/app/module-file.txt",
                     dest: answers.destination,

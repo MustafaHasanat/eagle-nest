@@ -3,9 +3,8 @@ import { Command, OptionValues } from "commander";
 import path from "path";
 import { fileURLToPath } from "url";
 import CliBuilder from "../cliBuilder/index.js";
-import Constants from "../constants/index.js";
-import Utils from "../utils/index.js";
 import { Installer } from "./installer.js";
+import Manipulator from "../manipulator/index.js";
 
 /**
  * A class to control the main entry of the tool
@@ -15,21 +14,18 @@ export default class Receiver {
     constructor(
         app: Command,
         options: OptionValues,
-        constants: Constants,
-        utils: Utils,
+        manipulator: Manipulator,
         builder: CliBuilder
     ) {
         this.app = app;
         this.options = options;
-        this.constants = constants;
-        this.utils = utils;
+        this.manipulator = manipulator;
         this.builder = builder;
-        this.installer = new Installer(constants);
+        this.installer = new Installer();
     }
     app;
     options;
-    constants;
-    utils;
+    manipulator;
     builder;
     installer;
     filename = fileURLToPath(import.meta.url);
@@ -50,23 +46,23 @@ export default class Receiver {
                 // "@nestjs/platform-express",
                 // "@nestjs/swagger",
             ]);
-            await this.builder.createMain(this.constants, this.utils);
+            await this.builder.createMain(this.manipulator);
         }
         // selection for creating the landing page
         if (this.options.createLandingPage) {
-            await this.builder.createLandingPage(this.constants, this.utils);
+            await this.builder.createLandingPage(this.manipulator);
         }
         // selection for creating the app files (module, service, controller, ...)
         if (this.options.createAppFiles) {
-            await this.builder.createAppFiles(this.constants, this.utils);
+            await this.builder.createAppFiles(this.manipulator);
         }
         // selection for configuring the database
         if (this.options.database) {
-            await this.builder.database(this.constants, this.utils);
+            await this.builder.database(this.manipulator);
         }
         // selection for creating a new table files
         if (this.options.createTable) {
-            await this.builder.createTable(this.constants, this.utils);
+            await this.builder.createTable(this.manipulator);
         }
     };
 }

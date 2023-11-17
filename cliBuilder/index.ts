@@ -1,18 +1,15 @@
-import Utils from "../utils/index.js";
-import Constants from "../constants/index.js";
 import createMainBuilder from "./createMain.js";
 import createLandingPageBuilder from "./createLandingPage.js";
 import createAppFilesBuilder from "./createAppFiles.js";
 import databaseBuilder from "./database.js";
 import createTableBuilder from "./createTable.js";
+import Manipulator from "manipulator/index.js";
 
 export default class CliBuilder {
-    constructor(constants: Constants, utils: Utils) {
-        this.constants = constants;
-        this.utils = utils;
+    constructor(manipulator: Manipulator) {
+        this.manipulator = manipulator;
     }
-    constants;
-    utils;
+    manipulator;
     // fired by the --create-main option
     createMain = createMainBuilder;
     // fired by the --create-landing-page
