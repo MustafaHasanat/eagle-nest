@@ -1,0 +1,181 @@
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
+
+import crudResponse from "external/responses/crudResponse.js";
+import errorResponse from "external/responses/errorResponse.js";
+import validationResponse from "external/responses/validationResponse.js";
+import CustomResponseType from "external/types/customResponseType.js";
+import { filterNullsObject } from "external/helpers/filterNulls.js";
+import { GetAllProps } from "external/types/getOperators.js";
+import { filteredGetQuery, validateCreateUpdate } from "../../../../external/helpers/crudHelpers.js";
+
+import { TABLE_UPPER_NAME } from "../entities/TABLE_LOWER_NAME.entity";
+import { CreateTABLE_UPPER_NAMEDto } from "../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
+import { UpdateTABLE_UPPER_NAMEDto } from "../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
+import { TABLE_UPPER_NAMEFields } from "../enums/TABLE_PLURAL_LOWER_NAME/TABLE_LOWER_NAME-fields.enum";
+
+@Injectable()
+export class TABLE_PLURAL_UPPER_NAMEService {
+    constructor(
+        @InjectRepository(TABLE_UPPER_NAME)
+        private readonly TABLE_LOWER_NAMERepository: Repository<TABLE_UPPER_NAME>
+    ) {}
+
+    async getTABLE_PLURAL_UPPER_NAME({
+        sortBy = TABLE_UPPER_NAMEFields.CHANGE_THIS_TO_DEFAULT_FIELD,
+        reverse = false,
+        page = 1,
+        conditions,
+    }: GetAllProps<TABLE_UPPER_NAMEFields>): Promise<CustomResponseType<TABLE_UPPER_NAME[]>> {
+        try {
+            const findQuery = filteredGetQuery({
+                sortBy,
+                reverse,
+                page,
+                conditions,
+            });
+
+            if (findQuery.status !== 200) {
+                return crudResponse.notFoundRes(findQuery.message);
+            }
+
+            const response = await this.TABLE_LOWER_NAMERepository.find(
+                findQuery.data
+            );
+
+            return crudResponse.foundRes(
+                response.length
+                    ? "TABLE_PLURAL_UPPER_NAME have been found"
+                    : "TABLE_PLURAL_UPPER_NAME list is empty",
+                response
+            );
+        } catch (error) {
+            return errorResponse.error(error);
+        }
+    }
+
+    async getTABLE_UPPER_NAMEById(id: string): Promise<CustomResponseType<TABLE_UPPER_NAME>> {
+        try {
+            const response = await this.TABLE_LOWER_NAMERepository.findOneBy({ id });
+
+            if (response) {
+                return crudResponse.notFoundRes("TABLE_UPPER_NAME does not exist");
+            }
+
+            return crudResponse.foundRes("TABLE_UPPER_NAME has been found", response);
+        } catch (error) {
+            return errorResponse.error(error);
+        }
+    }
+
+    async createTABLE_UPPER_NAME(
+        createTABLE_UPPER_NAMEDto: CreateTABLE_UPPER_NAMEDto
+    ): Promise<CustomResponseType<TABLE_UPPER_NAME>> {
+        try {
+            const filteredData =
+                filterNullsObject<CreateTABLE_UPPER_NAMEDto>(createTABLE_UPPER_NAMEDto);
+
+            const validationErrors = await validateCreateUpdate(
+                {
+                    dto: CreateTABLE_UPPER_NAMEDto,
+                    data: filteredData,
+                }
+            );
+
+            if (validationErrors.status !== 200) {
+                return validationResponse.validationError(
+                    validationErrors.message,
+                    validationErrors.errors
+                );
+            }
+
+            const newTABLE_UPPER_NAME = this.TABLE_LOWER_NAMERepository.create(filteredData);
+            const response = await this.TABLE_LOWER_NAMERepository.save(newTABLE_UPPER_NAME);
+
+            return crudResponse.createUpdateRes<TABLE_UPPER_NAME>(
+                "TABLE_UPPER_NAME has been created successfully",
+                response
+            );
+        } catch (error) {
+            return errorResponse.error(error);
+        }
+    }
+
+    async updateTABLE_UPPER_NAME(
+        id: string,
+        updateTABLE_UPPER_NAMEDto: UpdateTABLE_UPPER_NAMEDto
+    ): Promise<CustomResponseType<UpdateResult>> {
+        try {
+            const filteredData =
+                filterNullsObject<UpdateTABLE_UPPER_NAMEDto>(updateTABLE_UPPER_NAMEDto);
+
+            const validationErrors = await validateCreateUpdate(
+                {
+                    dto: UpdateTABLE_UPPER_NAMEDto,
+                    data: filteredData,
+                }
+            );
+
+            if (validationErrors.status !== 200) {
+                return validationResponse.validationError(
+                    validationErrors.message,
+                    validationErrors.errors
+                );
+            }
+
+            const TABLE_LOWER_NAME = await this.getTABLE_UPPER_NAMEById(id);
+            if (!TABLE_LOWER_NAME) {
+                return crudResponse.notFoundRes(`TABLE_UPPER_NAME does not exist`);
+            }
+
+            const response = await this.TABLE_LOWER_NAMERepository.update(
+                {
+                    id,
+                },
+                filteredData
+            );
+
+            return crudResponse.createUpdateRes<UpdateResult>(
+                "TABLE_UPPER_NAME has been updated successfully",
+                response
+            );
+        } catch (error) {
+            return errorResponse.error(error);
+        }
+    }
+
+    async deleteAllTABLE_PLURAL_UPPER_NAME(): Promise<CustomResponseType<DeleteResult>> {
+        try {
+            const response = await this.TABLE_LOWER_NAMERepository.query(
+                `TRUNCATE TABLE "TABLE_LOWER_NAME" CASCADE;`
+            );
+
+            return crudResponse.deletedRes(
+                "TABLE_PLURAL_UPPER_NAME data are wiped out",
+                response
+            );
+        } catch (error) {
+            return errorResponse.error(error);
+        }
+    }
+
+    async deleteTABLE_UPPER_NAME(
+        id: string
+    ): Promise<CustomResponseType<DeleteResult>> {
+        try {
+            const response = await this.TABLE_LOWER_NAMERepository.delete(id);
+
+            if (!response) {
+                return crudResponse.notFoundRes("TABLE_UPPER_NAME does not exist");
+            }
+
+            return crudResponse.deletedRes(
+                "TABLE_UPPER_NAME has been deleted successfully",
+                response
+            );
+        } catch (error) {
+            return errorResponse.error(error);
+        }
+    }
+}

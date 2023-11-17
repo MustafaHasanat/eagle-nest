@@ -1,15 +1,17 @@
 import inquirer from "inquirer";
-import Utils from "../utils/index.js";
-import Constants from "../constants/index.js";
-import { filesExist, pathConvertor } from "./helpers/index.js";
+import constants from "../constants/builderConstants.js";
+import { filesExist, pathConvertor } from "./helpers/filesHelpers.js";
 import { join } from "path";
+import Manipulator from "../manipulator/index.js";
+import cloningCommands from "./helpers/cloningCommands.js";
+import injectingCommands from "./helpers/injectingCommands.js";
 
-const databaseBuilder = async (constants: Constants, utils: Utils) => {
+const databaseBuilder = async (manipulator: Manipulator) => {
     inquirer
         .prompt([
-            constants.builder.database.destination,
-            constants.builder.database.appModuleLocation,
-            constants.builder.database.dotEnvLocation,
+            constants.database.destination,
+            constants.database.appModuleLocation,
+            constants.database.overwrite,
         ])
         .then(async (answers) => {
             const isFilesExist = filesExist([
@@ -18,7 +20,7 @@ const databaseBuilder = async (constants: Constants, utils: Utils) => {
                     answers.appModuleLocation,
                     "app.module.txt"
                 ),
-                join(process.cwd(), answers.dotEnvLocation, ".env"),
+                join(process.cwd(), answers.destination, ".env"),
             ]);
             if (isFilesExist.length > 0) {
                 console.log("You must have these files to modify them:");
@@ -27,44 +29,28 @@ const databaseBuilder = async (constants: Constants, utils: Utils) => {
                 });
                 return;
             }
+            if (!answers.overwrite) {
+                console.log(
+                    "You have to allow us to overwrite so we can make changes!"
+                );
+                return;
+            }
 
-            await utils.manipulator.cloneTemplates([
-                {
-                    target: "templates/base/typescript/db/entities-file.txt",
-                    dest: pathConvertor(answers.destination, "entities"),
-                    newFileName: "index.ts",
-                },
-            ]);
+            await manipulator.cloneTemplates(
+                cloningCommands.database(
+                    pathConvertor(answers.destination, "entities")
+                )
+            );
 
-            await utils.manipulator.injectTemplate([
-                {
-                    target: "templates/components/typescript/app-module/db/config.txt",
-                    injectable: pathConvertor(
+            await manipulator.injectTemplates(
+                injectingCommands.database({
+                    appModuleLocation: pathConvertor(
                         answers.appModuleLocation,
-                        "app.module.txt"
+                        "app.module.ts"
                     ),
-                    keyword: "imports: [",
-                },
-                // {
-                //     target: "templates/components/typescript/app-module/db/imports.txt",
-                //     injectable: this.pathConvertor(
-                //         answers.appModuleLocation,
-                //         "app.module.txt"
-                //     ),
-                //     keyword: "*",
-                //     replacements: [
-                //         {
-                //             oldString: "PATH_TO_ENTITIES",
-                //             newString: answers.destination,
-                //         },
-                //     ],
-                // },
-                {
-                    target: "templates/components/others/db-env.txt",
-                    injectable: pathConvertor(answers.dotEnvLocation, ".env"),
-                    keyword: "*",
-                },
-            ]);
+                    dest: pathConvertor(answers.destination, ".env"),
+                })
+            );
         });
 };
 export default databaseBuilder;

@@ -1,12 +1,8 @@
-import Constants from "../constants/index.js";
+import receiverConstants from "constants/receiverConstants.js";
 import inquirer from "inquirer";
+import constants from "../constants/receiverConstants.js";
 
 export class Installer {
-    constructor(constants: Constants) {
-        this.constants = constants;
-    }
-    constants;
-
     checkPackageIfExist = async (packageName: string): Promise<boolean> => {
         // TODO: check if the package is installed or not
         return false;
@@ -15,9 +11,7 @@ export class Installer {
     installPackage = async (packageName: string): Promise<boolean> => {
         let answer = false;
         await inquirer
-            .prompt([
-                this.constants.receiver.installer.confirmation(packageName),
-            ])
+            .prompt([constants.installer.confirmation(packageName)])
             .then(async (answers) => {
                 if (answers.confirmation) {
                     // TODO: install the package here

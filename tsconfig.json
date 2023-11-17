@@ -26,6 +26,6 @@
             "*": ["*"]
         }
     },
-    "include": ["**/*.ts", "cli-builder/*", "app.moduletxt"],
+    "include": ["**/*.ts", "cli-builder/*"],
     "exclude": ["node_modules"]
 }
