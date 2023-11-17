@@ -2,7 +2,6 @@
     "compilerOptions": {
         // "module": "node16",
         // "target": "es2020", // set to the *lowest* target you support
-
         "target": "ESNext",
         "module": "NodeNext",
         "lib": ["es6"],
@@ -14,13 +13,10 @@
         "sourceMap": true,
         "moduleResolution": "NodeNext",
         // "declarationMap": true,
-
         // "allowImportingTsExtensions": true,
         // "noEmit": true,
         // "declaration": false,
-
         // "verbatimModuleSyntax": true,
-
         "baseUrl": ".",
         "paths": {
             "*": ["*"]
