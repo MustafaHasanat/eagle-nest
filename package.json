@@ -13,7 +13,9 @@
     "commit": "git-cz",
     "start": "npm run build && node dist/index.js",
     "build": "rimraf ./dist && tsc",
-    "semantic-release": "semantic-release --branches main"
+    "install-g": "npm install -g .",
+    "semantic-release": "semantic-release --branches main",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",

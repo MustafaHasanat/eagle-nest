@@ -33,7 +33,6 @@ export default class Receiver {
 
     // receiver prompt initializer
     action = async (): Promise<void> => {
-        console.log(this.options);
         // if there was no option selected, show the logo with the instructions for -h
         if (Object.keys(this.options).length === 0) {
             console.log(figlet.textSync("Eagle Nest"));
