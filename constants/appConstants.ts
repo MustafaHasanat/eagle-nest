@@ -22,6 +22,10 @@ const appConstants = {
             flags: "-ct, --create-table",
             desc: "Create the necessary files for the table (module, controller, service, dto, entity).",
         },
+        cr: {
+            flags: "-cr, --create-relation",
+            desc: "Create the necessary file changes to establish a relation between two tables.",
+        },
     },
 };
 

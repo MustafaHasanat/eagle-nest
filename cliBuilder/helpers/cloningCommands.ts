@@ -16,14 +16,66 @@ interface CreateTableProps {
 }
 
 export default {
+    createMain: (dest: string, name: string): CloneTemplate[] => [
+        {
+            target: "/templates/base/typescript/app/main-file.txt",
+            dest,
+            newFileName: "main.ts",
+            replacements: [
+                {
+                    oldString: "PROJECT_NAME",
+                    newString: name,
+                },
+            ],
+        },
+        {
+            target: "/templates/base/others/env-file.txt",
+            dest: ".",
+            newFileName: ".env",
+        },
+    ],
+    createLandingPage: (dest: string, name: string): CloneTemplate[] => [
+        {
+            target: "templates/base/html/landing-page.txt",
+            dest,
+            newFileName: "index.html",
+            replacements: [
+                {
+                    oldString: "PROJECT_NAME",
+                    newString: name,
+                },
+            ],
+        },
+        {
+            target: "templates/base/css/landing-page.txt",
+            dest,
+            newFileName: "styles.css",
+        },
+    ],
+    createAppFiles: (dest: string): CloneTemplate[] => [
+        {
+            target: "templates/base/typescript/app/module-file.txt",
+            dest,
+            newFileName: "app.module.ts",
+        },
+        {
+            target: "templates/base/typescript/app/controller-file.txt",
+            dest,
+            newFileName: "app.controller.ts",
+        },
+        {
+            target: "templates/base/typescript/app/service-file.txt",
+            dest,
+            newFileName: "app.service.ts",
+        },
+    ],
     database: (dest: string): CloneTemplate[] => [
         {
             target: "templates/base/typescript/db/entities-file.txt",
-            dest: dest,
+            dest,
             newFileName: "index.ts",
         },
     ],
-
     createTable: ({
         paths: { entitiesPath, dtoPath, enumPath, schemasPath },
         nameVariants: {

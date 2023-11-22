@@ -23,7 +23,6 @@ export default class Receiver {
     dirname = path.dirname(this.filename);
     // receiver prompt initializer
     action = async () => {
-        console.log(this.options);
         // if there was no option selected, show the logo with the instructions for -h
         if (Object.keys(this.options).length === 0) {
             console.log(figlet.textSync("Eagle Nest"));
@@ -32,9 +31,12 @@ export default class Receiver {
         // selection for creating the main.ts file
         if (this.options.createMain) {
             await this.installer.installPackages([
-            // "@nestjs/core",
-            // "@nestjs/platform-express",
-            // "@nestjs/swagger",
+                { packageName: "@nestjs/core", commandType: "--save" },
+                {
+                    packageName: "@nestjs/platform-express",
+                    commandType: "--save",
+                },
+                { packageName: "@nestjs/swagger", commandType: "--save" },
             ]);
             await this.builder.createMain(this.manipulator);
         }

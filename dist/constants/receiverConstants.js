@@ -1,8 +1,8 @@
 const receiverConstants = {
     installer: {
-        confirmation: (packageName) => ({
-            name: "confirmation",
-            message: `Package ${packageName} isn't installed, do you want us to take care of this?`,
+        confirmation: (packages) => ({
+            name: `confirmation`,
+            message: `Some packages aren't installed (${packages.length} package/s), do you want us to take care of this?\n${packages}`,
             type: "confirm",
             default: true,
         }),

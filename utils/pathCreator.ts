@@ -1,10 +1,5 @@
 import { existsSync, mkdirSync } from "fs";
 
-type PathCreatorProps = {
-    path: string;
-    prefix?: string;
-};
-
 /**
  * Assure that a path exists, then create it with all its descendant sub-paths
  *
@@ -19,10 +14,8 @@ type PathCreatorProps = {
  * --> src/assets/
  * --> src/assets/html/
  */
-const pathCreator = (items: PathCreatorProps[]) => {
-    items.forEach((item) => {
-        const { path, prefix = "" } = item;
-
+const pathCreator = (paths: string[], prefix: string = "") => {
+    paths.forEach((path) => {
         const segments = path.split("/");
 
         const newPath = prefix + (prefix ? "/" : "") + segments[0];
@@ -31,9 +24,7 @@ const pathCreator = (items: PathCreatorProps[]) => {
         }
 
         if (segments.length > 1) {
-            pathCreator([
-                { path: segments.slice(1).join("/"), prefix: newPath },
-            ]);
+            pathCreator([segments.slice(1).join("/")], newPath);
         } else if (segments.length === 1) {
             return;
         }

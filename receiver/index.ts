@@ -33,7 +33,6 @@ export default class Receiver {
 
     // receiver prompt initializer
     action = async (): Promise<void> => {
-        console.log(this.options);
         // if there was no option selected, show the logo with the instructions for -h
         if (Object.keys(this.options).length === 0) {
             console.log(figlet.textSync("Eagle Nest"));
@@ -42,9 +41,12 @@ export default class Receiver {
         // selection for creating the main.ts file
         if (this.options.createMain) {
             await this.installer.installPackages([
-                // "@nestjs/core",
-                // "@nestjs/platform-express",
-                // "@nestjs/swagger",
+                { packageName: "@nestjs/core", commandType: "--save" },
+                {
+                    packageName: "@nestjs/platform-express",
+                    commandType: "--save",
+                },
+                { packageName: "@nestjs/swagger", commandType: "--save" },
             ]);
             await this.builder.createMain(this.manipulator);
         }
@@ -54,15 +56,35 @@ export default class Receiver {
         }
         // selection for creating the app files (module, service, controller, ...)
         if (this.options.createAppFiles) {
+            await this.installer.installPackages([
+                { packageName: "@nestjs/common", commandType: "--save" },
+            ]);
             await this.builder.createAppFiles(this.manipulator);
         }
         // selection for configuring the database
         if (this.options.database) {
+            await this.installer.installPackages([
+                { packageName: "@nestjs/config", commandType: "--save" },
+                { packageName: "@nestjs/typeorm", commandType: "--save" },
+            ]);
             await this.builder.database(this.manipulator);
         }
         // selection for creating a new table files
         if (this.options.createTable) {
+            await this.installer.installPackages([
+                { packageName: "typeorm", commandType: "--save" },
+                { packageName: "class-validator", commandType: "--save" },
+                { packageName: "@nestjs/swagger", commandType: "--save" },
+                { packageName: "@nestjs/common", commandType: "--save" },
+                { packageName: "@nestjs/typeorm", commandType: "--save" },
+                { packageName: "@types/express", commandType: "--save-dev" },
+            ]);
             await this.builder.createTable(this.manipulator);
+        }
+        // selection for creating a new relation
+        if (this.options.createRelation) {
+            // await this.installer.installPackages([]);
+            await this.builder.createRelation(this.manipulator);
         }
     };
 }

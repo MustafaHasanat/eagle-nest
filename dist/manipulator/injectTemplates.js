@@ -1,16 +1,35 @@
 import { join } from "path";
 import { readFile, writeFile } from "fs/promises";
 import replaceStrings from "../utils/replaceStrings.js";
+/**
+ * Injects the 'addition' string at the 'keyword' index inside the 'original' string
+ *
+ * @param original The original string
+ * @param keyword The injection string to be found (inject at the start if equals a star: *)
+ * @param addition The content string to be added to the original file
+ * @returns The resultant string
+ */
 const injectString = (props) => {
-    const { original, keyword, replacement } = props;
-    const injectPosition = keyword === "*" ? 0 : original.indexOf(keyword) + keyword.length;
+    const { original, keyword, addition } = props;
+    const index = original.indexOf(keyword);
+    if (index === -1) {
+        throw new Error(`'keyword=${keyword}' doesn't exist ing the 'original' string`);
+    }
+    const injectPosition = keyword === "*" ? 0 : index + keyword.length;
     const [leftSide, rightSide] = [
         original.slice(0, injectPosition),
         original.slice(injectPosition),
     ];
-    return leftSide + replacement + rightSide;
+    return leftSide + addition + rightSide;
 };
-const injectionAction = async ({ injectable, actions, injectablePath, injectableContents, }) => {
+/**
+ * Recursively inject the targets into the injectable string
+ *
+ * @param actions[] A list of injection objects (check the injectTemplates function for more details)
+ * @param injectableContents The accumulated result of the original content after injecting all the action objects
+ * @returns The final result of the file after injecting all the contents
+ */
+const injectionAction = async ({ actions, injectableContents, }) => {
     if (!actions.length) {
         return injectableContents;
     }
@@ -25,18 +44,49 @@ const injectionAction = async ({ injectable, actions, injectablePath, injectable
     const modifiedInjectable = injectString({
         original: injectableContents,
         keyword,
-        replacement: modifiedTarget,
+        addition: modifiedTarget,
     });
     return await injectionAction({
-        injectable,
         actions: actions.slice(1),
-        injectablePath,
         injectableContents: modifiedInjectable,
     });
 };
 /**
+ * Inject one or more texts or templates in a single injectable file
  *
- * @param files
+ * @param files[] A list of object to be addressed
+ *      @param injectable The existing file to be modified
+ *      @param actions[] A list of injection objects
+ *          @param target The source file that has the text to be injected
+ *          @param targetIsFile A boolean indication if we need to treat the target as a file or as a simple string
+ *          @param keyword A string indicating where in the injectable file do we want to add the new text
+ *          @param replacements[] A list of pairs to be replaced in the target file before injection
+ *              @param oldString The old string
+ *              @param newString The new string
+ * @usage
+ * await manipulator.injectTemplates(
+ *      [
+ *          {
+ *              injectable: appModuleLocation,
+ *              actions: [
+ *                 {
+ *                    target: "templates/components/typescript/app-module/db/config.txt",
+ *                     keyword: "imports: [",
+ *                 },
+ *                 {
+ *                     target: "templates/components/typescript/app-module/db/imports.txt",
+ *                     keyword: "*",
+ *                     replacements: [
+ *                         {
+ *                             oldString: "PATH_TO_ENTITIES",
+ *                             newString: dest,
+ *                         },
+ *                     ],
+ *                 },
+ *             ],
+ *         },
+ *      ]
+ * )
  */
 const injectTemplates = async (files) => {
     files.forEach(async (file) => {
@@ -45,8 +95,6 @@ const injectTemplates = async (files) => {
             const injectableContents = await readFile(injectablePath, "utf8");
             const modifiedInjectable = await injectionAction({
                 actions: file.actions,
-                injectable: file.injectable,
-                injectablePath,
                 injectableContents,
             });
             await writeFile(injectablePath, modifiedInjectable, "utf8");

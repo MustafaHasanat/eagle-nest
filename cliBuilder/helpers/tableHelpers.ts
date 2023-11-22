@@ -4,7 +4,7 @@ import input from "@inquirer/input";
 import checkbox from "@inquirer/checkbox";
 import inquirer from "inquirer";
 
-const tableRelationFilesBuilder = async () => {
+const relationFilesBuilder = async () => {
     const relation = await select({
         ...constants.createTable.relationType,
     });
@@ -18,29 +18,25 @@ const tableRelationFilesBuilder = async () => {
     }
 };
 
-const tableRelationsBuilder = async () => {
+const relationsBuilder = async () => {
     await inquirer
         .prompt([constants.createTable.newRelation])
         .then(async (answers) => {
             if (!answers.newRelation) return;
 
-            await tableRelationFilesBuilder();
-            await tableRelationsBuilder();
+            await relationFilesBuilder();
+            await relationsBuilder();
         });
 };
 
 const columnFilesBuilder = async (tableName: string, destination: string) => {
-    const columnName = await input({
-        ...constants.createTable.columnName,
-    });
-    const columnType = await select({
-        ...constants.createTable.columnType,
-    });
+    const columnName = await input(constants.createTable.columnName);
+    const columnType = await select(constants.createTable.columnType);
     const columnAttributes = await checkbox({
         ...constants.createTable.columnAttributes,
     });
 
-    await tableRelationsBuilder();
+    // await tableRelationsBuilder();
 };
 
 const columnBuilder = async (tableName: string, destination: string) => {
@@ -54,4 +50,4 @@ const columnBuilder = async (tableName: string, destination: string) => {
         });
 };
 
-export { columnBuilder };
+export { columnBuilder, relationsBuilder };

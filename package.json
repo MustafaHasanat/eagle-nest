@@ -13,6 +13,9 @@
     "commit": "git-cz",
     "start": "npm run build && node dist/index.js",
     "build": "rimraf ./dist && tsc",
+    "install-g": "npm install -g .",
+    "globalize": "npm run build && npm run install-g",
+    "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release --branches main"
   },
   "repository": {
@@ -43,6 +46,9 @@
       "main"
     ]
   },
+  "files": [
+    "templates"
+  ],
   "exports": {
     ".": "./index.ts"
   },
@@ -57,6 +63,7 @@
     "class-transformer": "^0.5.1",
     "commander": "^11.1.0",
     "cz-conventional-changelog": "^3.3.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "figlet": "^1.7.0",
     "fs": "^0.0.1-security",

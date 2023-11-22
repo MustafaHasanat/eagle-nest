@@ -95,12 +95,6 @@ const getFileLocation = (fileName, realName) => ({
     },
     filter: trimmer,
 });
-const overwritePermission = () => ({
-    type: "confirm",
-    name: "overwrite",
-    message: "May we overwrite the files if they exist at the directory?",
-    default: true,
-});
 const getChoices = (name, message, choices) => ({
     message,
     name,
@@ -139,7 +133,6 @@ const builderConstants = {
             defaultDest: ".",
         }),
         appModuleLocation: getFileLocation("appModule", "app.module.ts"),
-        overwrite: overwritePermission(),
     },
     // constants for the --create-table
     createTable: {
@@ -147,7 +140,7 @@ const builderConstants = {
             ...getName("table", (name) => {
                 return strictNameValidator(name) ? "Name is invalid!" : true;
             }),
-            message: "What's the name of your table? (use camelCase to avoid errors)"
+            message: "What's the name of your table? (use camelCase to avoid errors)",
         },
         destination: getDestination({
             targetName: "tables",
@@ -175,6 +168,15 @@ const builderConstants = {
         relationType: getChoices("relationType", "Select the new relation", relationChoices),
         foreignTable: getName("foreignTable", (name) => {
             return strictNameValidator(name) ? "Name is invalid!" : true;
+        }),
+    },
+    // shared constants
+    shared: {
+        overwrite: (files) => ({
+            type: "confirm",
+            name: "overwrite",
+            message: `May we overwrite the files if they exist at the directory? -> [${files.join(", ")}]\n(If we can't overwrite, then the command will be terminated)`,
+            default: true,
         }),
     },
 };
