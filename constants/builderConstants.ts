@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
 import { strictNameValidator } from "../validators/stringValidators.js";
+import { QuestionCollection } from "inquirer";
 
 const columnTypeChoices = [
     {
@@ -87,7 +88,7 @@ const getDestination = (props: {
     defaultDest?: string;
     whenCallback?: Function;
     transformerCallback?: Function;
-}) => {
+}): QuestionCollection => {
     const {
         targetName,
         defaultDest = "src",
@@ -108,7 +109,10 @@ const getDestination = (props: {
     };
 };
 
-const getFileLocation = (fileName: string, realName: string) => ({
+const getFileLocation = (
+    fileName: string,
+    realName: string
+): QuestionCollection => ({
     type: "input",
     name: fileName + "Location",
     message: `What is the path to your ${realName} file?`,
@@ -117,13 +121,6 @@ const getFileLocation = (fileName: string, realName: string) => ({
         return !existsSync(destination) ? "Path doesn't exist!" : true;
     },
     filter: trimmer,
-});
-
-const overwritePermission = () => ({
-    type: "confirm",
-    name: "overwrite",
-    message: "May we overwrite the files if they exist at the directory?",
-    default: true,
 });
 
 const getChoices = (
@@ -174,7 +171,6 @@ const builderConstants = {
             defaultDest: ".",
         }),
         appModuleLocation: getFileLocation("appModule", "app.module.ts"),
-        overwrite: overwritePermission(),
     },
     // constants for the --create-table
     createTable: {
@@ -182,7 +178,8 @@ const builderConstants = {
             ...getName("table", (name: string) => {
                 return strictNameValidator(name) ? "Name is invalid!" : true;
             }),
-            message: "What's the name of your table? (use camelCase to avoid errors)"
+            message:
+                "What's the name of your table? (use camelCase to avoid errors)",
         },
         destination: getDestination({
             targetName: "tables",
@@ -219,6 +216,19 @@ const builderConstants = {
         ),
         foreignTable: getName("foreignTable", (name: string) => {
             return strictNameValidator(name) ? "Name is invalid!" : true;
+        }),
+    },
+    // constants for the --create-relation
+    createRelation: {},
+    // shared constants
+    shared: {
+        overwrite: (files: string[]): QuestionCollection => ({
+            type: "confirm",
+            name: "overwrite",
+            message: `May we overwrite the files if they exist at the directory? -> [${files.join(
+                ", "
+            )}]\n(If we can't overwrite, then the command will be terminated)`,
+            default: true,
         }),
     },
 };

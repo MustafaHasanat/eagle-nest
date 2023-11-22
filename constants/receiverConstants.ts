@@ -1,8 +1,10 @@
+import { QuestionCollection } from "inquirer";
+
 const receiverConstants = {
     installer: {
-        confirmation: (packageName: string) => ({
-            name: "confirmation",
-            message: `Package ${packageName} isn't installed, do you want us to take care of this?`,
+        confirmation: (packages: string[]): QuestionCollection => ({
+            name: `confirmation`,
+            message: `Some packages aren't installed (${packages.length} package/s), do you want us to take care of this?\n${packages}`,
             type: "confirm",
             default: true,
         }),

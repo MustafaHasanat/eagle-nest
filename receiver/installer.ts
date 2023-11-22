@@ -1,33 +1,80 @@
-import receiverConstants from "constants/receiverConstants.js";
 import inquirer from "inquirer";
+import { execSync } from "child_process";
 import constants from "../constants/receiverConstants.js";
 
+type PackageType = {
+    packageName: string;
+    commandType: "--save" | "--save-dev";
+};
+
 export class Installer {
-    checkPackageIfExist = async (packageName: string): Promise<boolean> => {
-        // TODO: check if the package is installed or not
-        return false;
-    };
+    constructor() {
+        console.log("Checking your dependencies ...\n");
+        const deps = execSync("npm ls --depth=0").toString();
+        this.dependencies = deps
+            .split(" ")
+            .slice(2)
+            .map((item) => item.slice(0, item.lastIndexOf("@")));
+    }
+    dependencies: string[] = [];
 
-    installPackage = async (packageName: string): Promise<boolean> => {
-        let answer = false;
-        await inquirer
-            .prompt([constants.installer.confirmation(packageName)])
-            .then(async (answers) => {
-                if (answers.confirmation) {
-                    // TODO: install the package here
-                    answer = true;
+    private getUninstalledPackages = (packages: PackageType[]) =>
+        packages.reduce(
+            (
+                acc: {
+                    uninstalledPackages: PackageType[];
+                    simpleList: string[];
+                },
+                packageData
+            ) => {
+                if (!this.dependencies.includes(packageData.packageName)) {
+                    return {
+                        uninstalledPackages: [
+                            ...acc.uninstalledPackages,
+                            packageData,
+                        ],
+                        simpleList: [
+                            ...acc.simpleList,
+                            packageData.packageName,
+                        ],
+                    };
                 }
-            });
-        return answer;
-    };
-
-    installPackages = async (packages: string[]) => {
-        for (let index = 0; index < packages.length; index++) {
-            const packageName = packages[index];
-
-            if (!(await this.checkPackageIfExist(packageName))) {
-                const isInstalled = await this.installPackage(packageName);
+                return { ...acc };
+            },
+            {
+                uninstalledPackages: [],
+                simpleList: [],
             }
+        );
+
+    installPackages = async (packages: PackageType[]) => {
+        const { uninstalledPackages, simpleList } =
+            this.getUninstalledPackages(packages);
+
+        if (uninstalledPackages.length > 0) {
+            await inquirer
+                .prompt([constants.installer.confirmation(simpleList)])
+                .then(({ confirmation }) => {
+                    if (confirmation) {
+                        console.log("\nInstalling dependencies ...\n");
+                        uninstalledPackages.forEach(
+                            ({ packageName, commandType }) => {
+                                console.log(`-------- ${packageName} --------`);
+                                console.log(
+                                    execSync(
+                                        `npm install ${commandType} ${packageName}`
+                                    ).toString()
+                                );
+                            }
+                        );
+                    }
+                });
+
+            console.log("-------- Process done! --------\n");
+        } else {
+            console.log(
+                "-------- You have all required dependencies! --------\n"
+            );
         }
     };
 }

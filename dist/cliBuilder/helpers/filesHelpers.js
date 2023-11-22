@@ -1,6 +1,6 @@
 import { existsSync } from "fs";
 const pathConvertor = (dest, suffix) => `${dest || ""}${dest ? "/" : ""}${suffix}`;
-const filesExist = (files) => {
+const isFilesExist = (files) => {
     const results = [];
     files.forEach((file) => {
         if (!existsSync(file)) {
@@ -37,5 +37,5 @@ const pluralize = (string) => {
     }
     return string + "s";
 };
-export { pathConvertor, filesExist, firstCharToUpper, firstCharToLower, pluralize, };
+export { pathConvertor, isFilesExist, firstCharToUpper, firstCharToLower, pluralize, };
 //# sourceMappingURL=filesHelpers.js.map

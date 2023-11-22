@@ -13,18 +13,15 @@ import { existsSync, mkdirSync } from "fs";
  * --> src/assets/
  * --> src/assets/html/
  */
-const pathCreator = (items) => {
-    items.forEach((item) => {
-        const { path, prefix = "" } = item;
+const pathCreator = (paths, prefix = "") => {
+    paths.forEach((path) => {
         const segments = path.split("/");
         const newPath = prefix + (prefix ? "/" : "") + segments[0];
         if (!existsSync(newPath)) {
             mkdirSync(newPath);
         }
         if (segments.length > 1) {
-            pathCreator([
-                { path: segments.slice(1).join("/"), prefix: newPath },
-            ]);
+            pathCreator([segments.slice(1).join("/")], newPath);
         }
         else if (segments.length === 1) {
             return;

@@ -12,6 +12,7 @@
         "esModuleInterop": true,
         "sourceMap": true,
         "moduleResolution": "NodeNext",
+        "resolveJsonModule": true,
         // "declarationMap": true,
         // "allowImportingTsExtensions": true,
         // "noEmit": true,
