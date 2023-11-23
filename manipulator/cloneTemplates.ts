@@ -4,7 +4,12 @@ import { writeFile } from "fs/promises";
 import pathCreator from "../utils/pathCreator.js";
 import replaceStrings from "../utils/replaceStrings.js";
 import { readFile } from "fs/promises";
-import getRelativePath from "../utils/getRelativePath.js";
+import { getCurrentRelativePath } from "../utils/pathHelpers.js";
+import {
+    logCliProcess,
+    logNewMessage,
+    logCliTitle,
+} from "../utils/logCliDecorators.js";
 
 /**
  * Create a copy of a template file with replacing the placeholders by a specific text
@@ -31,16 +36,18 @@ import getRelativePath from "../utils/getRelativePath.js";
  *  }
  * ]);
  */
-const cloneTemplates = async (files: CloneTemplate[]) => {
-    await Promise.all(
-        files.map(
-            async ({
-                target,
-                dest,
-                newFileName,
-                replacements = [],
-            }: CloneTemplate) => {
-                try {
+const cloneTemplates = async (files: CloneTemplate[]): Promise<boolean> => {
+    logCliProcess("Cloning");
+
+    try {
+        await Promise.all(
+            files.map(
+                async ({
+                    target,
+                    dest,
+                    newFileName,
+                    replacements = [],
+                }: CloneTemplate) => {
                     const outputFilePath = join(
                         process.cwd(),
                         dest,
@@ -50,7 +57,7 @@ const cloneTemplates = async (files: CloneTemplate[]) => {
                     pathCreator([dest]);
 
                     const contents = await readFile(
-                        join(getRelativePath("../.."), target),
+                        join(getCurrentRelativePath("../.."), target),
                         "utf8"
                     );
                     const modifiedFile = await replaceStrings({
@@ -60,17 +67,18 @@ const cloneTemplates = async (files: CloneTemplate[]) => {
 
                     await writeFile(outputFilePath, modifiedFile, "utf8");
 
-                    console.log(
+                    logNewMessage(
                         `Great!! .. file '${newFileName}' has been saved successfully at '${process.cwd()}/${dest}'`
                     );
-                } catch (error) {
-                    console.log(
-                        `Error occurred at the cloneTemplates: ${error}`
-                    );
                 }
-            }
-        )
-    );
+            )
+        );
+        logCliTitle("Cloning is done!");
+        return true;
+    } catch (error) {
+        console.log(`Error occurred at the cloneTemplates: ${error}`);
+        return false;
+    }
 };
 
 export default cloneTemplates;

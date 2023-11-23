@@ -3,7 +3,7 @@ import { existsSync } from "fs";
 const pathConvertor = (dest: string, suffix: string) =>
     `${dest || ""}${dest ? "/" : ""}${suffix}`;
 
-const isFilesExist = (files: string[]): string[] => {
+const missingFiles = (files: string[]): string[] => {
     const results: string[] = [];
 
     files.forEach((file) => {
@@ -52,7 +52,7 @@ const pluralize = (string: string): string => {
 
 export {
     pathConvertor,
-    isFilesExist,
+    missingFiles,
     firstCharToUpper,
     firstCharToLower,
     pluralize,

@@ -46,15 +46,40 @@ export default class Receiver {
         }
         // selection for creating the app files (module, service, controller, ...)
         if (this.options.createAppFiles) {
+            await this.installer.installPackages([
+                { packageName: "@nestjs/common", commandType: "--save" },
+            ]);
             await this.builder.createAppFiles(this.manipulator);
         }
         // selection for configuring the database
         if (this.options.database) {
+            await this.installer.installPackages([
+                { packageName: "@nestjs/config", commandType: "--save" },
+                { packageName: "@nestjs/typeorm", commandType: "--save" },
+            ]);
             await this.builder.database(this.manipulator);
         }
         // selection for creating a new table files
         if (this.options.createTable) {
+            await this.installer.installPackages([
+                { packageName: "typeorm", commandType: "--save" },
+                { packageName: "class-validator", commandType: "--save" },
+                { packageName: "@nestjs/swagger", commandType: "--save" },
+                { packageName: "@nestjs/common", commandType: "--save" },
+                { packageName: "@nestjs/typeorm", commandType: "--save" },
+                { packageName: "@types/express", commandType: "--save-dev" },
+            ]);
             await this.builder.createTable(this.manipulator);
+        }
+        // selection for creating a new column
+        if (this.options.createColumn) {
+            // await this.installer.installPackages([]);
+            await this.builder.createColumn(this.manipulator);
+        }
+        // selection for creating a new relation
+        if (this.options.createRelation) {
+            // await this.installer.installPackages([]);
+            await this.builder.createRelation(this.manipulator);
         }
     };
 }

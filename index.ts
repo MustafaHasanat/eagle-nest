@@ -13,7 +13,7 @@ const manipulator = new Manipulator();
 const builder = new CliBuilder(manipulator);
 const receiver = new Receiver(app, options, manipulator, builder);
 
-const { cm, clp, caf, ct, db, cr } = constants.options;
+const { cm, clp, caf, ct, db, cc, cr } = constants.options;
 
 app.version(constants.version)
     .description(constants.description)
@@ -22,6 +22,7 @@ app.version(constants.version)
     .option(caf.flags, caf.desc)
     .option(ct.flags, ct.desc)
     .option(db.flags, db.desc)
+    .option(cc.flags, cc.desc)
     .option(cr.flags, cr.desc)
     // .alias("createMain")
     .action(receiver.action)

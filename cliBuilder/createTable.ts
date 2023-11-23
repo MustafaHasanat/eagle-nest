@@ -7,9 +7,7 @@ import {
     pathConvertor,
     pluralize,
 } from "./helpers/filesHelpers.js";
-import { existsSync } from "fs";
 import pathCreator from "../utils/pathCreator.js";
-import { columnBuilder } from "./helpers/tableHelpers.js";
 import cloningCommands from "./helpers/cloningCommands.js";
 import injectingCommands from "./helpers/injectingCommands.js";
 
@@ -20,7 +18,7 @@ const createTableBuilder = async (manipulator: Manipulator) => {
     await inquirer
         .prompt([
             constants.createTable.tableName,
-            constants.createTable.destination,
+            constants.createTable.mainDist,
             constants.shared.overwrite([
                 "/entities/entities.ts",
                 "/entities/TABLE_NAME.entity.ts",
@@ -35,43 +33,24 @@ const createTableBuilder = async (manipulator: Manipulator) => {
             ]),
         ])
         .then(async (answers) => {
-            if (!answers.overwrite) return;
+            const { overwrite, tableName, mainDist } = answers;
+            if (!overwrite) return;
 
-            const camelCaseName = answers.tableName;
-            const upperCaseName = firstCharToUpper(answers.tableName);
-            const pluralName = pluralize(answers.tableName);
+            const camelCaseName = tableName;
+            const upperCaseName = firstCharToUpper(tableName);
+            const pluralName = pluralize(tableName);
             const pluralUpperCaseName = firstCharToUpper(pluralName);
             const pluralLowerCaseName = firstCharToLower(pluralName);
 
             const [entitiesPath, schemasPath, dtoPath, enumPath] = [
-                pathConvertor(answers.destination, "entities"),
-                pathConvertor(
-                    answers.destination,
-                    `schemas/${pluralLowerCaseName}`
-                ),
-                pathConvertor(
-                    answers.destination,
-                    `dto/${pluralLowerCaseName}`
-                ),
-                pathConvertor(
-                    answers.destination,
-                    `enums/${pluralLowerCaseName}`
-                ),
+                pathConvertor(mainDist, "entities"),
+                pathConvertor(mainDist, `schemas/${pluralLowerCaseName}`),
+                pathConvertor(mainDist, `dto/${pluralLowerCaseName}`),
+                pathConvertor(mainDist, `enums/${pluralLowerCaseName}`),
             ];
-
             pathCreator([schemasPath, dtoPath, enumPath]);
 
-            if (
-                !existsSync(entitiesPath) ||
-                !existsSync(entitiesPath + "/entities.ts")
-            ) {
-                console.log(
-                    `You must have the file '${entitiesPath}/entities.ts'`
-                );
-                return;
-            }
-
-            await manipulator.cloneTemplates(
+            const isDone = await manipulator.cloneTemplates(
                 cloningCommands.createTable({
                     paths: { entitiesPath, dtoPath, enumPath, schemasPath },
                     nameVariants: {
@@ -82,20 +61,22 @@ const createTableBuilder = async (manipulator: Manipulator) => {
                     },
                 })
             );
+            if (!isDone) return;
 
             await manipulator.injectTemplates(
                 injectingCommands.createTable({
                     paths: {
-                        entitiesPath: entitiesPath + "/entities.ts",
+                        entitiesPath,
+                        appModulePath: mainDist,
                     },
                     nameVariants: {
                         camelCaseName,
                         upperCaseName,
+                        pluralLowerCaseName,
+                        pluralUpperCaseName,
                     },
                 })
             );
-
-            await columnBuilder(answers.tableName, answers.destination);
         });
 };
 

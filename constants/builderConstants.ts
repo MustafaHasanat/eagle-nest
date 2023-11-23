@@ -86,18 +86,20 @@ const getName = (
 const getDestination = (props: {
     targetName: string;
     defaultDest?: string;
+    distName?: string;
     whenCallback?: Function;
     transformerCallback?: Function;
 }): QuestionCollection => {
     const {
         targetName,
         defaultDest = "src",
+        distName = "destination",
         whenCallback = () => true,
         transformerCallback = (answer: string) => answer,
     } = props;
     return {
         type: "input",
-        name: "destination",
+        name: distName,
         message: `Where do you want to locate your ${targetName}?`,
         default: defaultDest,
         filter: trimmer,
@@ -111,12 +113,13 @@ const getDestination = (props: {
 
 const getFileLocation = (
     fileName: string,
-    realName: string
+    realName: string,
+    defaultValue: string = "."
 ): QuestionCollection => ({
     type: "input",
     name: fileName + "Location",
     message: `What is the path to your ${realName} file?`,
-    default: ".",
+    default: defaultValue,
     validate(destination: string) {
         return !existsSync(destination) ? "Path doesn't exist!" : true;
     },
@@ -147,13 +150,17 @@ const builderConstants = {
     // constants for the --create-main option
     createMain: {
         projectName: getName("project"),
-        destination: getDestination({ targetName: "main.ts file" }),
+        mainDist: getDestination({
+            distName: "mainDist",
+            targetName: "main.ts file",
+        }),
     },
     // constants for the --create-landing-page
     createLandingPage: {
         projectName: getName("project"),
-        destination: getDestination({
+        publicDir: getDestination({
             targetName: "public folder",
+            distName: "publicDir",
             defaultDest: ".",
             whenCallback: () => !existsSync(process.cwd() + "/public"),
             transformerCallback: (answer: string) =>
@@ -166,11 +173,12 @@ const builderConstants = {
     },
     // constants for the --database
     database: {
-        destination: getDestination({
-            targetName: "db config files (root dir is recommended)",
+        rootDir: getDestination({
+            targetName: "root directory",
             defaultDest: ".",
+            distName: "rootDir",
         }),
-        appModuleLocation: getFileLocation("appModule", "app.module.ts"),
+        appModuleLocation: getFileLocation("appModule", "app.module.ts", "src"),
     },
     // constants for the --create-table
     createTable: {
@@ -181,10 +189,14 @@ const builderConstants = {
             message:
                 "What's the name of your table? (use camelCase to avoid errors)",
         },
-        destination: getDestination({
+        mainDist: getDestination({
             targetName: "tables",
             defaultDest: "src",
+            distName: "mainDist",
         }),
+    },
+    // constants for the --create-column option
+    createColumn: {
         newColumn: {
             type: "confirm",
             name: "newColumn",
@@ -203,6 +215,9 @@ const builderConstants = {
                 "Select the attributes that should be applied to this column (this is optional)",
             choices: columnAttributesChoices,
         },
+    },
+    // constants for the --create-relation
+    createRelation: {
         newRelation: {
             type: "confirm",
             name: "newRelation",
@@ -218,8 +233,6 @@ const builderConstants = {
             return strictNameValidator(name) ? "Name is invalid!" : true;
         }),
     },
-    // constants for the --create-relation
-    createRelation: {},
     // shared constants
     shared: {
         overwrite: (files: string[]): QuestionCollection => ({

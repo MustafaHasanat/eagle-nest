@@ -8,7 +8,7 @@
     "eaglenest": "./dist/index.js"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll",
     "dev": "npx nodemon",
     "commit": "git-cz",
     "start": "npm run build && node dist/index.js",

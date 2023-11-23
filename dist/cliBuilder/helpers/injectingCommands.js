@@ -1,5 +1,17 @@
+import { join } from "path";
 export default {
-    database: ({ appModuleLocation, dest, }) => [
+    createMain: (envLocation) => [
+        {
+            injectable: envLocation,
+            actions: [
+                {
+                    target: "/templates/components/others/app-env.txt",
+                    keyword: "*",
+                },
+            ],
+        },
+    ],
+    database: ({ appModuleLocation, envLocation, pathToEntities, }) => [
         {
             injectable: appModuleLocation,
             actions: [
@@ -13,14 +25,14 @@ export default {
                     replacements: [
                         {
                             oldString: "PATH_TO_ENTITIES",
-                            newString: dest,
+                            newString: pathToEntities,
                         },
                     ],
                 },
             ],
         },
         {
-            injectable: dest,
+            injectable: envLocation,
             actions: [
                 {
                     target: "templates/components/others/db-env.txt",
@@ -29,10 +41,10 @@ export default {
             ],
         },
     ],
-    createTable: ({ paths: { entitiesPath }, nameVariants: { camelCaseName, upperCaseName }, }) => {
+    createTable: ({ paths: { entitiesPath, appModulePath }, nameVariants: { camelCaseName, upperCaseName, pluralUpperCaseName, pluralLowerCaseName, }, }) => {
         return [
             {
-                injectable: entitiesPath,
+                injectable: join(entitiesPath, "entities.ts"),
                 actions: [
                     {
                         target: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n`,
@@ -43,6 +55,21 @@ export default {
                         target: `\n${upperCaseName},\n`,
                         targetIsFile: false,
                         keyword: "entities = [",
+                    },
+                ],
+            },
+            {
+                injectable: join(appModulePath, "app.module.ts"),
+                actions: [
+                    {
+                        target: `import { ${pluralUpperCaseName}Module } from "schemas/${pluralLowerCaseName}/${pluralLowerCaseName}.module.ts";\n`,
+                        targetIsFile: false,
+                        keyword: "*",
+                    },
+                    {
+                        target: `\n${pluralUpperCaseName}Module,\n`,
+                        targetIsFile: false,
+                        keyword: "imports: [",
                     },
                 ],
             },

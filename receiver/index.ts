@@ -81,6 +81,11 @@ export default class Receiver {
             ]);
             await this.builder.createTable(this.manipulator);
         }
+        // selection for creating a new column
+        if (this.options.createColumn) {
+            // await this.installer.installPackages([]);
+            await this.builder.createColumn(this.manipulator);
+        }
         // selection for creating a new relation
         if (this.options.createRelation) {
             // await this.installer.installPackages([]);

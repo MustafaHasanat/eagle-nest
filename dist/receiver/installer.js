@@ -1,9 +1,10 @@
 import inquirer from "inquirer";
 import { execSync } from "child_process";
 import constants from "../constants/receiverConstants.js";
+import { logCliProcess, logCliTitle } from "../utils/logCliDecorators.js";
 export class Installer {
     constructor() {
-        console.log("Checking your dependencies ...\n");
+        logCliProcess("Checking your dependencies");
         const deps = execSync("npm ls --depth=0").toString();
         this.dependencies = deps
             .split(" ")
@@ -36,17 +37,20 @@ export class Installer {
                 .prompt([constants.installer.confirmation(simpleList)])
                 .then(({ confirmation }) => {
                 if (confirmation) {
-                    console.log("Installing dependencies ...");
+                    logCliProcess("Installing dependencies");
                     uninstalledPackages.forEach(({ packageName, commandType }) => {
-                        console.log(`-------- ${packageName} --------`);
+                        logCliTitle(packageName);
                         console.log(execSync(`npm install ${commandType} ${packageName}`).toString());
                     });
+                    logCliTitle("Process done!");
+                }
+                else {
+                    logCliTitle("Process is canceled! (no dependencies have ben installed)");
                 }
             });
-            console.log("-------- Process done! --------\n");
         }
         else {
-            console.log("-------- You have all required dependencies! --------\n");
+            logCliTitle("You have all the required dependencies!");
         }
     };
 }

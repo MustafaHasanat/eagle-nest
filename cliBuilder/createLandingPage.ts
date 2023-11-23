@@ -11,7 +11,7 @@ const createLandingPageBuilder = async (manipulator: Manipulator) => {
     inquirer
         .prompt([
             constants.createLandingPage.projectName,
-            constants.createLandingPage.destination,
+            constants.createLandingPage.publicDir,
             constants.shared.overwrite([
                 "public/index.html",
                 "public/styles.css",
@@ -20,12 +20,13 @@ const createLandingPageBuilder = async (manipulator: Manipulator) => {
         .then(async (answers) => {
             if (!answers.overwrite) return;
 
-            await manipulator.cloneTemplates(
+            const isDone = await manipulator.cloneTemplates(
                 cloningCommands.createLandingPage(
-                    pathConvertor(answers.destination, "public"),
+                    pathConvertor(answers.publicDir, "public"),
                     answers.projectName
                 )
             );
+            if (!isDone) return;
         });
 };
 

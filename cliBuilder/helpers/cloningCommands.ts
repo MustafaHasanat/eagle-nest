@@ -16,10 +16,10 @@ interface CreateTableProps {
 }
 
 export default {
-    createMain: (dest: string, name: string): CloneTemplate[] => [
+    createMain: (mainDist: string, name: string): CloneTemplate[] => [
         {
             target: "/templates/base/typescript/app/main-file.txt",
-            dest,
+            dest: mainDist,
             newFileName: "main.ts",
             replacements: [
                 {
@@ -27,11 +27,6 @@ export default {
                     newString: name,
                 },
             ],
-        },
-        {
-            target: "/templates/base/others/env-file.txt",
-            dest: ".",
-            newFileName: ".env",
         },
     ],
     createLandingPage: (dest: string, name: string): CloneTemplate[] => [

@@ -17,7 +17,9 @@ const createAppFilesBuilder = async (manipulator) => {
         .then(async (answers) => {
         if (!answers.overwrite)
             return;
-        await manipulator.cloneTemplates(cloningCommands.createAppFiles(answers.destination));
+        const isDone = await manipulator.cloneTemplates(cloningCommands.createAppFiles(answers.destination));
+        if (!isDone)
+            return;
     });
 };
 export default createAppFilesBuilder;
