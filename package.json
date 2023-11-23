@@ -16,6 +16,7 @@
     "install-g": "npm install -g .",
     "globalize": "npm run build && npm run install-g",
     "prepublishOnly": "npm run build",
+    "acp": "git add . && npm run commit && git push",
     "semantic-release": "semantic-release --branches main"
   },
   "repository": {

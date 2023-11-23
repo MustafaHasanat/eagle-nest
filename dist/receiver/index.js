@@ -27,6 +27,7 @@ export default class Receiver {
         if (Object.keys(this.options).length === 0) {
             console.log(figlet.textSync("Eagle Nest"));
             this.app.outputHelp();
+            console.log("\n\n");
         }
         // selection for creating the main.ts file
         if (this.options.createMain) {
