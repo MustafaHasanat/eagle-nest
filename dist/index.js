@@ -10,7 +10,7 @@ const options = app.opts();
 const manipulator = new Manipulator();
 const builder = new CliBuilder(manipulator);
 const receiver = new Receiver(app, options, manipulator, builder);
-const { cm, clp, caf, ct, db } = constants.options;
+const { cm, clp, caf, ct, db, cc, cr } = constants.options;
 app.version(constants.version)
     .description(constants.description)
     .option(cm.flags, cm.desc)
@@ -18,7 +18,9 @@ app.version(constants.version)
     .option(caf.flags, caf.desc)
     .option(ct.flags, ct.desc)
     .option(db.flags, db.desc)
-    .alias("createMain")
+    .option(cc.flags, cc.desc)
+    .option(cr.flags, cr.desc)
+    // .alias("createMain")
     .action(receiver.action)
     .parse(process.argv);
 //# sourceMappingURL=index.js.map

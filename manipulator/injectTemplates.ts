@@ -2,10 +2,14 @@ import { join } from "path";
 import { InjectTemplate, InjectionAction } from "../types/injectTemplate.js";
 import { readFile, writeFile } from "fs/promises";
 import replaceStrings from "../utils/replaceStrings.js";
+import { missingFiles } from "../cliBuilder/helpers/filesHelpers.js";
+import {
+    logCliProcess,
+    logCliTitle,
+    logNewMessage,
+} from "../utils/logCliDecorators.js";
+import { getCurrentRelativePath } from "../utils/pathHelpers.js";
 
-/**
- * Type for the injectString function
- */
 type InjectStringProps = {
     original: string;
     keyword: string;
@@ -16,20 +20,29 @@ type InjectStringProps = {
  * Injects the 'addition' string at the 'keyword' index inside the 'original' string
  *
  * @param original The original string
- * @param keyword The injection string to be found (inject at the start if equals a star: *)
+ * @param keyword The injection string to be found (inject at the start if equals one star '*', and at the end if equals two stars '**')
  * @param addition The content string to be added to the original file
  * @returns The resultant string
  */
 const injectString = (props: InjectStringProps): string => {
     const { original, keyword, addition } = props;
+    const isAdditionExist = original.indexOf(addition) !== -1;
+
+    if (isAdditionExist) {
+        return original;
+    }
+
     const index = original.indexOf(keyword);
-    if (index === -1) {
+    if (index === -1 && !["*", "**"].includes(keyword)) {
         throw new Error(
             `'keyword=${keyword}' doesn't exist ing the 'original' string`
         );
     }
+    let injectPosition;
+    if (keyword === "*") injectPosition = 0;
+    else if (keyword === "**") injectPosition = original.length;
+    else injectPosition = index + keyword.length;
 
-    const injectPosition = keyword === "*" ? 0 : index + keyword.length;
     const [leftSide, rightSide] = [
         original.slice(0, injectPosition),
         original.slice(injectPosition),
@@ -42,7 +55,7 @@ const injectString = (props: InjectStringProps): string => {
  * Recursively inject the targets into the injectable string
  *
  * @param actions[] A list of injection objects (check the injectTemplates function for more details)
- * @param injectableContents The accumulated result of the original content after injecting all the action objects 
+ * @param injectableContents The accumulated result of the original content after injecting all the action objects
  * @returns The final result of the file after injecting all the contents
  */
 const injectionAction = async ({
@@ -63,7 +76,7 @@ const injectionAction = async ({
     } = actions[0];
 
     const targetContents = targetIsFile
-        ? await readFile(join(process.cwd(), target), "utf8")
+        ? await readFile(join(getCurrentRelativePath("../.."), target), "utf8")
         : target;
 
     const modifiedTarget = await replaceStrings({
@@ -120,26 +133,54 @@ const injectionAction = async ({
  *      ]
  * )
  */
-const injectTemplates = async (files: InjectTemplate[]) => {
-    files.forEach(async (file: InjectTemplate) => {
-        try {
-            const injectablePath = join(process.cwd(), file.injectable);
-            const injectableContents = await readFile(injectablePath, "utf8");
+const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
+    logCliProcess("Injecting");
 
-            const modifiedInjectable = await injectionAction({
-                actions: file.actions,
-                injectableContents,
-            });
+    const injectableFiles = files.reduce(
+        (acc: string[], { injectable }) => [
+            ...acc,
+            join(process.cwd(), injectable),
+        ],
+        []
+    );
 
-            await writeFile(injectablePath, modifiedInjectable, "utf8");
+    const missingFilesRes = missingFiles(injectableFiles);
+    if (missingFilesRes.length > 0) {
+        logNewMessage("You must have these files first so we can modify them:");
+        missingFilesRes.forEach((file) => {
+            console.log("1) " + file + "\n");
+        });
+        return false;
+    }
 
-            console.log(
-                `Great!! .. file '${file.injectable}' has been modified successfully!`
-            );
-        } catch (error) {
-            console.log(`Error occurred at the injectTemplate: ${error}`);
-        }
-    });
+    try {
+        await Promise.all(
+            files.map(async ({ injectable, actions }: InjectTemplate) => {
+                const injectablePath = join(process.cwd(), injectable);
+                const injectableContents = await readFile(
+                    injectablePath,
+                    "utf8"
+                );
+
+                const modifiedInjectable = await injectionAction({
+                    actions: actions,
+                    injectableContents,
+                });
+
+                await writeFile(injectablePath, modifiedInjectable, "utf8");
+
+                logNewMessage(
+                    `Great!! .. file '${injectable}' has been modified successfully!`
+                );
+            })
+        );
+
+        logCliTitle("Injection is done!");
+        return true;
+    } catch (error) {
+        logNewMessage(`Error occurred at the injectTemplate: ${error}`);
+        return false;
+    }
 };
 
 export default injectTemplates;

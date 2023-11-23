@@ -1,24 +1,42 @@
+import { join } from "path";
 import { InjectTemplate } from "../../types/injectTemplate.js";
 
 interface DatabaseProps {
     appModuleLocation: string;
-    dest: string;
+    envLocation: string;
+    pathToEntities: string;
 }
 
 interface CreateTableProps {
     paths: {
         entitiesPath: string;
+        appModulePath: string;
     };
     nameVariants: {
         camelCaseName: string;
         upperCaseName: string;
+        pluralLowerCaseName: string;
+        pluralUpperCaseName: string;
     };
 }
 
 export default {
+    createMain: (envLocation: string): InjectTemplate[] => [
+        {
+            injectable: envLocation,
+            actions: [
+                {
+                    target: "/templates/components/others/app-env.txt",
+                    keyword: "*",
+                },
+            ],
+        },
+    ],
+
     database: ({
         appModuleLocation,
-        dest,
+        envLocation,
+        pathToEntities,
     }: DatabaseProps): InjectTemplate[] => [
         {
             injectable: appModuleLocation,
@@ -33,14 +51,14 @@ export default {
                     replacements: [
                         {
                             oldString: "PATH_TO_ENTITIES",
-                            newString: dest,
+                            newString: pathToEntities,
                         },
                     ],
                 },
             ],
         },
         {
-            injectable: dest,
+            injectable: envLocation,
             actions: [
                 {
                     target: "templates/components/others/db-env.txt",
@@ -51,12 +69,17 @@ export default {
     ],
 
     createTable: ({
-        paths: { entitiesPath },
-        nameVariants: { camelCaseName, upperCaseName },
+        paths: { entitiesPath, appModulePath },
+        nameVariants: {
+            camelCaseName,
+            upperCaseName,
+            pluralUpperCaseName,
+            pluralLowerCaseName,
+        },
     }: CreateTableProps): InjectTemplate[] => {
         return [
             {
-                injectable: entitiesPath,
+                injectable: join(entitiesPath, "entities.ts"),
                 actions: [
                     {
                         target: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n`,
@@ -67,6 +90,21 @@ export default {
                         target: `\n${upperCaseName},\n`,
                         targetIsFile: false,
                         keyword: "entities = [",
+                    },
+                ],
+            },
+            {
+                injectable: join(appModulePath, "app.module.ts"),
+                actions: [
+                    {
+                        target: `import { ${pluralUpperCaseName}Module } from "schemas/${pluralLowerCaseName}/${pluralLowerCaseName}.module.ts";\n`,
+                        targetIsFile: false,
+                        keyword: "*",
+                    },
+                    {
+                        target: `\n${pluralUpperCaseName}Module,\n`,
+                        targetIsFile: false,
+                        keyword: "imports: [",
                     },
                 ],
             },

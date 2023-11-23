@@ -1,10 +1,11 @@
+import Manipulator from "manipulator/index.js";
 import createMainBuilder from "./createMain.js";
 import createLandingPageBuilder from "./createLandingPage.js";
 import createAppFilesBuilder from "./createAppFiles.js";
 import databaseBuilder from "./database.js";
 import createTableBuilder from "./createTable.js";
-import Manipulator from "manipulator/index.js";
 import createRelationBuilder from "./createRelation.js";
+import createColumnBuilder from "./createColumnBuilder.js";
 
 export default class CliBuilder {
     constructor(manipulator: Manipulator) {
@@ -21,6 +22,8 @@ export default class CliBuilder {
     database = databaseBuilder;
     // fired by the --create-table option
     createTable = createTableBuilder;
+    // fired by the --create-column option
+    createColumn = createColumnBuilder;
     // fired by the --create-relation option
     createRelation = createRelationBuilder;
 }

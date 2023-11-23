@@ -1,8 +1,8 @@
 export default {
-    createMain: (dest, name) => [
+    createMain: (mainDist, name) => [
         {
             target: "/templates/base/typescript/app/main-file.txt",
-            dest,
+            dest: mainDist,
             newFileName: "main.ts",
             replacements: [
                 {
@@ -10,11 +10,6 @@ export default {
                     newString: name,
                 },
             ],
-        },
-        {
-            target: "/templates/base/others/env-file.txt",
-            dest: ".",
-            newFileName: ".env",
         },
     ],
     createLandingPage: (dest, name) => [
