@@ -9,8 +9,9 @@ interface DatabaseProps {
 
 interface CreateTableProps {
     paths: {
-        entitiesPath: string;
         appModulePath: string;
+        entitiesPath: string;
+        enumsPath: string;
     };
     nameVariants: {
         camelCaseName: string;
@@ -42,11 +43,11 @@ export default {
             injectable: appModuleLocation,
             actions: [
                 {
-                    target: "templates/components/typescript/app-module/db/config.txt",
+                    target: "templates/components/typescript/app/db/config.txt",
                     keyword: "imports: [",
                 },
                 {
-                    target: "templates/components/typescript/app-module/db/imports.txt",
+                    target: "templates/components/typescript/app/db/imports.txt",
                     keyword: "*",
                     replacements: [
                         {
@@ -69,7 +70,7 @@ export default {
     ],
 
     createTable: ({
-        paths: { entitiesPath, appModulePath },
+        paths: { entitiesPath, appModulePath, enumsPath },
         nameVariants: {
             camelCaseName,
             upperCaseName,
@@ -79,7 +80,7 @@ export default {
     }: CreateTableProps): InjectTemplate[] => {
         return [
             {
-                injectable: join(entitiesPath, "entities.ts"),
+                injectable: join(entitiesPath, "index.ts"),
                 actions: [
                     {
                         target: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n`,
@@ -97,7 +98,7 @@ export default {
                 injectable: join(appModulePath, "app.module.ts"),
                 actions: [
                     {
-                        target: `import { ${pluralUpperCaseName}Module } from "schemas/${pluralLowerCaseName}/${pluralLowerCaseName}.module.ts";\n`,
+                        target: `import { ${pluralUpperCaseName}Module } from "schemas/${pluralLowerCaseName}/${pluralLowerCaseName}.module";\n`,
                         targetIsFile: false,
                         keyword: "*",
                     },
@@ -105,6 +106,21 @@ export default {
                         target: `\n${pluralUpperCaseName}Module,\n`,
                         targetIsFile: false,
                         keyword: "imports: [",
+                    },
+                ],
+            },
+            {
+                injectable: join(enumsPath, "tables-columns.enum.ts"),
+                actions: [
+                    {
+                        target: `enum ${upperCaseName}Fields {}\n\n`,
+                        targetIsFile: false,
+                        keyword: "*",
+                    },
+                    {
+                        target: `\n, ${upperCaseName}Fields\n`,
+                        targetIsFile: false,
+                        keyword: "export { AllTablesColumns",
                     },
                 ],
             },

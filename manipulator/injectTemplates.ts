@@ -115,11 +115,11 @@ const injectionAction = async ({
  *              injectable: appModuleLocation,
  *              actions: [
  *                 {
- *                    target: "templates/components/typescript/app-module/db/config.txt",
+ *                    target: "templates/components/typescript/app/db/config.txt",
  *                     keyword: "imports: [",
  *                 },
  *                 {
- *                     target: "templates/components/typescript/app-module/db/imports.txt",
+ *                     target: "templates/components/typescript/app/db/imports.txt",
  *                     keyword: "*",
  *                     replacements: [
  *                         {

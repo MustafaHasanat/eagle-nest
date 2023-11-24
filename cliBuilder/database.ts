@@ -15,14 +15,20 @@ const databaseBuilder = async (manipulator: Manipulator) => {
         .prompt([
             constants.database.rootDir,
             constants.database.appModuleLocation,
-            constants.shared.overwrite(["index.ts", "app.module.ts", ".env"]),
+            constants.shared.overwrite([
+                "app.module.ts",
+                "entities/index.ts",
+                "enums/tables-columns.enum.ts",
+                ".env",
+            ]),
         ])
         .then(async (answers) => {
             if (!answers.overwrite) return;
 
             const isDone = await manipulator.cloneTemplates(
                 cloningCommands.database(
-                    pathConvertor(answers.appModuleLocation, "entities")
+                    pathConvertor(answers.appModuleLocation, "entities"),
+                    pathConvertor(answers.appModuleLocation, "enums")
                 )
             );
             if (!isDone) return;

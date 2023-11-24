@@ -4,7 +4,6 @@ interface CreateTableProps {
     paths: {
         entitiesPath: string;
         dtoPath: string;
-        enumPath: string;
         schemasPath: string;
     };
     nameVariants: {
@@ -64,15 +63,20 @@ export default {
             newFileName: "app.service.ts",
         },
     ],
-    database: (dest: string): CloneTemplate[] => [
+    database: (entitiesDist: string, enumsDist: string): CloneTemplate[] => [
         {
             target: "templates/base/typescript/db/entities-file.txt",
-            dest,
+            dest: entitiesDist,
             newFileName: "index.ts",
+        },
+        {
+            target: "templates/base/typescript/enum/tables-columns.txt",
+            dest:enumsDist ,
+            newFileName: "tables-columns.enum.ts",
         },
     ],
     createTable: ({
-        paths: { entitiesPath, dtoPath, enumPath, schemasPath },
+        paths: { entitiesPath, dtoPath, schemasPath },
         nameVariants: {
             camelCaseName,
             upperCaseName,
@@ -95,7 +99,7 @@ export default {
             {
                 target: "templates/base/typescript/dto/create-body.txt",
                 dest: dtoPath,
-                newFileName: `create-${camelCaseName}-body.ts`,
+                newFileName: `create-${camelCaseName}.body.ts`,
                 replacements: [
                     {
                         oldString: "TABLE_NAME",
@@ -106,7 +110,7 @@ export default {
             {
                 target: "templates/base/typescript/dto/create-dto.txt",
                 dest: dtoPath,
-                newFileName: `create-${camelCaseName}-dto.ts`,
+                newFileName: `create-${camelCaseName}.dto.ts`,
                 replacements: [
                     {
                         oldString: "TABLE_NAME",
@@ -117,7 +121,7 @@ export default {
             {
                 target: "templates/base/typescript/dto/update-body.txt",
                 dest: dtoPath,
-                newFileName: `update-${camelCaseName}-body.ts`,
+                newFileName: `update-${camelCaseName}.body.ts`,
                 replacements: [
                     {
                         oldString: "TABLE_NAME",
@@ -132,7 +136,7 @@ export default {
             {
                 target: "templates/base/typescript/dto/update-dto.txt",
                 dest: dtoPath,
-                newFileName: `update-${camelCaseName}-dto.ts`,
+                newFileName: `update-${camelCaseName}.dto.ts`,
                 replacements: [
                     {
                         oldString: "TABLE_NAME",
@@ -141,17 +145,6 @@ export default {
                     {
                         oldString: "TABLE_LOWER_NAME",
                         newString: camelCaseName,
-                    },
-                ],
-            },
-            {
-                target: "templates/base/typescript/enum/fields-enum.txt",
-                dest: enumPath,
-                newFileName: `${camelCaseName}-fields.enum.ts`,
-                replacements: [
-                    {
-                        oldString: "TABLE_NAME",
-                        newString: upperCaseName,
                     },
                 ],
             },

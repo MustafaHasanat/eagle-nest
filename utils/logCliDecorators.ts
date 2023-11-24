@@ -5,7 +5,7 @@ const logCliTitle = (text: string) => {
 };
 
 const logNewMessage = (text: string) => {
-    const result = `\n${text}\n`;
+    const result = `${text}\n`;
 
     console.log(result);
 }

@@ -1,4 +1,4 @@
-export function updateBodyFormat(createBody: {
+function updateBodyFormat(createBody: {
     consumes: any;
     produces: any;
     schema: {
@@ -32,3 +32,5 @@ export function updateBodyFormat(createBody: {
         },
     };
 }
+
+export default updateBodyFormat;

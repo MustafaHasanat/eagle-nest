@@ -187,7 +187,7 @@ const builderConstants = {
                 return strictNameValidator(name) ? "Name is invalid!" : true;
             }),
             message:
-                "What's the name of your table? (use camelCase to avoid errors)",
+                "What's the name of your table? (use singular camelCase nouns to avoid errors, like: user, product, ...)",
         },
         mainDist: getDestination({
             targetName: "tables",
@@ -238,8 +238,8 @@ const builderConstants = {
         overwrite: (files: string[]): QuestionCollection => ({
             type: "confirm",
             name: "overwrite",
-            message: `May we overwrite the files if they exist at the directory? -> [${files.join(
-                ", "
+            message: `May we overwrite the following files if they exist at the directory? \n[${files.join(
+                ",\n"
             )}]\n(If we can't overwrite, then the command will be terminated)`,
             default: true,
         }),

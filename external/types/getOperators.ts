@@ -1,11 +1,11 @@
 import { FilterOperator } from "external/enums/filters.js";
 
-export enum FilteredTermDataType {
+enum FilteredTermDataType {
     STRING = "string",
     NUMBER = "number",
 }
 
-export type GetConditionsProps<FieldType> = {
+type GetConditionsProps<FieldType> = {
     filteredTerm: {
         dataType: FilteredTermDataType;
         value: string | number;
@@ -14,16 +14,18 @@ export type GetConditionsProps<FieldType> = {
     field: FieldType;
 };
 
-export type GetAllProps<FieldType> = {
+type GetAllProps<FieldType> = {
     conditions: GetConditionsProps<FieldType>[];
     sortBy?: FieldType;
     reverse?: boolean;
     page?: number;
 };
 
-export type GetQueryProps<FieldType> = {
+type GetQueryProps<FieldType> = {
     sortBy: FieldType;
     reverse: string;
     page: number;
     conditions: string[];
 };
+
+export { FilteredTermDataType, GetConditionsProps, GetAllProps, GetQueryProps };
