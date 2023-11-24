@@ -2,18 +2,24 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository, UpdateResult } from "typeorm";
 
-import crudResponse from "external/responses/crudResponse.js";
-import errorResponse from "external/responses/errorResponse.js";
-import validationResponse from "external/responses/validationResponse.js";
-import CustomResponseType from "external/types/customResponseType.js";
-import { filterNullsObject } from "external/helpers/filterNulls.js";
-import { GetAllProps } from "external/types/getOperators.js";
-import { filteredGetQuery, validateCreateUpdate } from "../../../../external/helpers/crudHelpers.js";
+import {
+  foundRes,
+  notFoundRes,
+  createUpdateRes,
+  deletedRes,
+  errorRes,
+  filterNullsObject,
+  GetAllProps,
+  CustomResponseType,
+  validationError,
+  filteredGetQuery,
+  validateCreateUpdate,
+} from '@mustafa-alhasanat/eagle-nest/external';
 
-import { TABLE_UPPER_NAME } from "../entities/TABLE_LOWER_NAME.entity";
-import { CreateTABLE_UPPER_NAMEDto } from "../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
-import { UpdateTABLE_UPPER_NAMEDto } from "../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
-import { TABLE_UPPER_NAMEFields } from "../enums/TABLE_PLURAL_LOWER_NAME/TABLE_LOWER_NAME-fields.enum";
+import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";
+import { CreateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
+import { UpdateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
+import { TABLE_UPPER_NAMEFields } from '../../enums/tables-columns.enum';
 
 @Injectable()
 export class TABLE_PLURAL_UPPER_NAMEService {
@@ -37,21 +43,21 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             });
 
             if (findQuery.status !== 200) {
-                return crudResponse.notFoundRes(findQuery.message);
+                return notFoundRes(findQuery.message);
             }
 
             const response = await this.TABLE_LOWER_NAMERepository.find(
                 findQuery.data
             );
 
-            return crudResponse.foundRes(
+            return foundRes(
                 response.length
                     ? "TABLE_PLURAL_UPPER_NAME have been found"
                     : "TABLE_PLURAL_UPPER_NAME list is empty",
                 response
             );
         } catch (error) {
-            return errorResponse.error(error);
+            return errorRes(error);
         }
     }
 
@@ -60,12 +66,12 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             const response = await this.TABLE_LOWER_NAMERepository.findOneBy({ id });
 
             if (response) {
-                return crudResponse.notFoundRes("TABLE_UPPER_NAME does not exist");
+                return notFoundRes("TABLE_UPPER_NAME does not exist");
             }
 
-            return crudResponse.foundRes("TABLE_UPPER_NAME has been found", response);
+            return foundRes("TABLE_UPPER_NAME has been found", response);
         } catch (error) {
-            return errorResponse.error(error);
+            return errorRes(error);
         }
     }
 
@@ -84,7 +90,7 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             );
 
             if (validationErrors.status !== 200) {
-                return validationResponse.validationError(
+                return validationError(
                     validationErrors.message,
                     validationErrors.errors
                 );
@@ -93,12 +99,12 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             const newTABLE_UPPER_NAME = this.TABLE_LOWER_NAMERepository.create(filteredData);
             const response = await this.TABLE_LOWER_NAMERepository.save(newTABLE_UPPER_NAME);
 
-            return crudResponse.createUpdateRes<TABLE_UPPER_NAME>(
+            return createUpdateRes<TABLE_UPPER_NAME>(
                 "TABLE_UPPER_NAME has been created successfully",
                 response
             );
         } catch (error) {
-            return errorResponse.error(error);
+            return errorRes(error);
         }
     }
 
@@ -118,7 +124,7 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             );
 
             if (validationErrors.status !== 200) {
-                return validationResponse.validationError(
+                return validationError(
                     validationErrors.message,
                     validationErrors.errors
                 );
@@ -126,7 +132,7 @@ export class TABLE_PLURAL_UPPER_NAMEService {
 
             const TABLE_LOWER_NAME = await this.getTABLE_UPPER_NAMEById(id);
             if (!TABLE_LOWER_NAME) {
-                return crudResponse.notFoundRes(`TABLE_UPPER_NAME does not exist`);
+                return notFoundRes(`TABLE_UPPER_NAME does not exist`);
             }
 
             const response = await this.TABLE_LOWER_NAMERepository.update(
@@ -136,12 +142,12 @@ export class TABLE_PLURAL_UPPER_NAMEService {
                 filteredData
             );
 
-            return crudResponse.createUpdateRes<UpdateResult>(
+            return createUpdateRes<UpdateResult>(
                 "TABLE_UPPER_NAME has been updated successfully",
                 response
             );
         } catch (error) {
-            return errorResponse.error(error);
+            return errorRes(error);
         }
     }
 
@@ -151,12 +157,12 @@ export class TABLE_PLURAL_UPPER_NAMEService {
                 `TRUNCATE TABLE "TABLE_LOWER_NAME" CASCADE;`
             );
 
-            return crudResponse.deletedRes(
+            return deletedRes(
                 "TABLE_PLURAL_UPPER_NAME data are wiped out",
                 response
             );
         } catch (error) {
-            return errorResponse.error(error);
+            return errorRes(error);
         }
     }
 
@@ -167,15 +173,15 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             const response = await this.TABLE_LOWER_NAMERepository.delete(id);
 
             if (!response) {
-                return crudResponse.notFoundRes("TABLE_UPPER_NAME does not exist");
+                return notFoundRes("TABLE_UPPER_NAME does not exist");
             }
 
-            return crudResponse.deletedRes(
+            return deletedRes(
                 "TABLE_UPPER_NAME has been deleted successfully",
                 response
             );
         } catch (error) {
-            return errorResponse.error(error);
+            return errorRes(error);
         }
     }
 }

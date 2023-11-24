@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TABLE_NAMEService } from './TABLE_LOWER_NAME.service';
 import { TABLE_NAMEController } from './TABLE_LOWER_NAME.controller';
-import { User } from './entities/user.entity';
+import { User } from '../../entities/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],

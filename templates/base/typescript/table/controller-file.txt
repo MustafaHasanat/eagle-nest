@@ -1,29 +1,38 @@
-import { Delete, Get, Patch, Post, Query, Res } from "@nestjs/common";
+import {
+  Body,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { ApiOperation } from "@nestjs/swagger";
 import { DeleteResult, UpdateResult } from "typeorm";
 import { Response } from "express";
 
-import { ControllerWrapper } from "external/decorators/controller-wrapper.js";
-import { EditorsWrapper } from "external/decorators/editors-wrapper.js";
-import { MembersOnly } from "external/decorators/members.js";
-import { AdminsOnly } from "external/decorators/admins.js";
-import { GetAllWrapper } from "external/decorators/get-all-wrapper.js";
 import {
-    GetConditionsProps,
-    GetQueryProps,
-} from "external/types/getOperators.js";
-import CustomResponseType from "external/types/customResponseType.js";
-import { validateGetConditions } from "../../../../external/helpers/crudHelpers.js";
+  EditorsWrapper,
+  MembersOnly,
+  GetAllWrapper,
+  AdminsOnly,
+  GetConditionsProps,
+  GetQueryProps,
+  CustomResponseType,
+  ControllerWrapper,
+  validateGetConditions,
+} from '@mustafa-alhasanat/eagle-nest/external';
 
 import { TABLE_PLURAL_UPPER_NAMEService } from "./TABLE_PLURAL_LOWER_NAME.service";
-import { TABLE_UPPER_NAME } from "../entities/TABLE_LOWER_NAME.entity";
-import { CreateTABLE_UPPER_NAMEDto } from "../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
-import { UpdateTABLE_UPPER_NAMEDto } from "../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
-import { createTABLE_UPPER_NAMEBody } from "../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.body";
-import { updateTABLE_UPPER_NAMEBody } from "../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.body";
-import { TABLE_UPPER_NAMEFields } from "../enums/TABLE_PLURAL_LOWER_NAME/TABLE_LOWER_NAME-fields.enum";
+import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";
+import { CreateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
+import { UpdateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
+import { createTABLE_UPPER_NAMEBody } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.body";
+import { updateTABLE_UPPER_NAMEBody } from "../../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.body";
+import { TABLE_UPPER_NAMEFields } from '../../enums/tables-columns.enum';
 
-@ControllerWrapper("TABLE_UPPER_NAME")
+@ControllerWrapper("TABLE_PLURAL_UPPER_NAME")
 export class TABLE_PLURAL_UPPER_NAMEController {
     constructor(
         private readonly TABLE_PLURAL_LOWER_NAMEService: TABLE_PLURAL_UPPER_NAMEService

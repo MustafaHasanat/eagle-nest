@@ -20,16 +20,16 @@ const createTableBuilder = async (manipulator: Manipulator) => {
             constants.createTable.tableName,
             constants.createTable.mainDist,
             constants.shared.overwrite([
-                "/entities/entities.ts",
-                "/entities/TABLE_NAME.entity.ts",
-                "/dto/create-TABLE_NAME-body.ts",
-                "/dto/create-TABLE_NAME-dto.ts",
-                "/dto/update-TABLE_NAME-body.ts",
-                "/dto/update-TABLE_NAME-dto.ts",
-                "/schemas/TABLE_NAME/TABLE_NAME.module.ts",
-                "/schemas/TABLE_NAME/TABLE_NAME.controller.ts",
-                "/schemas/TABLE_NAME/TABLE_NAME.service.ts",
-                "/enums/TABLE_NAME-fields.enum.ts",
+                "/entities/index.ts",
+                "/entities/TABLE.entity.ts",
+                "/dto/create-TABLE-body.ts",
+                "/dto/create-TABLE-dto.ts",
+                "/dto/update-TABLE-body.ts",
+                "/dto/update-TABLE-dto.ts",
+                "/schemas/TABLE/TABLE.module.ts",
+                "/schemas/TABLE/TABLE.controller.ts",
+                "/schemas/TABLE/TABLE.service.ts",
+                "/enums/TABLE-fields.enum.ts",
             ]),
         ])
         .then(async (answers) => {
@@ -42,17 +42,17 @@ const createTableBuilder = async (manipulator: Manipulator) => {
             const pluralUpperCaseName = firstCharToUpper(pluralName);
             const pluralLowerCaseName = firstCharToLower(pluralName);
 
-            const [entitiesPath, schemasPath, dtoPath, enumPath] = [
+            const [entitiesPath, schemasPath, dtoPath, enumsPath] = [
                 pathConvertor(mainDist, "entities"),
                 pathConvertor(mainDist, `schemas/${pluralLowerCaseName}`),
                 pathConvertor(mainDist, `dto/${pluralLowerCaseName}`),
-                pathConvertor(mainDist, `enums/${pluralLowerCaseName}`),
+                pathConvertor(mainDist, `enums`),
             ];
-            pathCreator([schemasPath, dtoPath, enumPath]);
+            pathCreator([schemasPath, dtoPath, enumsPath]);
 
             const isDone = await manipulator.cloneTemplates(
                 cloningCommands.createTable({
-                    paths: { entitiesPath, dtoPath, enumPath, schemasPath },
+                    paths: { entitiesPath, dtoPath, schemasPath },
                     nameVariants: {
                         camelCaseName,
                         upperCaseName,
@@ -66,8 +66,9 @@ const createTableBuilder = async (manipulator: Manipulator) => {
             await manipulator.injectTemplates(
                 injectingCommands.createTable({
                     paths: {
-                        entitiesPath,
                         appModulePath: mainDist,
+                        entitiesPath,
+                        enumsPath,
                     },
                     nameVariants: {
                         camelCaseName,
