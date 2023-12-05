@@ -9,13 +9,17 @@ type PackageType = {
 };
 
 export class Installer {
-    constructor() {
-        logCliProcess("Checking your dependencies");
-        const deps = execSync("npm ls --depth=0").toString();
-        this.dependencies = deps
-            .split(" ")
-            .slice(2)
-            .map((item) => item.slice(0, item.lastIndexOf("@")));
+    constructor(isNeedDeps: boolean) {
+        // get a copy from the installed dependencies of the project
+        // (only if the option needs some dependencies)
+        if (isNeedDeps) {
+            logCliProcess("Checking your dependencies");
+            const deps = execSync("npm ls --depth=0").toString();
+            this.dependencies = deps
+                .split(" ")
+                .slice(2)
+                .map((item) => item.slice(0, item.lastIndexOf("@")));
+        }
     }
     dependencies: string[] = [];
 

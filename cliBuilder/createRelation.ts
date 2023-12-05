@@ -1,21 +1,19 @@
 import inquirer from "inquirer";
 import Manipulator from "../manipulator/index.js";
 import constants from "../constants/builderConstants.js";
-import select from "@inquirer/select";
-import input from "@inquirer/input";
 
 const relationFilesBuilder = async () => {
-    const relation = await select({
-        ...constants.createRelation.relationType,
-    });
-    const foreignTable = await input({
-        ...constants.createRelation.foreignTable,
-    });
+    // const relation = await select({
+    //     ...constants.createRelation.relationType,
+    // });
+    // const foreignTable = await input({
+    //     ...constants.createRelation.foreignTable,
+    // });
 
-    if (relation === "OneToOne") {
-    } else if (relation === "OneToMany") {
-    } else if (relation === "ManyToOne") {
-    }
+    // if (relation === "OneToOne") {
+    // } else if (relation === "OneToMany") {
+    // } else if (relation === "ManyToOne") {
+    // }
 };
 
 const relationsBuilder = async () => {

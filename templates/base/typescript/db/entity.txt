@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn } from "typeorm";
 import { IsUUID } from "class-validator";
 
 @Entity()
-export class TABLE_NAME {
+export class TABLE_UPPER_NAME {
     @PrimaryGeneratedColumn("uuid")
     @IsUUID()
     id: string;

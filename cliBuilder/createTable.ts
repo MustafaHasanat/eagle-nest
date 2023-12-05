@@ -1,15 +1,11 @@
 import inquirer from "inquirer";
 import Manipulator from "../manipulator/index.js";
 import constants from "../constants/builderConstants.js";
-import {
-    firstCharToLower,
-    firstCharToUpper,
-    pathConvertor,
-    pluralize,
-} from "./helpers/filesHelpers.js";
+import { pathConvertor } from "./helpers/filesHelpers.js";
 import pathCreator from "../utils/pathCreator.js";
 import cloningCommands from "./helpers/cloningCommands.js";
 import injectingCommands from "./helpers/injectingCommands.js";
+import { getTableNameVariants } from "../utils/getTableNameVariants.js";
 
 /**
  * This function will be fired by the --create-table option
@@ -36,11 +32,12 @@ const createTableBuilder = async (manipulator: Manipulator) => {
             const { overwrite, tableName, mainDist } = answers;
             if (!overwrite) return;
 
-            const camelCaseName = tableName;
-            const upperCaseName = firstCharToUpper(tableName);
-            const pluralName = pluralize(tableName);
-            const pluralUpperCaseName = firstCharToUpper(pluralName);
-            const pluralLowerCaseName = firstCharToLower(pluralName);
+            const {
+                camelCaseName,
+                upperCaseName,
+                pluralUpperCaseName,
+                pluralLowerCaseName,
+            } = getTableNameVariants(tableName);
 
             const [entitiesPath, schemasPath, dtoPath, enumsPath] = [
                 pathConvertor(mainDist, "entities"),

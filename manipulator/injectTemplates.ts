@@ -68,19 +68,29 @@ const injectionAction = async ({
     if (!actions.length) {
         return injectableContents;
     }
+    if (actions[0] === null) {
+        return await injectionAction({
+            actions: actions.slice(1),
+            injectableContents,
+        });
+    }
+
     const {
-        target,
+        addition,
         keyword,
         replacements = [],
-        targetIsFile = true,
+        additionIsFile = true,
     } = actions[0];
 
-    const targetContents = targetIsFile
-        ? await readFile(join(getCurrentRelativePath("../.."), target), "utf8")
-        : target;
+    const additionContents = additionIsFile
+        ? await readFile(
+              join(getCurrentRelativePath("../.."), addition),
+              "utf8"
+          )
+        : addition;
 
     const modifiedTarget = await replaceStrings({
-        contents: targetContents,
+        contents: additionContents,
         items: replacements,
     });
 

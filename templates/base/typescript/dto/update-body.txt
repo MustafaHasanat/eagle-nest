@@ -1,9 +1,0 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { createTABLE_NAMEBody } from './create-TABLE_LOWER_NAME.body';
-
-const { required, ...schema } = createTABLE_NAMEBody.schema;
-
-export const updateTABLE_NAMEBody = {
-  ...createTABLE_NAMEBody,
-  schema,
-};

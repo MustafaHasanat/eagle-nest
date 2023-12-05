@@ -1,1 +1,1 @@
-export class CreateTABLE_NAMEDto {}
+export class CreateTABLE_UPPER_NAMEDto {}
