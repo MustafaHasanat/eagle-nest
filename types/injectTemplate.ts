@@ -1,12 +1,12 @@
 type InjectionAction = {
-    target: string;
-    targetIsFile?: boolean;
+    addition: string;
+    additionIsFile?: boolean;
     keyword: string;
     replacements?: {
         oldString: string;
         newString: string;
     }[];
-};
+} | null;
 
 type InjectTemplate = {
     injectable: string;

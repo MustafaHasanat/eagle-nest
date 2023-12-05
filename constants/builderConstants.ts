@@ -1,67 +1,31 @@
 import { existsSync } from "fs";
 import { strictNameValidator } from "../validators/stringValidators.js";
 import { QuestionCollection } from "inquirer";
+import {
+    columnDecoratorsChoices,
+    columnPropertiesChoices,
+    columnTypeChoices,
+    relationChoices,
+} from "./builderChoices.js";
 
-const columnTypeChoices = [
-    {
-        name: "string",
-        value: "string",
-        description: "create a simple string column",
-    },
-    {
-        name: "number",
-        value: "number",
-    },
-    {
-        name: "boolean",
-        value: "boolean",
-    },
-    {
-        name: "enum",
-        value: "enum",
-    },
-    {
-        name: "date",
-        value: "date",
-    },
-    {
-        name: "object",
-        value: "object",
-    },
-    {
-        name: "array",
-        value: "array",
-    },
-];
+// ----------
+// Interfaces
+// ----------
 
-const columnAttributesChoices = [
-    {
-        name: "isUnique",
-        value: "isUnique",
-        description: "a unique column will never accept duplicate rows on it",
-    },
-];
+interface CollectionProps {
+    [questionName: string]: QuestionCollection<any>;
+}
 
-const relationChoices = [
-    {
-        name: "OneToOne",
-        value: "OneToOne",
-        description:
-            "'one-to-one' relation: each record of this table may have a link to only one record from the foreign one",
-    },
-    {
-        name: "OneToMany",
-        value: "OneToMany",
-        description:
-            "'one-to-many' relation: each record of this table may have multiple linked records from the foreign one",
-    },
-    {
-        name: "ManyToOne",
-        value: "ManyToOne",
-        description:
-            "'many-to-one' relation:  multiple records of this table may have a link to only one record from the foreign one",
-    },
-];
+interface BuilderConstantsProps {
+    createMain: CollectionProps;
+    createLandingPage: CollectionProps;
+    createAppFiles: CollectionProps;
+    database: CollectionProps;
+    createTable: CollectionProps;
+    createColumn: CollectionProps;
+    createRelation: CollectionProps;
+    shared: { overwrite: (files: string[]) => QuestionCollection<any> };
+}
 
 // ----------------
 // helper functions
@@ -70,18 +34,27 @@ const trimmer = (input: string) => {
     return input.trim();
 };
 
-const getName = (
-    name: string,
-    validator: (name: string) => string | boolean = (name: string) => {
-        return !name ? "You must pick a name!" : true;
-    }
-) => ({
-    type: "input",
-    name: name + "Name",
-    message: `What's the name of your ${name}?`,
-    validate: validator,
-    filter: trimmer,
-});
+const getName = (props: {
+    name: string;
+    defaultValue?: string;
+    validator?: (name: string) => string | boolean;
+}): QuestionCollection<any> => {
+    const {
+        name,
+        defaultValue = "",
+        validator = (name: string) => {
+            return !name ? "You must pick a name!" : true;
+        },
+    } = props;
+    return {
+        type: "input",
+        name: name + "Name",
+        default: defaultValue,
+        message: `What's the name of your ${name}?`,
+        validate: validator,
+        filter: trimmer,
+    };
+};
 
 const getDestination = (props: {
     targetName: string;
@@ -126,30 +99,13 @@ const getFileLocation = (
     filter: trimmer,
 });
 
-const getChoices = (
-    name: string,
-    message: string,
-    choices: {
-        name: string;
-        value: string;
-        description?: string;
-    }[]
-) => ({
-    message,
-    name,
-    choices,
-    validate(choice: string) {
-        return !choice ? `You must pick a ${name}!` : true;
-    },
-});
-
 // -----------------
 // builder constants
 // -----------------
-const builderConstants = {
+const builderConstants: BuilderConstantsProps = {
     // constants for the --create-main option
     createMain: {
-        projectName: getName("project"),
+        projectName: getName({ name: "project" }),
         mainDist: getDestination({
             distName: "mainDist",
             targetName: "main.ts file",
@@ -157,7 +113,7 @@ const builderConstants = {
     },
     // constants for the --create-landing-page
     createLandingPage: {
-        projectName: getName("project"),
+        projectName: getName({ name: "project" }),
         publicDir: getDestination({
             targetName: "public folder",
             distName: "publicDir",
@@ -183,8 +139,13 @@ const builderConstants = {
     // constants for the --create-table
     createTable: {
         tableName: {
-            ...getName("table", (name: string) => {
-                return strictNameValidator(name) ? "Name is invalid!" : true;
+            ...getName({
+                name: "table",
+                validator: (name: string) => {
+                    return strictNameValidator(name)
+                        ? "Name is invalid!"
+                        : true;
+                },
             }),
             message:
                 "What's the name of your table? (use singular camelCase nouns to avoid errors, like: user, product, ...)",
@@ -200,20 +161,49 @@ const builderConstants = {
         newColumn: {
             type: "confirm",
             name: "newColumn",
-            message: "Do you want to create a column?",
+            message: "Do you want to create a new column?",
             default: true,
         },
-        columnName: getName("columnName"),
-        columnType: getChoices(
-            "columnType",
-            "Select the type of the column",
-            columnTypeChoices
-        ),
-        columnAttributes: {
-            name: "columnAttributes",
+        mainDist: {
+            ...getDestination({
+                targetName: "tables",
+                defaultDest: "src",
+                distName: "mainDist",
+            }),
             message:
-                "Select the attributes that should be applied to this column (this is optional)",
-            choices: columnAttributesChoices,
+                "Where have you located your schemas, entities, dtos, ... ?",
+        },
+        tableName: {
+            ...getName({ name: "table" }),
+            message:
+                "What's the name of your table? (use singular camelCase nouns to avoid errors, like: user, product, ...)",
+        },
+        columnName: getName({ name: "column" }),
+        columnType: {
+            name: "columnType",
+            type: "checkbox",
+            message:
+                "Select the type of the new column: (exactly one must be selected)",
+            choices: columnTypeChoices,
+            validate: (options) => {
+                if (options.length !== 1) {
+                    return "Choose exactly one of the above!";
+                }
+                return true;
+            },
+        },
+        columnProperties: {
+            name: "columnProperties",
+            type: "checkbox",
+            message: "Select the properties of this column: (optional)",
+            choices: columnPropertiesChoices,
+        },
+        columnDecorators: {
+            name: "columnDecorators",
+            type: "checkbox",
+            message:
+                "Select the validators that should be applied to this column: (optional)",
+            choices: columnDecoratorsChoices,
         },
     },
     // constants for the --create-relation
@@ -224,18 +214,21 @@ const builderConstants = {
             message: "Do you want to create a new relation?",
             default: true,
         },
-        relationType: getChoices(
-            "relationType",
-            "Select the new relation",
-            relationChoices
-        ),
-        foreignTable: getName("foreignTable", (name: string) => {
-            return strictNameValidator(name) ? "Name is invalid!" : true;
+        relationType: {
+            name: "relationType",
+            message: "Select the new relation",
+            choices: relationChoices,
+        },
+        foreignTable: getName({
+            name: "foreignTable",
+            validator: (name: string) => {
+                return strictNameValidator(name) ? "Name is invalid!" : true;
+            },
         }),
     },
     // shared constants
     shared: {
-        overwrite: (files: string[]): QuestionCollection => ({
+        overwrite: (files: string[]) => ({
             type: "confirm",
             name: "overwrite",
             message: `May we overwrite the following files if they exist at the directory? \n[${files.join(

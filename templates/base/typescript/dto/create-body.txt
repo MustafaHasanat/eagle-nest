@@ -1,9 +1,0 @@
-export const createTABLE_NAMEBody = {
-  consumes: ['multipart/form-data'],
-  produces: ['application/json'],
-  schema: {
-    type: 'object',
-    required: [],
-    properties: {},
-  },
-};

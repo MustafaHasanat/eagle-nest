@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateTABLE_NAMEDto } from './create-TABLE_LOWER_NAME.dto';
+import { CreateTABLE_UPPER_NAMEDto } from './create-TABLE_LOWER_NAME.dto';
 
-export class UpdateTABLE_NAMEDto extends PartialType(CreateTABLE_NAMEDto) {}
+export class UpdateTABLE_UPPER_NAMEDto extends PartialType(CreateTABLE_UPPER_NAMEDto) {}

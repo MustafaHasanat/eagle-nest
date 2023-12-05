@@ -5,7 +5,7 @@ import createAppFilesBuilder from "./createAppFiles.js";
 import databaseBuilder from "./database.js";
 import createTableBuilder from "./createTable.js";
 import createRelationBuilder from "./createRelation.js";
-import createColumnBuilder from "./createColumnBuilder.js";
+import createColumnBuilder from "./createColumn.js";
 
 export default class CliBuilder {
     constructor(manipulator: Manipulator) {

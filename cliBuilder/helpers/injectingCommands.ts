@@ -1,6 +1,7 @@
 import { join } from "path";
 import { InjectTemplate } from "../../types/injectTemplate.js";
 
+// interfaces -----------
 interface DatabaseProps {
     appModuleLocation: string;
     envLocation: string;
@@ -21,13 +22,45 @@ interface CreateTableProps {
     };
 }
 
+interface CreateColumnProps {
+    columnData: {
+        columnName: string;
+        columnType: string;
+        entityProperties: string | null;
+        entityDecorators: {
+            decoratorsValues: string | null;
+            decoratorsImports: string | null;
+        };
+        dtoProperties: string | null;
+    };
+    paths: {
+        entitiesPath: string;
+        dtoPath: string;
+    };
+    nameVariants: {
+        camelCaseName: string;
+    };
+}
+
+// maps -----------
+
+const columnTypeDefaultMap: {
+    [type: string]: { create: string | null; update: string | null };
+} = {
+    string: { create: "default: 'string placeholder'", update: "default: ''" },
+    boolean: { create: "default: false", update: null },
+    number: { create: "default: 0", update: null },
+};
+
+// functions -----------
+
 export default {
     createMain: (envLocation: string): InjectTemplate[] => [
         {
             injectable: envLocation,
             actions: [
                 {
-                    target: "/templates/components/others/app-env.txt",
+                    addition: "/templates/components/others/app-env.txt",
                     keyword: "*",
                 },
             ],
@@ -43,11 +76,13 @@ export default {
             injectable: appModuleLocation,
             actions: [
                 {
-                    target: "templates/components/typescript/app/db/config.txt",
+                    addition:
+                        "templates/components/typescript/app/db/config.txt",
                     keyword: "imports: [",
                 },
                 {
-                    target: "templates/components/typescript/app/db/imports.txt",
+                    addition:
+                        "templates/components/typescript/app/db/imports.txt",
                     keyword: "*",
                     replacements: [
                         {
@@ -62,7 +97,7 @@ export default {
             injectable: envLocation,
             actions: [
                 {
-                    target: "templates/components/others/db-env.txt",
+                    addition: "templates/components/others/db-env.txt",
                     keyword: "*",
                 },
             ],
@@ -83,13 +118,13 @@ export default {
                 injectable: join(entitiesPath, "index.ts"),
                 actions: [
                     {
-                        target: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n`,
-                        targetIsFile: false,
+                        addition: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n`,
+                        additionIsFile: false,
                         keyword: "*",
                     },
                     {
-                        target: `\n${upperCaseName},\n`,
-                        targetIsFile: false,
+                        addition: `\n${upperCaseName},\n`,
+                        additionIsFile: false,
                         keyword: "entities = [",
                     },
                 ],
@@ -98,13 +133,13 @@ export default {
                 injectable: join(appModulePath, "app.module.ts"),
                 actions: [
                     {
-                        target: `import { ${pluralUpperCaseName}Module } from "schemas/${pluralLowerCaseName}/${pluralLowerCaseName}.module";\n`,
-                        targetIsFile: false,
+                        addition: `import { ${pluralUpperCaseName}Module } from "schemas/${pluralLowerCaseName}/${pluralLowerCaseName}.module";\n`,
+                        additionIsFile: false,
                         keyword: "*",
                     },
                     {
-                        target: `\n${pluralUpperCaseName}Module,\n`,
-                        targetIsFile: false,
+                        addition: `\n${pluralUpperCaseName}Module,\n`,
+                        additionIsFile: false,
                         keyword: "imports: [",
                     },
                 ],
@@ -113,14 +148,95 @@ export default {
                 injectable: join(enumsPath, "tables-columns.enum.ts"),
                 actions: [
                     {
-                        target: `enum ${upperCaseName}Fields {}\n\n`,
-                        targetIsFile: false,
+                        addition: `enum ${upperCaseName}Fields {}\n\n`,
+                        additionIsFile: false,
                         keyword: "*",
                     },
                     {
-                        target: `\n, ${upperCaseName}Fields\n`,
-                        targetIsFile: false,
+                        addition: `\n, ${upperCaseName}Fields\n`,
+                        additionIsFile: false,
                         keyword: "export { AllTablesColumns",
+                    },
+                ],
+            },
+        ];
+    },
+
+    createColumn: ({
+        columnData: {
+            columnName,
+            columnType,
+            entityProperties,
+            entityDecorators: { decoratorsValues, decoratorsImports },
+            dtoProperties,
+        },
+        paths: { entitiesPath, dtoPath },
+        nameVariants: { camelCaseName },
+    }: CreateColumnProps): InjectTemplate[] => {
+        const { create: createDefault, update: updateDefault } =
+            columnTypeDefaultMap[columnType];
+
+        return [
+            {
+                injectable: join(entitiesPath, `${camelCaseName}.entity.ts`),
+                actions: [
+                    decoratorsImports
+                        ? {
+                              keyword: "*",
+                              addition: `${decoratorsImports}\n`,
+                              additionIsFile: false,
+                          }
+                        : null,
+                    {
+                        keyword: "--- columns ---",
+                        addition:
+                            `${decoratorsValues || ""}` +
+                            `\n@Column({\n${
+                                entityProperties || ""
+                            }\n})\n${columnName}: ${columnType};\n`,
+                        additionIsFile: false,
+                    },
+                    {
+                        keyword: "Entity",
+                        addition: ", Column",
+                        additionIsFile: false,
+                    },
+                ],
+            },
+            {
+                injectable: join(dtoPath, `create-${camelCaseName}.dto.ts`),
+                actions: [
+                    {
+                        keyword: "*",
+                        addition:
+                            "import { ApiProperty } from '@nestjs/swagger';\n\n",
+                        additionIsFile: false,
+                    },
+                    {
+                        keyword: "Dto {",
+                        addition: `\n\n@ApiProperty({\n${
+                            dtoProperties ? dtoProperties + "," : ""
+                        }\n${
+                            createDefault || ""
+                        }\n})\n${columnName}: ${columnType};\n`,
+                        additionIsFile: false,
+                    },
+                ],
+            },
+            {
+                injectable: join(dtoPath, `update-${camelCaseName}.dto.ts`),
+                actions: [
+                    {
+                        keyword: "PartialType",
+                        addition: ", ApiProperty ",
+                        additionIsFile: false,
+                    },
+                    {
+                        keyword: "Dto) {",
+                        addition: `\n\n@ApiProperty({ ${
+                            updateDefault || ""
+                        } })\n${columnName}?: ${columnType};\n`,
+                        additionIsFile: false,
                     },
                 ],
             },

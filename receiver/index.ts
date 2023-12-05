@@ -21,18 +21,19 @@ export default class Receiver {
         this.options = options;
         this.manipulator = manipulator;
         this.builder = builder;
-        this.installer = new Installer();
     }
     app;
     options;
     manipulator;
     builder;
-    installer;
     filename = fileURLToPath(import.meta.url);
     dirname = path.dirname(this.filename);
 
     // receiver prompt initializer
     action = async (): Promise<void> => {
+        // initialize the installer
+        const installer = new Installer(Object.keys(this.options).length !== 0);
+
         // if there was no option selected, show the logo with the instructions for -h
         if (Object.keys(this.options).length === 0) {
             console.log(figlet.textSync("Eagle Nest"));
@@ -41,7 +42,7 @@ export default class Receiver {
         }
         // selection for creating the main.ts file
         if (this.options.createMain) {
-            await this.installer.installPackages([
+            await installer.installPackages([
                 { packageName: "@nestjs/core", commandType: "--save" },
                 {
                     packageName: "@nestjs/platform-express",
@@ -57,14 +58,14 @@ export default class Receiver {
         }
         // selection for creating the app files (module, service, controller, ...)
         if (this.options.createAppFiles) {
-            await this.installer.installPackages([
+            await installer.installPackages([
                 { packageName: "@nestjs/common", commandType: "--save" },
             ]);
             await this.builder.createAppFiles(this.manipulator);
         }
         // selection for configuring the database
         if (this.options.database) {
-            await this.installer.installPackages([
+            await installer.installPackages([
                 { packageName: "@nestjs/config", commandType: "--save" },
                 { packageName: "@nestjs/typeorm", commandType: "--save" },
             ]);
@@ -72,7 +73,7 @@ export default class Receiver {
         }
         // selection for creating a new table files
         if (this.options.createTable) {
-            await this.installer.installPackages([
+            await installer.installPackages([
                 { packageName: "typeorm", commandType: "--save" },
                 { packageName: "class-validator", commandType: "--save" },
                 { packageName: "@nestjs/swagger", commandType: "--save" },
@@ -84,7 +85,10 @@ export default class Receiver {
         }
         // selection for creating a new column
         if (this.options.createColumn) {
-            // await this.installer.installPackages([]);
+            await installer.installPackages([
+                { packageName: "class-validator", commandType: "--save" },
+                { packageName: "typeorm", commandType: "--save" },
+            ]);
             await this.builder.createColumn(this.manipulator);
         }
         // selection for creating a new relation

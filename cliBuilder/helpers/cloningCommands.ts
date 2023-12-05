@@ -71,7 +71,7 @@ export default {
         },
         {
             target: "templates/base/typescript/enum/tables-columns.txt",
-            dest:enumsDist ,
+            dest: enumsDist,
             newFileName: "tables-columns.enum.ts",
         },
     ],
@@ -91,18 +91,7 @@ export default {
                 newFileName: camelCaseName + ".entity.ts",
                 replacements: [
                     {
-                        oldString: "TABLE_NAME",
-                        newString: upperCaseName,
-                    },
-                ],
-            },
-            {
-                target: "templates/base/typescript/dto/create-body.txt",
-                dest: dtoPath,
-                newFileName: `create-${camelCaseName}.body.ts`,
-                replacements: [
-                    {
-                        oldString: "TABLE_NAME",
+                        oldString: "TABLE_UPPER_NAME",
                         newString: upperCaseName,
                     },
                 ],
@@ -113,23 +102,8 @@ export default {
                 newFileName: `create-${camelCaseName}.dto.ts`,
                 replacements: [
                     {
-                        oldString: "TABLE_NAME",
+                        oldString: "TABLE_UPPER_NAME",
                         newString: upperCaseName,
-                    },
-                ],
-            },
-            {
-                target: "templates/base/typescript/dto/update-body.txt",
-                dest: dtoPath,
-                newFileName: `update-${camelCaseName}.body.ts`,
-                replacements: [
-                    {
-                        oldString: "TABLE_NAME",
-                        newString: upperCaseName,
-                    },
-                    {
-                        oldString: "TABLE_LOWER_NAME",
-                        newString: camelCaseName,
                     },
                 ],
             },
@@ -139,7 +113,7 @@ export default {
                 newFileName: `update-${camelCaseName}.dto.ts`,
                 replacements: [
                     {
-                        oldString: "TABLE_NAME",
+                        oldString: "TABLE_UPPER_NAME",
                         newString: upperCaseName,
                     },
                     {
@@ -154,8 +128,12 @@ export default {
                 newFileName: `${pluralLowerCaseName}.module.ts`,
                 replacements: [
                     {
-                        oldString: "TABLE_NAME",
+                        oldString: "TABLE_PLURAL_UPPER_NAME",
                         newString: pluralUpperCaseName,
+                    },
+                    {
+                        oldString: "TABLE_UPPER_NAME",
+                        newString: upperCaseName,
                     },
                     {
                         oldString: "TABLE_LOWER_NAME",
