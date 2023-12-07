@@ -6,7 +6,6 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
-    ApiBody,
     ApiConsumes,
     ApiOkResponse,
     ApiOperation,
@@ -14,11 +13,6 @@ import {
 
 function EditorsWrapper(
     dto: any,
-    requestBody: {
-        consumes: string[];
-        produces: string[];
-        schema: any;
-    },
     summary: string,
     interceptor: Type<NestInterceptor<any, any>> = FileInterceptor("")
 ) {
@@ -26,7 +20,6 @@ function EditorsWrapper(
         ApiOkResponse({ type: dto }),
         ApiConsumes("multipart/form-data"),
         ApiConsumes("application/json"),
-        ApiBody(requestBody),
         ApiOperation({ summary }),
         UseInterceptors(interceptor)
     );

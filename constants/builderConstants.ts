@@ -7,25 +7,7 @@ import {
     columnTypeChoices,
     relationChoices,
 } from "./builderChoices.js";
-
-// ----------
-// Interfaces
-// ----------
-
-interface CollectionProps {
-    [questionName: string]: QuestionCollection<any>;
-}
-
-interface BuilderConstantsProps {
-    createMain: CollectionProps;
-    createLandingPage: CollectionProps;
-    createAppFiles: CollectionProps;
-    database: CollectionProps;
-    createTable: CollectionProps;
-    createColumn: CollectionProps;
-    createRelation: CollectionProps;
-    shared: { overwrite: (files: string[]) => QuestionCollection<any> };
-}
+import { BuilderConstantsProps } from "../interfaces/constants.js";
 
 // ----------------
 // helper functions
@@ -216,15 +198,42 @@ const builderConstants: BuilderConstantsProps = {
         },
         relationType: {
             name: "relationType",
-            message: "Select the new relation",
+            type: "checkbox",
+            message:
+                "Select the type of the new relation: (exactly one must be selected)",
             choices: relationChoices,
-        },
-        foreignTable: getName({
-            name: "foreignTable",
-            validator: (name: string) => {
-                return strictNameValidator(name) ? "Name is invalid!" : true;
+            validate: (options) => {
+                if (options.length !== 1) {
+                    return "Choose exactly one of the above!";
+                }
+                return true;
             },
-        }),
+        },
+        mainDist: {
+            ...getDestination({
+                targetName: "tables",
+                defaultDest: "src",
+                distName: "mainDist",
+            }),
+            message:
+                "Where have you located your schemas, entities, dtos, ... ?",
+        },
+        tables: {
+            type: "input",
+            name: "tables",
+            message:
+                "Enter the names of the tables separated by a dash \n(use singular camelCase nouns to avoid errors, like: user-product)",
+            validate: (tables: string) => {
+                if (!tables) return "You must enter the names of your tables!";
+                if (tables.indexOf("-") === -1)
+                    return "You must have the dash symbol: -";
+                if (tables.indexOf(" ") !== -1)
+                    return "You must not use any space";
+
+                return true;
+            },
+            filter: trimmer,
+        },
     },
     // shared constants
     shared: {

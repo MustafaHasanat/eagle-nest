@@ -28,6 +28,8 @@ export class TABLE_PLURAL_UPPER_NAMEService {
         private readonly TABLE_LOWER_NAMERepository: Repository<TABLE_UPPER_NAME>
     ) {}
 
+    // --- Basic REST APIs ---
+
     async getTABLE_PLURAL_UPPER_NAME({
         sortBy = TABLE_UPPER_NAMEFields.CHANGE_THIS_TO_DEFAULT_FIELD,
         reverse = false,
@@ -96,7 +98,16 @@ export class TABLE_PLURAL_UPPER_NAMEService {
                 );
             }
 
-            const newTABLE_UPPER_NAME = this.TABLE_LOWER_NAMERepository.create(filteredData);
+            // don't modify this until you finish creating the app to be able to add relations to this table
+            const { DUMMY_TABLE_NAME_CREATE_A, ...rest } = filteredData;
+
+            const TABLE_LOWER_NAMEObj = { ...rest };
+
+            // --- Table ID check - create ---
+
+            // ----------------------
+
+            const newTABLE_UPPER_NAME = this.TABLE_LOWER_NAMERepository.create(TABLE_LOWER_NAMEObj);
             const response = await this.TABLE_LOWER_NAMERepository.save(newTABLE_UPPER_NAME);
 
             return createUpdateRes<TABLE_UPPER_NAME>(
@@ -135,11 +146,20 @@ export class TABLE_PLURAL_UPPER_NAMEService {
                 return notFoundRes(`TABLE_UPPER_NAME does not exist`);
             }
 
+            // don't modify this until you finish creating the app to be able to add relations to this table
+            const { DUMMY_TABLE_NAME_UPDATE, ...rest } = filteredData;
+
+            const TABLE_LOWER_NAMEObj = { ...rest };
+
+            // --- Table ID check - update ---
+
+            // ----------------------
+
             const response = await this.TABLE_LOWER_NAMERepository.update(
                 {
                     id,
                 },
-                filteredData
+                TABLE_LOWER_NAMEObj
             );
 
             return createUpdateRes<UpdateResult>(
@@ -184,4 +204,6 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             return errorRes(error);
         }
     }
+
+    // --- Relational REST APIs ---
 }

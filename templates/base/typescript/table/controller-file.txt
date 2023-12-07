@@ -28,8 +28,6 @@ import { TABLE_PLURAL_UPPER_NAMEService } from "./TABLE_PLURAL_LOWER_NAME.servic
 import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";
 import { CreateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
 import { UpdateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
-import { createTABLE_UPPER_NAMEBody } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.body";
-import { updateTABLE_UPPER_NAMEBody } from "../../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.body";
 import { TABLE_UPPER_NAMEFields } from '../../enums/tables-columns.enum';
 
 @ControllerWrapper("TABLE_PLURAL_UPPER_NAME")
@@ -37,6 +35,8 @@ export class TABLE_PLURAL_UPPER_NAMEController {
     constructor(
         private readonly TABLE_PLURAL_LOWER_NAMEService: TABLE_PLURAL_UPPER_NAMEService
     ) {}
+
+    // --- Basic REST endpoints ---
 
     @Get()
     @GetAllWrapper({
@@ -82,7 +82,6 @@ export class TABLE_PLURAL_UPPER_NAMEController {
     @MembersOnly()
     @EditorsWrapper(
         CreateTABLE_UPPER_NAMEDto,
-        createTABLE_UPPER_NAMEBody,
         "create a TABLE_LOWER_NAME"
     )
     async createTABLE_UPPER_NAME(
@@ -101,7 +100,6 @@ export class TABLE_PLURAL_UPPER_NAMEController {
     @MembersOnly()
     @EditorsWrapper(
         UpdateTABLE_UPPER_NAMEDto,
-        updateTABLE_UPPER_NAMEBody,
         "update a TABLE_LOWER_NAME"
     )
     async updateTABLE_UPPER_NAME(
@@ -142,4 +140,6 @@ export class TABLE_PLURAL_UPPER_NAMEController {
 
         return res.status(response.status).json(response);
     }
+
+    // --- Relational REST endpoints ---
 }

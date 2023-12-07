@@ -1,6 +1,8 @@
 type InjectionAction = {
     addition: string;
     additionIsFile?: boolean;
+    supposedToBeThere?: string;
+    replica?: boolean;
     keyword: string;
     replacements?: {
         oldString: string;

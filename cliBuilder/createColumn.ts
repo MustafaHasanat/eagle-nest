@@ -12,12 +12,12 @@ import {
 
 const columnBuilder = async (
     manipulator: Manipulator,
+    mainDist: string,
     prevTableName: string = ""
 ) => {
     await inquirer
         .prompt([
             { ...constants.createColumn.tableName, default: prevTableName },
-            constants.createColumn.mainDist,
             constants.createColumn.columnName,
             constants.createColumn.columnType,
             constants.createColumn.columnProperties,
@@ -26,7 +26,6 @@ const columnBuilder = async (
         .then(async (answers) => {
             const {
                 tableName,
-                mainDist,
                 columnName,
                 columnType,
                 columnProperties,
@@ -81,10 +80,11 @@ const createColumnBuilder = async (manipulator: Manipulator) => {
                 "src/dto/update-TABLE.dto.ts",
                 "src/enums/tables-columns.enum.ts",
             ]),
+            constants.createColumn.mainDist,
         ])
         .then(async (answers) => {
             if (!answers.overwrite) return;
-            await columnBuilder(manipulator);
+            await columnBuilder(manipulator, answers.mainDist);
         });
 };
 
