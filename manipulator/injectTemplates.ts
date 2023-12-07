@@ -4,6 +4,7 @@ import { readFile, writeFile } from "fs/promises";
 import replaceStrings from "../utils/replaceStrings.js";
 import { missingFiles } from "../cliBuilder/helpers/filesHelpers.js";
 import {
+    logCliError,
     logCliProcess,
     logCliTitle,
     logNewMessage,
@@ -14,6 +15,8 @@ type InjectStringProps = {
     original: string;
     keyword: string;
     addition: string;
+    replica: boolean;
+    supposedToBeThere: string | null;
 };
 
 /**
@@ -22,21 +25,30 @@ type InjectStringProps = {
  * @param original The original string
  * @param keyword The injection string to be found (inject at the start if equals one star '*', and at the end if equals two stars '**')
  * @param addition The content string to be added to the original file
+ * @param supposedToBeThere If a string was provided, abort the injection action IF the string was found in the original string
  * @returns The resultant string
  */
 const injectString = (props: InjectStringProps): string => {
-    const { original, keyword, addition } = props;
-    const isAdditionExist = original.indexOf(addition) !== -1;
+    const { original, keyword, addition, supposedToBeThere, replica } = props;
 
-    if (isAdditionExist) {
+    // abort the injection action if:
+    // - the 'supposedToBeThere' wasn't a null and was found in the original string
+    // - or the 'addition' was found in the original string
+    if (
+        (supposedToBeThere && original.indexOf(supposedToBeThere) !== -1) ||
+        (original.indexOf(addition) !== -1 && !replica)
+    ) {
         return original;
     }
 
     const index = original.indexOf(keyword);
     if (index === -1 && !["*", "**"].includes(keyword)) {
-        throw new Error(
-            `'keyword=${keyword}' doesn't exist ing the 'original' string`
+        logCliError(
+            `'keyword=${keyword}' doesn't exist in the 'original' string`,
+            "RUNTIME",
+            "injectString"
         );
+        return original;
     }
     let injectPosition;
     if (keyword === "*") injectPosition = 0;
@@ -80,8 +92,35 @@ const injectionAction = async ({
         keyword,
         replacements = [],
         additionIsFile = true,
+        supposedToBeThere = null,
+        replica = false,
     } = actions[0];
 
+    if (!additionIsFile && replacements.length > 0) {
+        logCliError(
+            "You shouldn't have items in 'replacements' while 'additionIsFile' is false!",
+            "TOOL MISUSE",
+            "injectionAction"
+        );
+        return await injectionAction({
+            actions: actions.slice(1),
+            injectableContents,
+        });
+    }
+
+    if (supposedToBeThere && replica) {
+        logCliError(
+            "You can't have a value for 'supposedToBeThere' and set 'replica' to true!",
+            "TOOL MISUSE",
+            "injectionAction"
+        );
+        return await injectionAction({
+            actions: actions.slice(1),
+            injectableContents,
+        });
+    }
+
+    // read the contents of the file (if it was a file)
     const additionContents = additionIsFile
         ? await readFile(
               join(getCurrentRelativePath("../.."), addition),
@@ -89,17 +128,24 @@ const injectionAction = async ({
           )
         : addition;
 
-    const modifiedTarget = await replaceStrings({
-        contents: additionContents,
-        items: replacements,
-    });
+    // apply all the replacements on the contents
+    const modifiedAddition = additionIsFile
+        ? await replaceStrings({
+              contents: additionContents,
+              items: replacements,
+          })
+        : additionContents;
 
+    // inject the final result into the original file's contents
     const modifiedInjectable = injectString({
         original: injectableContents,
         keyword,
-        addition: modifiedTarget,
+        addition: modifiedAddition,
+        supposedToBeThere,
+        replica,
     });
 
+    // recursively apply all the actions on teh original file
     return await injectionAction({
         actions: actions.slice(1),
         injectableContents: modifiedInjectable,
@@ -112,10 +158,11 @@ const injectionAction = async ({
  * @param files[] A list of object to be addressed
  *      @param injectable The existing file to be modified
  *      @param actions[] A list of injection objects
- *          @param target The source file that has the text to be injected
- *          @param targetIsFile A boolean indication if we need to treat the target as a file or as a simple string
+ *          @param addition The source file that has the text to be injected
  *          @param keyword A string indicating where in the injectable file do we want to add the new text
- *          @param replacements[] A list of pairs to be replaced in the target file before injection
+ *          @param additionIsFile A boolean indication if we need to treat the addition as a file or as a simple string
+ *          @param supposedToBeThere If a string was provided, abort the injection action IF the string was found in the original string
+ *          @param replacements[] A list of pairs to be replaced in the addition file before injection
  *              @param oldString The old string
  *              @param newString The new string
  * @usage
@@ -125,11 +172,11 @@ const injectionAction = async ({
  *              injectable: appModuleLocation,
  *              actions: [
  *                 {
- *                    target: "templates/components/typescript/app/db/config.txt",
+ *                     addition: "templates/components/typescript/app/db/config.txt",
  *                     keyword: "imports: [",
  *                 },
  *                 {
- *                     target: "templates/components/typescript/app/db/imports.txt",
+ *                     addition: "templates/components/typescript/app/db/imports.txt",
  *                     keyword: "*",
  *                     replacements: [
  *                         {
@@ -157,8 +204,8 @@ const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
     const missingFilesRes = missingFiles(injectableFiles);
     if (missingFilesRes.length > 0) {
         logNewMessage("You must have these files first so we can modify them:");
-        missingFilesRes.forEach((file) => {
-            console.log("1) " + file + "\n");
+        missingFilesRes.forEach((file, index) => {
+            console.log(`${index + 1}) ${file}"\n`);
         });
         return false;
     }

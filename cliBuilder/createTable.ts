@@ -18,9 +18,7 @@ const createTableBuilder = async (manipulator: Manipulator) => {
             constants.shared.overwrite([
                 "/entities/index.ts",
                 "/entities/TABLE.entity.ts",
-                "/dto/create-TABLE-body.ts",
                 "/dto/create-TABLE-dto.ts",
-                "/dto/update-TABLE-body.ts",
                 "/dto/update-TABLE-dto.ts",
                 "/schemas/TABLE/TABLE.module.ts",
                 "/schemas/TABLE/TABLE.controller.ts",

@@ -5,6 +5,8 @@ import { fileURLToPath } from "url";
 import CliBuilder from "../cliBuilder/index.js";
 import { Installer } from "./installer.js";
 import Manipulator from "../manipulator/index.js";
+import { execSync } from "child_process";
+import { logCliError } from "../utils/logCliDecorators.js";
 
 /**
  * A class to control the main entry of the tool
@@ -31,11 +33,24 @@ export default class Receiver {
 
     // receiver prompt initializer
     action = async (): Promise<void> => {
+        const optionsArray = Object.keys(this.options);
+        const isNeedDeps = !["createLandingPage"].includes(optionsArray[0]);
+
+        // check if this is a node project
+        const isNodeProject = execSync("ls")
+            .toString()
+            .split("\n")
+            .includes("package.json");
+        if (!isNodeProject) {
+            logCliError("This is not a Node.js project!", "TOOL MISUSE");
+            return;
+        }
+
         // initialize the installer
-        const installer = new Installer(Object.keys(this.options).length !== 0);
+        const installer = new Installer(isNeedDeps);
 
         // if there was no option selected, show the logo with the instructions for -h
-        if (Object.keys(this.options).length === 0) {
+        if (optionsArray.length === 0) {
             console.log(figlet.textSync("Eagle Nest"));
             this.app.outputHelp();
             console.log("\n\n");
@@ -93,7 +108,9 @@ export default class Receiver {
         }
         // selection for creating a new relation
         if (this.options.createRelation) {
-            // await this.installer.installPackages([]);
+            await installer.installPackages([
+                { packageName: "@nestjs/swagger", commandType: "--save" },
+            ]);
             await this.builder.createRelation(this.manipulator);
         }
     };

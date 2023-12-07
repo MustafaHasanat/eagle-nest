@@ -101,10 +101,10 @@ const relationChoices = [
             "'one-to-many' relation: each record of this table may have multiple linked records from the foreign one",
     },
     {
-        name: "ManyToOne",
-        value: "ManyToOne",
+        name: "ManyToMany",
+        value: "ManyToMany",
         description:
-            "'many-to-one' relation:  multiple records of this table may have a link to only one record from the foreign one",
+            "'many-to-many' relation:  multiple records of this table may have a link to only one record from the foreign one",
     },
 ];
 

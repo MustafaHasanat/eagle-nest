@@ -128,15 +128,19 @@ export default {
                 newFileName: `${pluralLowerCaseName}.module.ts`,
                 replacements: [
                     {
-                        oldString: "TABLE_PLURAL_UPPER_NAME",
-                        newString: pluralUpperCaseName,
+                        oldString: "TABLE_LOWER_NAME",
+                        newString: camelCaseName,
                     },
                     {
                         oldString: "TABLE_UPPER_NAME",
                         newString: upperCaseName,
                     },
                     {
-                        oldString: "TABLE_LOWER_NAME",
+                        oldString: "TABLE_PLURAL_UPPER_NAME",
+                        newString: pluralUpperCaseName,
+                    },
+                    {
+                        oldString: "TABLE_PLURAL_LOWER_NAME",
                         newString: pluralLowerCaseName,
                     },
                 ],
