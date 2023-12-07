@@ -1,5 +1,5 @@
-import cloneTemplates from "./cloneTemplates.js";
-import injectTemplates from "./injectTemplates.js";
+import cloneTemplates from "./cloneTemplates";
+import injectTemplates from "./injectTemplates";
 
 /**
  * This class has the required tools for creating and updating files in the project

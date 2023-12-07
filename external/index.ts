@@ -1,36 +1,36 @@
-import { AdminsOnly } from "./decorators/admins.js";
-import ControllerWrapper from "./decorators/controller-wrapper.js";
-import EditorsWrapper from "./decorators/editors-wrapper.js";
-import { MembersOnly } from "./decorators/members.js";
-import { FilterOperator, SortDirection } from "./enums/filters.js";
+import { AdminsOnly } from "./decorators/admins";
+import ControllerWrapper from "./decorators/controller-wrapper";
+import EditorsWrapper from "./decorators/editors-wrapper";
+import { MembersOnly } from "./decorators/members";
+import { FilterOperator, SortDirection } from "./enums/filters";
 import {
     filteredGetQuery,
     validateCreateUpdate,
     validateGetConditions,
-} from "./helpers/crudHelpers.js";
-import { filterNullsArray, filterNullsObject } from "./helpers/filterNulls.js";
+} from "./helpers/crudHelpers";
+import { filterNullsArray, filterNullsObject } from "./helpers/filterNulls";
 import {
     foundRes,
     notFoundRes,
     createUpdateRes,
     forbiddenRes,
     deletedRes,
-} from "./responses/crudResponse.js";
-import { errorRes } from "./responses/errorResponse.js";
+} from "./responses/crudResponse";
+import { errorRes } from "./responses/errorResponse";
 import {
     validRes,
     invalidRes,
     validationError,
-} from "./responses/validationResponse.js";
-import CustomResponseType from "./types/customResponseType.js";
+} from "./responses/validationResponse";
+import CustomResponseType from "./types/customResponseType";
 import {
     FilteredTermDataType,
     GetConditionsProps,
     GetAllProps,
     GetQueryProps,
-} from "./types/getOperators.js";
-import GetAllWrapper from "./decorators/get-all-wrapper.js";
-import updateBodyFormat from "./helpers/updateBodyFormat.js";
+} from "./types/getOperators";
+import GetAllWrapper from "./decorators/get-all-wrapper";
+import updateBodyFormat from "./helpers/updateBodyFormat";
 
 export {
     AdminsOnly,

@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
-import constants from "../constants/builderConstants.js";
-import { pathConvertor } from "./helpers/filesHelpers.js";
-import Manipulator from "../manipulator/index.js";
-import cloningCommands from "./helpers/cloningCommands.js";
+import constants from "../constants/builderConstants";
+import { pathConvertor } from "./helpers/filesHelpers";
+import Manipulator from "../manipulator/index";
+import cloningCommands from "./helpers/cloningCommands";
 
 /**
  * This function will be fired by the --create-landing-page option

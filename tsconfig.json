@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "NodeNext",
+        "target": "es6",
+        "module": "ESNext",
         "lib": ["es6"],
         "allowJs": true,
         "outDir": "./dist",
@@ -9,18 +9,20 @@
         "noImplicitAny": true,
         "esModuleInterop": true,
         "sourceMap": true,
-        "moduleResolution": "NodeNext",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "declaration": true,
         "baseUrl": ".",
+        // "allowImportingTsExtensions": true,
+        // "emitDeclarationOnly": true,
+        // "noEmit": true,
         "paths": {
             "*": ["*"]
         }
         // "declarationMap": true,
-        // "allowImportingTsExtensions": true,
-        // "noEmit": true,
         // "verbatimModuleSyntax": true,
     },
-    "include": ["**/*.ts", "cli-builder/*"],
-    "exclude": ["node_modules"]
+    "include": ["**/*.ts", "__tests__/unit/utils/getTableNameVariants.test.ts"],
+    "exclude": ["node_modules"],
+    "files": ["./index.ts"]
 }

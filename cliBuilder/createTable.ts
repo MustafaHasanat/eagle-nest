@@ -1,11 +1,11 @@
 import inquirer from "inquirer";
-import Manipulator from "../manipulator/index.js";
-import constants from "../constants/builderConstants.js";
-import { pathConvertor } from "./helpers/filesHelpers.js";
-import pathCreator from "../utils/pathCreator.js";
-import cloningCommands from "./helpers/cloningCommands.js";
-import injectingCommands from "./helpers/injectingCommands.js";
-import { getTableNameVariants } from "../utils/getTableNameVariants.js";
+import Manipulator from "../manipulator/index";
+import constants from "../constants/builderConstants";
+import { pathConvertor } from "./helpers/filesHelpers";
+import pathCreator from "../utils/pathCreator";
+import cloningCommands from "./helpers/cloningCommands";
+import injectingCommands from "./helpers/injectingCommands";
+import { getTableNameVariants } from "../utils/getTableNameVariants";
 
 /**
  * This function will be fired by the --create-table option

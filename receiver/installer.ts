@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import { execSync } from "child_process";
-import constants from "../constants/receiverConstants.js";
-import { logCliProcess, logCliTitle } from "../utils/logCliDecorators.js";
+import constants from "../constants/receiverConstants";
+import { logCliProcess, logCliTitle } from "../utils/logCliDecorators";
 
 type PackageType = {
     packageName: string;

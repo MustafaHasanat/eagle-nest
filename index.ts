@@ -3,9 +3,9 @@
 
 import { Command } from "commander";
 import Receiver from "./receiver/index.js";
-import constants from "./constants/appConstants.js";
-import CliBuilder from "./cliBuilder/index.js";
-import Manipulator from "./manipulator/index.js";
+import constants from "./constants/appConstants";
+import CliBuilder from "./cliBuilder/index";
+import Manipulator from "./manipulator/index";
 
 const app = new Command();
 const options = app.opts();

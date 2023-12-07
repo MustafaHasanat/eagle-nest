@@ -1,11 +1,11 @@
-import Manipulator from "manipulator/index.js";
-import createMainBuilder from "./createMain.js";
-import createLandingPageBuilder from "./createLandingPage.js";
-import createAppFilesBuilder from "./createAppFiles.js";
-import databaseBuilder from "./database.js";
-import createTableBuilder from "./createTable.js";
-import createRelationBuilder from "./createRelation.js";
-import createColumnBuilder from "./createColumn.js";
+import Manipulator from "manipulator/index";
+import createMainBuilder from "./createMain";
+import createLandingPageBuilder from "./createLandingPage";
+import createAppFilesBuilder from "./createAppFiles";
+import databaseBuilder from "./database";
+import createTableBuilder from "./createTable";
+import createRelationBuilder from "./createRelation";
+import createColumnBuilder from "./createColumn";
 
 export default class CliBuilder {
     constructor(manipulator: Manipulator) {

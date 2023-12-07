@@ -22,8 +22,8 @@ const logCliError = (
     scope?: string
 ) => {
     const result = `\n!!! ${type} ERROR ${
-        scope && `(${scope})`
-    } !!!\n${text}\n`;
+        scope ? `(${scope}) ` : ""
+    }!!!\n${text}\n`;
 
     console.log(result);
 };
