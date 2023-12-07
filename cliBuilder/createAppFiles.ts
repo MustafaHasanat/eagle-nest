@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
-import Manipulator from "../manipulator/index.js";
-import constants from "../constants/builderConstants.js";
-import cloningCommands from "./helpers/cloningCommands.js";
+import Manipulator from "../manipulator/index";
+import constants from "../constants/builderConstants";
+import cloningCommands from "./helpers/cloningCommands";
 
 /**
  * This function will be fired by the --create-app-files option

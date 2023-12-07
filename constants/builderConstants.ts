@@ -1,13 +1,13 @@
 import { existsSync } from "fs";
-import { strictNameValidator } from "../validators/stringValidators.js";
+import { strictNameValidator } from "../validators/stringValidators";
 import { QuestionCollection } from "inquirer";
 import {
     columnDecoratorsChoices,
     columnPropertiesChoices,
     columnTypeChoices,
     relationChoices,
-} from "./builderChoices.js";
-import { BuilderConstantsProps } from "../interfaces/constants.js";
+} from "./builderChoices";
+import { BuilderConstantsProps } from "../interfaces/constants";
 
 // ----------------
 // helper functions

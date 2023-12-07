@@ -1,15 +1,15 @@
 import { join } from "path";
-import CloneTemplate from "../types/cloneTemplate.js";
+import CloneTemplate from "../types/cloneTemplate";
 import { writeFile } from "fs/promises";
-import pathCreator from "../utils/pathCreator.js";
-import replaceStrings from "../utils/replaceStrings.js";
+import pathCreator from "../utils/pathCreator";
+import replaceStrings from "../utils/replaceStrings";
 import { readFile } from "fs/promises";
-import { getCurrentRelativePath } from "../utils/pathHelpers.js";
+import { getCurrentRelativePath } from "../utils/pathHelpers";
 import {
     logCliProcess,
     logNewMessage,
     logCliTitle,
-} from "../utils/logCliDecorators.js";
+} from "../utils/logCliDecorators";
 
 /**
  * Create a copy of a template file with replacing the placeholders by a specific text

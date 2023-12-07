@@ -1,11 +1,11 @@
 import inquirer from "inquirer";
-import constants from "../constants/builderConstants.js";
-import { pathConvertor } from "./helpers/filesHelpers.js";
+import constants from "../constants/builderConstants";
+import { pathConvertor } from "./helpers/filesHelpers";
 import { join } from "path";
-import Manipulator from "../manipulator/index.js";
-import cloningCommands from "./helpers/cloningCommands.js";
-import injectingCommands from "./helpers/injectingCommands.js";
-import { getRelativePathFromDirs } from "../utils/pathHelpers.js";
+import Manipulator from "../manipulator/index";
+import cloningCommands from "./helpers/cloningCommands";
+import injectingCommands from "./helpers/injectingCommands";
+import { getRelativePathFromDirs } from "../utils/pathHelpers";
 
 /**
  * This function will be fired by the --database option

@@ -2,11 +2,11 @@ import figlet from "figlet";
 import { Command, OptionValues } from "commander";
 import path from "path";
 import { fileURLToPath } from "url";
-import CliBuilder from "../cliBuilder/index.js";
-import { Installer } from "./installer.js";
-import Manipulator from "../manipulator/index.js";
+import CliBuilder from "../cliBuilder/index";
+import { Installer } from "./installer";
+import Manipulator from "../manipulator/index";
 import { execSync } from "child_process";
-import { logCliError } from "../utils/logCliDecorators.js";
+import { logCliError } from "../utils/logCliDecorators";
 
 /**
  * A class to control the main entry of the tool
@@ -36,6 +36,14 @@ export default class Receiver {
         const optionsArray = Object.keys(this.options);
         const isNeedDeps = !["createLandingPage"].includes(optionsArray[0]);
 
+        // if there was no option selected, show the logo with the instructions for -h
+        if (optionsArray.length === 0) {
+            console.log(figlet.textSync("Eagle Nest"));
+            this.app.outputHelp();
+            console.log("\n\n");
+            return;
+        }
+
         // check if this is a node project
         const isNodeProject = execSync("ls")
             .toString()
@@ -49,12 +57,6 @@ export default class Receiver {
         // initialize the installer
         const installer = new Installer(isNeedDeps);
 
-        // if there was no option selected, show the logo with the instructions for -h
-        if (optionsArray.length === 0) {
-            console.log(figlet.textSync("Eagle Nest"));
-            this.app.outputHelp();
-            console.log("\n\n");
-        }
         // selection for creating the main.ts file
         if (this.options.createMain) {
             await installer.installPackages([

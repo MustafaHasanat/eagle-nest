@@ -1,15 +1,15 @@
 import { join } from "path";
-import { InjectTemplate, InjectionAction } from "../types/injectTemplate.js";
+import { InjectTemplate, InjectionAction } from "../types/injectTemplate";
 import { readFile, writeFile } from "fs/promises";
-import replaceStrings from "../utils/replaceStrings.js";
-import { missingFiles } from "../cliBuilder/helpers/filesHelpers.js";
+import replaceStrings from "../utils/replaceStrings";
+import { missingFiles } from "../cliBuilder/helpers/filesHelpers";
 import {
     logCliError,
     logCliProcess,
     logCliTitle,
     logNewMessage,
-} from "../utils/logCliDecorators.js";
-import { getCurrentRelativePath } from "../utils/pathHelpers.js";
+} from "../utils/logCliDecorators";
+import { getCurrentRelativePath } from "../utils/pathHelpers";
 
 type InjectStringProps = {
     original: string;

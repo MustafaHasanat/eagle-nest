@@ -1,9 +1,9 @@
 import inquirer from "inquirer";
-import Manipulator from "../manipulator/index.js";
-import constants from "../constants/builderConstants.js";
-import injectingCommands from "./helpers/injectingCommands.js";
-import { getTableNameVariants } from "../utils/getTableNameVariants.js";
-import { pathConvertor } from "./helpers/filesHelpers.js";
+import Manipulator from "../manipulator/index";
+import constants from "../constants/builderConstants";
+import injectingCommands from "./helpers/injectingCommands";
+import { getTableNameVariants } from "../utils/getTableNameVariants";
+import { pathConvertor } from "./helpers/filesHelpers";
 
 const relationBuilder = async (manipulator: Manipulator) => {
     await inquirer

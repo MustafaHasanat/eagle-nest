@@ -13,9 +13,9 @@ import { plainToClass } from "class-transformer";
 import {
     GetAllProps,
     GetConditionsProps,
-} from "../../external/types/getOperators.js";
-import { FilterOperator, SortDirection } from "external/enums/filters.js";
-import CustomResponseType from "external/types/customResponseType.js";
+} from "../../external/types/getOperators";
+import { FilterOperator, SortDirection } from "external/enums/filters";
+import CustomResponseType from "external/types/customResponseType";
 
 const mappedOperators = (value: any) => {
     return {

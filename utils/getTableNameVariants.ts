@@ -2,7 +2,7 @@ import {
     firstCharToLower,
     firstCharToUpper,
     pluralize,
-} from "../cliBuilder/helpers/filesHelpers.js";
+} from "../cliBuilder/helpers/filesHelpers";
 
 export const getTableNameVariants = (tableName: string) => {
     const camelCaseName = tableName;
