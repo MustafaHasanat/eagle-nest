@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
+        // "composite": true,
         "target": "es6",
-        "module": "ESNext",
+        "module": "esnext",
         "lib": ["es6"],
         "allowJs": true,
         "outDir": "./dist",
@@ -9,20 +10,20 @@
         "noImplicitAny": true,
         "esModuleInterop": true,
         "sourceMap": true,
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "resolveJsonModule": true,
         "declaration": true,
-        "baseUrl": ".",
+        "baseUrl": "./src",
         // "allowImportingTsExtensions": true,
         // "emitDeclarationOnly": true,
         // "noEmit": true,
         "paths": {
+            "utils/*": ["./src/utils/*"],
+            "__tests__/*": ["__tests__/*"],
             "*": ["*"]
         }
-        // "declarationMap": true,
-        // "verbatimModuleSyntax": true,
     },
-    "include": ["**/*.ts", "__tests__/unit/utils/getTableNameVariants.test.ts"],
+    "include": ["src/*.ts"],
     "exclude": ["node_modules"],
-    "files": ["./index.ts"]
+    "files": ["src/index.ts"]
 }

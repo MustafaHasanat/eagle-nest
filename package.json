@@ -2,15 +2,15 @@
   "name": "@mustafa-alhasanat/eagle-nest",
   "version": "0.0.0-development",
   "description": "Build Nest.js common blocks and files insanely faster!",
-  "main": "./dist/index.js",
+  "main": "./dist/src/index.js",
   "type": "module",
   "bin": {
-    "eaglenest": "./dist/index.js"
+    "eaglenest": "./dist/src/index.js"
   },
   "scripts": {
-    "test": "jest --config jestconfig.json",
+    "test": "jest",
     "commit": "git-cz",
-    "start": "npm run build && node dist/index.js",
+    "start": "npm run build && node dist/src/index.js",
     "build": "rimraf ./dist && tsc",
     "install-g": "npm install -g .",
     "globalize": "npm run build && npm run install-g",
@@ -47,22 +47,11 @@
     ]
   },
   "files": [
-    "templates"
+    "templates",
+    "dist/index.js"
   ],
   "exports": {
-    ".": "./index.ts"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "tsx",
-      "ts"
-    ],
-    "rootDir": ".",
-    "transform": {
-      "^.+\\.(ts|tsx)?$": "ts-jest"
-    }
+    ".": "./dist/index.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.9",
@@ -75,7 +64,6 @@
     "figlet": "^1.7.0",
     "fs": "^0.0.1-security",
     "inquirer": "^9.2.11",
-    "nodemon": "^3.0.2",
     "rimraf": "^5.0.5",
     "semantic-release": "^22.0.6",
     "typeorm": "^0.3.17"
