@@ -7,15 +7,9 @@ import {
     MoreThan,
     MoreThanOrEqual,
 } from "typeorm";
-import { plainToClass } from "class-transformer";
-// import { validate } from "class-validator";
 
-import {
-    GetAllProps,
-    GetConditionsProps,
-} from "../../external/types/getOperators";
+import { GetAllProps } from "../types/getOperators";
 import { FilterOperator, SortDirection } from "external/enums/filters";
-import CustomResponseType from "external/types/customResponseType";
 
 const mappedOperators = (value: any) => {
     return {
@@ -38,24 +32,6 @@ const mappingMethod = (
         [field]: mappedOperators(value)[`${filterOperator}`],
     };
 };
-
-function validateGetConditions<FieldType>(
-    conditions: any
-): GetConditionsProps<FieldType>[] {
-    if (conditions) {
-        try {
-            return conditions.map((condition: string) =>
-                JSON.parse(condition)
-            ) as GetConditionsProps<FieldType>[];
-        } catch (error) {
-            return [
-                JSON.parse(`${conditions}`),
-            ] as GetConditionsProps<FieldType>[];
-        }
-    } else {
-        return [];
-    }
-}
 
 function filteredGetQuery({
     sortBy,
@@ -137,45 +113,4 @@ function filteredGetQuery({
     }
 }
 
-async function validateCreateUpdate({
-    dto,
-    data,
-}: {
-    dto: any;
-    data: any;
-}): Promise<CustomResponseType<string[]>> {
-    try {
-        // const dtoClass = plainToClass(dto, data);
-        // const errors = await validate(dtoClass);
-        const errors: any = [];
-
-        const errorsArray: string[] = [];
-        errors.map((error: any) => {
-            if (error.constraints) {
-                Object.entries(error.constraints).map((constrain) => {
-                    const [key, value] = constrain;
-                    errorsArray.push(`${error.property} -> ${key}: ${value}`);
-                });
-            }
-        });
-
-        return {
-            message:
-                errorsArray.length === 0
-                    ? "No errors"
-                    : "Validation error occurred",
-            data: [],
-            status: errorsArray.length === 0 ? 200 : 500,
-            errors: errorsArray,
-        };
-    } catch (error: any) {
-        console.log(error);
-        return {
-            message: "Error occurred",
-            status: 500,
-            data: error,
-        };
-    }
-}
-
-export { filteredGetQuery, validateCreateUpdate, validateGetConditions };
+export { filteredGetQuery };

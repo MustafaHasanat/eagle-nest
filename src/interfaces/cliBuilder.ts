@@ -1,5 +1,7 @@
 // helpers interfaces ----------------------------------------------------
 
+import { InjectTemplate } from "../types/injectTemplate";
+
 export interface DatabaseProps {
     appModuleLocation: string;
     envLocation: string;
@@ -25,7 +27,7 @@ export interface CreateColumnProps {
         columnName: string;
         columnType: string;
         entityProperties: string | null;
-        entityDecorators: {
+        decorators: {
             decoratorsValues: string | null;
             decoratorsImports: string | null;
         };
@@ -38,6 +40,7 @@ export interface CreateColumnProps {
     nameVariants: {
         camelCaseName: string;
     };
+    specialInjections: InjectTemplate[];
 }
 
 export interface CreateRelationProps {
@@ -48,6 +51,7 @@ export interface CreateRelationProps {
         upperCaseName1: string;
         pluralLowerCaseName1: string;
         pluralUpperCaseName1: string;
+        schemasPath1: string;
     };
     table2: {
         camelCaseName2: string;

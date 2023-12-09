@@ -1,6 +1,6 @@
 type CloneTemplate = {
     target: string;
-    dest: string;
+    destination: string;
     newFileName: string;
     replacements?: {
         oldString: string;

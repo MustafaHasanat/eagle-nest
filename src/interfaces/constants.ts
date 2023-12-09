@@ -9,7 +9,11 @@ export interface CollectionProps {
 export interface BuilderConstantsProps {
     createMain: CollectionProps;
     createLandingPage: CollectionProps;
-    createAppFiles: CollectionProps;
+    createAppFiles: {
+        mainDest: QuestionCollection<any>;
+        envDest: QuestionCollection<any>;
+        rolesGuard: QuestionCollection<any>;
+    };
     database: CollectionProps;
     createTable: CollectionProps;
     createColumn: {
@@ -20,6 +24,7 @@ export interface BuilderConstantsProps {
         columnType: QuestionCollection<any>;
         columnProperties: QuestionCollection<any>;
         columnDecorators: QuestionCollection<any>;
+        stringLength: QuestionCollection<any>;
     };
     createRelation: {
         newRelation: QuestionCollection<any>;

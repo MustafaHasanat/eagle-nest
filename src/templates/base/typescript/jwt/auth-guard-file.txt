@@ -8,8 +8,8 @@ import {
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import { UserRole } from "src/enums/users/user-role.enum";
-import { User } from "src/schemas/users/entities/user.entity";
+import { UserRole } from "src/enums/user-role.enum";
+import { User } from "src/entities/user.entity";
 import { UsersService } from "src/schemas/users/users.service";
 import constants from "src/utils/constants/auth.constants";
 

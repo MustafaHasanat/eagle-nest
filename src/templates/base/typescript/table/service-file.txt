@@ -13,7 +13,7 @@ import {
   CustomResponseType,
   validationError,
   filteredGetQuery,
-  validateCreateUpdate,
+  validateNewInstance,
 } from '@mustafa-alhasanat/eagle-nest/external';
 
 import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";
@@ -84,7 +84,7 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             const filteredData =
                 filterNullsObject<CreateTABLE_UPPER_NAMEDto>(createTABLE_UPPER_NAMEDto);
 
-            const validationErrors = await validateCreateUpdate(
+            const validationErrors = await validateNewInstance(
                 {
                     dto: CreateTABLE_UPPER_NAMEDto,
                     data: filteredData,
@@ -127,7 +127,7 @@ export class TABLE_PLURAL_UPPER_NAMEService {
             const filteredData =
                 filterNullsObject<UpdateTABLE_UPPER_NAMEDto>(updateTABLE_UPPER_NAMEDto);
 
-            const validationErrors = await validateCreateUpdate(
+            const validationErrors = await validateNewInstance(
                 {
                     dto: UpdateTABLE_UPPER_NAMEDto,
                     data: filteredData,

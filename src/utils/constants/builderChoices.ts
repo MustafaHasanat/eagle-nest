@@ -15,23 +15,28 @@ const columnTypeChoices = [
         description: "create a simple boolean column (true/false)",
     },
     {
+        name: "date",
+        value: "date",
+        description: "create a date column",
+    },
+    {
+        name: "time",
+        value: "time",
+        description: "create a time column",
+    },
+    {
         name: "enum",
-        value: "ENUM_OBJECT",
+        value: "enum",
         description: "create an enum colum (specified string values)",
     },
     {
-        name: "date",
-        value: "Date",
-        description: "create a date-time column",
-    },
-    {
         name: "object",
-        value: "{}",
+        value: "object",
         description: "create an object-shape column",
     },
     {
         name: "array",
-        value: "[]",
+        value: "array",
         description: "create an array-shape column",
     },
     {
@@ -63,27 +68,37 @@ const columnDecoratorsChoices = [
     {
         name: "isUUID",
         value: "isUUID",
-        description: "",
+        description: "the string must follow the UUID format",
     },
     {
         name: "length",
         value: "length",
-        description: "",
+        description: "the string's length must be within the specified range",
     },
     {
         name: "isEmail",
         value: "isEmail",
-        description: "",
+        description: "the string must follow the email format: xx@yy.zz",
     },
     {
         name: "isStrongPassword",
         value: "isStrongPassword",
-        description: "",
+        description: "the string must have uppercase, lowercase, number, special character, and be longer than 8",
     },
     {
         name: "isPhoneNumber",
         value: "isPhoneNumber",
-        description: "",
+        description: "the string must follow the phone number format: +(country-code)(number)",
+    },
+    {
+        name: "isDecimal",
+        value: "isDecimal",
+        description: "the number must have a decimal point",
+    },
+    {
+        name: "isInt",
+        value: "isInt",
+        description: "the number must be an integer",
     },
 ];
 

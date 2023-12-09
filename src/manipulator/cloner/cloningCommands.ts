@@ -1,3 +1,4 @@
+import { join } from "path";
 import CloneTemplate from "../../types/cloneTemplate.js";
 
 interface CreateTableProps {
@@ -15,10 +16,10 @@ interface CreateTableProps {
 }
 
 export default {
-    createMain: (mainDist: string, name: string): CloneTemplate[] => [
+    createMain: (mainDest: string, name: string): CloneTemplate[] => [
         {
             target: "/templates/base/typescript/app/main-file.txt",
-            dest: mainDist,
+            destination: mainDest,
             newFileName: "main.ts",
             replacements: [
                 {
@@ -28,10 +29,11 @@ export default {
             ],
         },
     ],
-    createLandingPage: (dest: string, name: string): CloneTemplate[] => [
+
+    createLandingPage: (mainDest: string, name: string): CloneTemplate[] => [
         {
             target: "templates/base/html/landing-page.txt",
-            dest,
+            destination: mainDest,
             newFileName: "index.html",
             replacements: [
                 {
@@ -42,39 +44,64 @@ export default {
         },
         {
             target: "templates/base/css/landing-page.txt",
-            dest,
+            destination: mainDest,
             newFileName: "styles.css",
         },
     ],
-    createAppFiles: (dest: string): CloneTemplate[] => [
-        {
-            target: "templates/base/typescript/app/module-file.txt",
-            dest,
-            newFileName: "app.module.ts",
-        },
-        {
-            target: "templates/base/typescript/app/controller-file.txt",
-            dest,
-            newFileName: "app.controller.ts",
-        },
-        {
-            target: "templates/base/typescript/app/service-file.txt",
-            dest,
-            newFileName: "app.service.ts",
-        },
-    ],
+
+    createAppFiles: (
+        mainDest: string,
+        rolesGuard: boolean
+    ): CloneTemplate[] => {
+        const result = [
+            {
+                target: "templates/base/typescript/app/module-file.txt",
+                destination: mainDest,
+                newFileName: "app.module.ts",
+            },
+            {
+                target: "templates/base/typescript/app/controller-file.txt",
+                destination: mainDest,
+                newFileName: "app.controller.ts",
+            },
+            {
+                target: "templates/base/typescript/app/service-file.txt",
+                destination: mainDest,
+                newFileName: "app.service.ts",
+            },
+        ];
+        if (rolesGuard)
+            result.push(
+                ...[
+                    {
+                        target: "templates/base/typescript/jwt/auth-guard-file.txt",
+                        destination: join(mainDest, "guards"),
+                        newFileName: "user-auth.guard.ts",
+                    },
+                    {
+                        target: "src/templates/base/typescript/enum/user-role.txt",
+                        destination: join(mainDest, "enums"),
+                        newFileName: "user-role.enum.ts",
+                    },
+                ]
+            );
+
+        return result;
+    },
+
     database: (entitiesDist: string, enumsDist: string): CloneTemplate[] => [
         {
             target: "templates/base/typescript/db/entities-file.txt",
-            dest: entitiesDist,
+            destination: entitiesDist,
             newFileName: "index.ts",
         },
         {
             target: "templates/base/typescript/enum/tables-columns.txt",
-            dest: enumsDist,
+            destination: enumsDist,
             newFileName: "tables-columns.enum.ts",
         },
     ],
+
     createTable: ({
         paths: { entitiesPath, dtoPath, schemasPath },
         nameVariants: {
@@ -87,7 +114,7 @@ export default {
         return [
             {
                 target: "templates/base/typescript/db/entity.txt",
-                dest: entitiesPath,
+                destination: entitiesPath,
                 newFileName: camelCaseName + ".entity.ts",
                 replacements: [
                     {
@@ -98,7 +125,7 @@ export default {
             },
             {
                 target: "templates/base/typescript/dto/create-dto.txt",
-                dest: dtoPath,
+                destination: dtoPath,
                 newFileName: `create-${camelCaseName}.dto.ts`,
                 replacements: [
                     {
@@ -109,7 +136,7 @@ export default {
             },
             {
                 target: "templates/base/typescript/dto/update-dto.txt",
-                dest: dtoPath,
+                destination: dtoPath,
                 newFileName: `update-${camelCaseName}.dto.ts`,
                 replacements: [
                     {
@@ -124,7 +151,7 @@ export default {
             },
             {
                 target: "templates/base/typescript/table/module-file.txt",
-                dest: schemasPath,
+                destination: schemasPath,
                 newFileName: `${pluralLowerCaseName}.module.ts`,
                 replacements: [
                     {
@@ -147,7 +174,7 @@ export default {
             },
             {
                 target: "templates/base/typescript/table/controller-file.txt",
-                dest: schemasPath,
+                destination: schemasPath,
                 newFileName: `${pluralLowerCaseName}.controller.ts`,
                 replacements: [
                     {
@@ -170,7 +197,7 @@ export default {
             },
             {
                 target: "templates/base/typescript/table/service-file.txt",
-                dest: schemasPath,
+                destination: schemasPath,
                 newFileName: `${pluralLowerCaseName}.service.ts`,
                 replacements: [
                     {
