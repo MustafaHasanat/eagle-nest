@@ -5,10 +5,11 @@ import injectingCommands from "../manipulator/injector/injectingCommands.js";
 import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import {
-    decoratorsEntityMap,
+    decoratorsMap,
     propertiesDtoMap,
     propertiesEntityMap,
 } from "../utils/helpers/columnHelpers.js";
+import { addSpecialItems } from "../utils/helpers/columnSpecialTypes.js";
 
 const columnBuilder = async (
     manipulator: Manipulator,
@@ -40,14 +41,30 @@ const columnBuilder = async (
                 pathConvertor(mainDist, `dto/${pluralLowerCaseName}`),
             ];
 
+            const entityProperties = propertiesEntityMap(columnProperties);
+            const dtoProperties = propertiesDtoMap(columnProperties);
+            const decorators = decoratorsMap(columnDecorators);
+
+            const {
+                fullEntityProperties,
+                fullDtoProperties,
+                fullDecorators,
+                specialInjections,
+            } = await addSpecialItems({
+                columnType,
+                entityProperties,
+                dtoProperties,
+                decorators,
+            });
+
             await manipulator.injectTemplates(
                 injectingCommands.createColumn({
                     columnData: {
                         columnName,
                         columnType: columnType[0],
-                        entityProperties: propertiesEntityMap(columnProperties),
-                        entityDecorators: decoratorsEntityMap(columnDecorators),
-                        dtoProperties: propertiesDtoMap(columnProperties),
+                        entityProperties: fullEntityProperties,
+                        dtoProperties: fullDtoProperties,
+                        decorators: fullDecorators,
                     },
                     paths: {
                         entitiesPath,
@@ -56,6 +73,7 @@ const columnBuilder = async (
                     nameVariants: {
                         camelCaseName,
                     },
+                    specialInjections,
                 })
             );
 

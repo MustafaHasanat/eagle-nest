@@ -18,12 +18,18 @@
         // "emitDeclarationOnly": true,
         // "noEmit": true,
         "paths": {
+            "templates/*": ["./src/templates/*"],
             "utils/*": ["./src/utils/*"],
             "__tests__/*": ["__tests__/*"],
             "*": ["*"]
         }
     },
-    "include": ["src/*.ts"],
+    "include": [
+        "**/*.ts",
+        "src/*.(ts|txt)",
+        "src/templates/**/*.txt",
+        "cli-builder/*"
+    ],
     "exclude": ["node_modules"],
     "files": ["src/index.ts"]
 }

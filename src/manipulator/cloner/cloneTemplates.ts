@@ -44,17 +44,17 @@ const cloneTemplates = async (files: CloneTemplate[]): Promise<boolean> => {
             files.map(
                 async ({
                     target,
-                    dest,
+                    destination,
                     newFileName,
                     replacements = [],
                 }: CloneTemplate) => {
                     const outputFilePath = join(
                         process.cwd(),
-                        dest,
+                        destination,
                         newFileName
                     );
 
-                    pathCreator([dest]);
+                    pathCreator([destination]);
 
                     const contents = await readFile(
                         join(getCurrentRelativePath("../.."), target),
@@ -68,7 +68,7 @@ const cloneTemplates = async (files: CloneTemplate[]): Promise<boolean> => {
                     await writeFile(outputFilePath, modifiedFile, "utf8");
 
                     logNewMessage(
-                        `Great!! .. file '${newFileName}' has been saved successfully at '${process.cwd()}/${dest}'`
+                        `Great!! .. file '${newFileName}' has been saved successfully at '${process.cwd()}/${destination}'`
                     );
                 }
             )

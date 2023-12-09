@@ -36,9 +36,10 @@ const relationBuilder = async (manipulator: Manipulator) => {
                 pluralUpperCaseName: pluralUpperCaseName2,
             } = getTableNameVariants(secondTableName);
 
-            const [entitiesPath, dtoPath2, schemasPath2] = [
+            const [entitiesPath, dtoPath2, schemasPath1, schemasPath2] = [
                 pathConvertor(mainDist, "entities"),
                 pathConvertor(mainDist, `dto/${pluralLowerCaseName2}`),
+                pathConvertor(mainDist, `schemas/${pluralLowerCaseName1}`),
                 pathConvertor(mainDist, `schemas/${pluralLowerCaseName2}`),
             ];
 
@@ -51,6 +52,7 @@ const relationBuilder = async (manipulator: Manipulator) => {
                         upperCaseName1,
                         pluralLowerCaseName1,
                         pluralUpperCaseName1,
+                        schemasPath1,
                     },
                     table2: {
                         camelCaseName2,

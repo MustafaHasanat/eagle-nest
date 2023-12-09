@@ -77,6 +77,7 @@ export default class Receiver {
         if (this.options.createAppFiles) {
             await installer.installPackages([
                 { packageName: "@nestjs/common", commandType: "--save" },
+                { packageName: "@nestjs/core", commandType: "--save" },
             ]);
             await this.builder.createAppFiles(this.manipulator);
         }
@@ -85,6 +86,7 @@ export default class Receiver {
             await installer.installPackages([
                 { packageName: "@nestjs/config", commandType: "--save" },
                 { packageName: "@nestjs/typeorm", commandType: "--save" },
+                { packageName: "@nestjs/jwt", commandType: "--save" },
             ]);
             await this.builder.database(this.manipulator);
         }

@@ -10,11 +10,49 @@ import {
 // maps -----------
 
 const columnTypeDefaultMap: {
-    [type: string]: { create: string | null; update: string | null };
+    [type: string]: {
+        dtoCreate: string | null;
+        dtoUpdate: string | null;
+        entityType: string;
+        dtoType: string;
+    };
 } = {
-    string: { create: "default: 'string placeholder'", update: "default: ''" },
-    boolean: { create: "default: false", update: null },
-    number: { create: "default: 0", update: null },
+    string: {
+        dtoCreate: "default: 'placeholder',\nexample: 'placeholder'",
+        dtoUpdate: "required: false,\nexample: 'placeholder'",
+        entityType: "string",
+        dtoType: "string",
+    },
+    boolean: {
+        dtoCreate: "default: false,\nexample: false",
+        dtoUpdate: "required: false,\nexample: false",
+        entityType: "boolean",
+        dtoType: "boolean",
+    },
+    number: {
+        dtoCreate: "default: 0,\nexample: 0",
+        dtoUpdate: "required: false,\nexample: 0",
+        entityType: "number",
+        dtoType: "number",
+    },
+    date: {
+        dtoCreate: "default: new Date(),\nexample: new Date()",
+        dtoUpdate: "required: false,\nexample: new Date()",
+        entityType: "Date",
+        dtoType: "Date",
+    },
+    time: {
+        dtoCreate: "default: new Date(),\nexample: new Date()",
+        dtoUpdate: "required: false,\nexample: new Date()",
+        entityType: "Date",
+        dtoType: "Date",
+    },
+    array: {
+        dtoCreate: "default: new Date(),\nexample: new Date()",
+        dtoUpdate: "required: false,\nexample: new Date()",
+        entityType: "[]",
+        dtoType: "[]",
+    },
 };
 
 // functions -----------
@@ -31,6 +69,53 @@ export default {
             ],
         },
     ],
+
+    createAppFiles: ({
+        mainDest,
+        envDest,
+        rolesGuard,
+    }: {
+        mainDest: string;
+        envDest: string;
+        rolesGuard: boolean;
+    }): InjectTemplate[] =>
+        !rolesGuard
+            ? []
+            : [
+                  {
+                      injectable: `${mainDest}/app.module.ts`,
+                      actions: [
+                          {
+                              keyword: "*",
+                              addition:
+                                  "import { UserAuthGuard } from './guards/user-auth.guard'\nimport { APP_GUARD } from '@nestjs/core';\nimport { JwtModule } from '@nestjs/jwt';",
+                              additionIsFile: false,
+                          },
+                          {
+                              keyword: "imports: [",
+                              addition:
+                                  "templates/components/typescript/app/jwt/main-configs.txt",
+                          },
+                          {
+                              keyword: "providers: [",
+                              addition:
+                                  "\n{\nprovide: APP_GUARD,\nuseClass: UserAuthGuard,\n},\n",
+                              additionIsFile: false,
+                          },
+                      ],
+                  },
+                  {
+                      injectable: `${envDest}/.env`,
+                      actions: [
+                          {
+                              keyword: "*",
+                              addition: "JWT_SECRET=*******\n\n",
+                              additionIsFile: false,
+                              supposedToBeThere: "JWT_SECRET",
+                          },
+                      ],
+                  },
+              ],
 
     database: ({
         appModuleLocation,
@@ -130,13 +215,14 @@ export default {
             columnName,
             columnType,
             entityProperties,
-            entityDecorators: { decoratorsValues, decoratorsImports },
             dtoProperties,
+            decorators: { decoratorsValues, decoratorsImports },
         },
         paths: { entitiesPath, dtoPath },
         nameVariants: { camelCaseName },
+        specialInjections,
     }: CreateColumnProps): InjectTemplate[] => {
-        const { create: createDefault, update: updateDefault } =
+        const { dtoCreate, dtoUpdate, entityType, dtoType } =
             columnTypeDefaultMap[columnType];
 
         return [
@@ -156,7 +242,7 @@ export default {
                             `${decoratorsValues || ""}` +
                             `\n@Column({\n${
                                 entityProperties || ""
-                            }\n})\n${columnName}: ${columnType};\n`,
+                            }\n})\n${columnName}: ${entityType};\n`,
                         additionIsFile: false,
                     },
                     {
@@ -171,17 +257,18 @@ export default {
                 actions: [
                     {
                         keyword: "*",
-                        addition:
-                            "import { ApiProperty } from '@nestjs/swagger';\n\n",
+                        addition: `${decoratorsImports}\n"import { ApiProperty } from '@nestjs/swagger';\n`,
                         additionIsFile: false,
                     },
                     {
                         keyword: "Dto {",
-                        addition: `\n\n@ApiProperty({\n${
+                        addition: `\n${
+                            decoratorsValues || ""
+                        }\n@ApiProperty({\n${
                             dtoProperties ? dtoProperties + "," : ""
                         }\n${
-                            createDefault || ""
-                        }\n})\n${columnName}: ${columnType};\n`,
+                            dtoCreate || ""
+                        }\n})\n${columnName}: ${dtoType};\n`,
                         additionIsFile: false,
                     },
                 ],
@@ -197,12 +284,13 @@ export default {
                     {
                         keyword: "Dto) {",
                         addition: `\n\n@ApiProperty({ ${
-                            updateDefault || ""
-                        } })\n${columnName}?: ${columnType};\n`,
+                            dtoUpdate || ""
+                        } })\n${columnName}?: ${dtoType};\n`,
                         additionIsFile: false,
                     },
                 ],
             },
+            ...specialInjections,
         ];
     },
 
@@ -214,6 +302,7 @@ export default {
             upperCaseName1,
             pluralLowerCaseName1,
             pluralUpperCaseName1,
+            schemasPath1,
         },
         table2: {
             camelCaseName2,
@@ -242,6 +331,7 @@ export default {
                             keyword: "{ Entity",
                             addition: ", OneToMany",
                             additionIsFile: false,
+                            supposedToBeThere: "OneToMany",
                         },
                         {
                             keyword: "// --- relations ---",
@@ -274,13 +364,23 @@ export default {
                     ],
                 },
                 {
-                    injectable: `${schemasPath2}/${pluralLowerCaseName2}.service.ts`,
+                    injectable: `${schemasPath2}/${pluralLowerCaseName2}.module.ts`,
                     actions: [
                         {
-                            keyword: "DeleteResult",
-                            addition: ", In",
+                            keyword: "*",
+                            addition: `import { ${pluralUpperCaseName1}Module } from '../${pluralLowerCaseName1}/${pluralLowerCaseName1}.module';\n`,
                             additionIsFile: false,
                         },
+                        {
+                            keyword: "imports: [",
+                            addition: `${pluralUpperCaseName1}Module,\n`,
+                            additionIsFile: false,
+                        },
+                    ],
+                },
+                {
+                    injectable: `${schemasPath2}/${pluralLowerCaseName2}.service.ts`,
+                    actions: [
                         {
                             keyword: "*",
                             addition: `import { ${pluralUpperCaseName1}Service } from '../${pluralLowerCaseName1}/${pluralLowerCaseName1}.service';\n`,
@@ -353,7 +453,7 @@ export default {
                         {
                             keyword: "// --- Relational REST APIs ---",
                             addition:
-                                "templates/components/typescript/table/getTableById-service-file.txt",
+                                "templates/components/typescript/table/getRows-x-By-y-Id-service-file.txt",
                             replacements: [
                                 {
                                     oldString: "TABLE_LOWER_NAME1",
@@ -385,7 +485,7 @@ export default {
                         {
                             keyword: "// --- Relational REST endpoints ---",
                             addition:
-                                "templates/components/typescript/table/getTableById-controller-file.txt",
+                                "templates/components/typescript/table/getRows-x-By-y-Id-controller-file.txt",
                             replacements: [
                                 {
                                     oldString: "TABLE_LOWER_NAME1",
@@ -446,9 +546,280 @@ export default {
                     ],
                 },
             ];
-        // ManyToMany relation
-        else if (relationType === "ManyToMany") return [];
         // OneToOne relation
+        else if (relationType === "OneToOne")
+            return [
+                {
+                    injectable: join(
+                        entitiesPath,
+                        `${camelCaseName1}.entity.ts`
+                    ),
+                    actions: [
+                        {
+                            keyword: "*",
+                            addition: `import { ${upperCaseName2} } from './${camelCaseName2}.entity';\n`,
+                            additionIsFile: false,
+                        },
+                        {
+                            keyword: "{ Entity",
+                            addition: ", OneToOne, JoinColumn",
+                            additionIsFile: false,
+                            supposedToBeThere: "OneToOne",
+                        },
+                        {
+                            keyword: "// --- relations ---",
+                            addition: `\n@OneToOne(() => ${upperCaseName2}, (${camelCaseName2}) => ${camelCaseName2}.${camelCaseName1}), {cascade: true,})\n@JoinColumn()\n${camelCaseName2}: ${upperCaseName2};\n\n`,
+                            additionIsFile: false,
+                        },
+                    ],
+                },
+                {
+                    injectable: join(
+                        entitiesPath,
+                        `${camelCaseName2}.entity.ts`
+                    ),
+                    actions: [
+                        {
+                            keyword: "*",
+                            addition: `import { ${upperCaseName1} } from './${camelCaseName1}.entity';\n`,
+                            additionIsFile: false,
+                        },
+                        {
+                            keyword: "{ Entity",
+                            addition: ", OneToOne",
+                            additionIsFile: false,
+                        },
+                        {
+                            keyword: "// --- relations ---",
+                            addition: `\n@OneToOne(() => ${upperCaseName1}, (${camelCaseName1}) => ${camelCaseName1}.${camelCaseName2})\n${camelCaseName1}: ${upperCaseName1};\n\n`,
+                            additionIsFile: false,
+                        },
+                    ],
+                },
+                {
+                    injectable: `${schemasPath1}/${pluralLowerCaseName1}.service.ts`,
+                    actions: [
+                        {
+                            keyword: "// --- Relational REST APIs ---",
+                            addition:
+                                "templates/components/typescript/table/getRow-x-By-y-Id-service-file.txt",
+                            replacements: [
+                                {
+                                    oldString: "TABLE_LOWER_NAME_X",
+                                    newString: camelCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_X",
+                                    newString: upperCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_PLURAL_LOWER_NAME_X",
+                                    newString: pluralLowerCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_LOWER_NAME_Y",
+                                    newString: camelCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_Y",
+                                    newString: upperCaseName2,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    injectable: `${schemasPath1}/${pluralLowerCaseName1}.controller.ts`,
+                    actions: [
+                        {
+                            keyword: "// --- Relational REST endpoints ---",
+                            addition:
+                                "templates/components/typescript/table/getRow-x-By-y-Id-controller.txt",
+                            replacements: [
+                                {
+                                    oldString: "TABLE_LOWER_NAME_X",
+                                    newString: camelCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_X",
+                                    newString: upperCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_PLURAL_LOWER_NAME_X",
+                                    newString: pluralLowerCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_LOWER_NAME_Y",
+                                    newString: camelCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_Y",
+                                    newString: upperCaseName2,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    injectable: `${schemasPath2}/${pluralLowerCaseName2}.module.ts`,
+                    actions: [
+                        {
+                            keyword: "*",
+                            addition: `import { ${pluralUpperCaseName1}Module } from '../${pluralLowerCaseName1}/${pluralLowerCaseName1}.module';\n`,
+                            additionIsFile: false,
+                        },
+                        {
+                            keyword: "imports: [",
+                            addition: `${pluralUpperCaseName1}Module,\n`,
+                            additionIsFile: false,
+                        },
+                    ],
+                },
+                {
+                    injectable: `${schemasPath2}/${pluralLowerCaseName2}.service.ts`,
+                    actions: [
+                        {
+                            keyword: "*",
+                            addition: `import { ${pluralUpperCaseName1}Service } from '../${pluralLowerCaseName1}/${pluralLowerCaseName1}.service';\n`,
+                            additionIsFile: false,
+                        },
+                        {
+                            keyword: `@InjectRepository(${upperCaseName2})`,
+                            addition: `\nprivate readonly ${pluralLowerCaseName1}Service: ${pluralUpperCaseName1}Service,`,
+                            additionIsFile: false,
+                        },
+
+                        {
+                            keyword: "DUMMY_TABLE_NAME_CREATE",
+                            addition: `, ${camelCaseName1}: ${camelCaseName1}Id`,
+                            additionIsFile: false,
+                        },
+                        {
+                            keyword: "DUMMY_TABLE_NAME_UPDATE",
+                            addition: `, ${camelCaseName1}: ${camelCaseName1}Id`,
+                            additionIsFile: false,
+                            replica: true,
+                        },
+                        {
+                            keyword: "// --- Table ID check - create ---",
+                            addition:
+                                "templates/components/typescript/table/tableIdCheck-service-file.txt",
+                            replacements: [
+                                {
+                                    oldString: "TABLE_LOWER_NAME1",
+                                    newString: camelCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME1",
+                                    newString: upperCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_PLURAL_UPPER_NAME1",
+                                    newString: pluralLowerCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_LOWER_NAME2",
+                                    newString: camelCaseName2,
+                                },
+                            ],
+                        },
+                        {
+                            keyword: "// --- Relational REST APIs ---",
+                            addition:
+                                "templates/components/typescript/table/getRow-x-By-y-Id-service-file.txt",
+                            replacements: [
+                                {
+                                    oldString: "TABLE_LOWER_NAME_X",
+                                    newString: camelCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_X",
+                                    newString: upperCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_PLURAL_LOWER_NAME_X",
+                                    newString: pluralLowerCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_LOWER_NAME_Y",
+                                    newString: camelCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_Y",
+                                    newString: upperCaseName1,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    injectable: `${schemasPath2}/${pluralLowerCaseName2}.controller.ts`,
+                    actions: [
+                        {
+                            keyword: "// --- Relational REST endpoints ---",
+                            addition:
+                                "templates/components/typescript/table/getRow-x-By-y-Id-controller.txt",
+                            replacements: [
+                                {
+                                    oldString: "TABLE_LOWER_NAME_X",
+                                    newString: camelCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_X",
+                                    newString: upperCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_PLURAL_LOWER_NAME_X",
+                                    newString: pluralLowerCaseName2,
+                                },
+                                {
+                                    oldString: "TABLE_LOWER_NAME_Y",
+                                    newString: camelCaseName1,
+                                },
+                                {
+                                    oldString: "TABLE_UPPER_NAME_Y",
+                                    newString: upperCaseName1,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    injectable: `${dtoPath2}/create-${camelCaseName2}.dto.ts`,
+                    actions: [
+                        {
+                            keyword: "*",
+                            addition:
+                                "import { ApiProperty } from '@nestjs/swagger';",
+                            additionIsFile: false,
+                            supposedToBeThere: "ApiProperty",
+                        },
+                        {
+                            keyword: "// --- Relational fields ---",
+                            addition: `\n@ApiProperty({ required: true })\n${camelCaseName1}: string;\n`,
+                            additionIsFile: false,
+                        },
+                    ],
+                },
+                {
+                    injectable: `${dtoPath2}/update-${camelCaseName2}.dto.ts`,
+                    actions: [
+                        {
+                            keyword: "*",
+                            addition:
+                                "import { ApiProperty } from '@nestjs/swagger';",
+                            additionIsFile: false,
+                            supposedToBeThere: "ApiProperty",
+                        },
+                        {
+                            keyword: "// --- Relational fields ---",
+                            addition: `\n@ApiProperty({ required: false, default: '' })\n${camelCaseName1}?: string;\n`,
+                            additionIsFile: false,
+                        },
+                    ],
+                },
+            ];
+        // ManyToMany relation
         else return [];
     },
 };

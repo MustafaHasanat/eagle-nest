@@ -1,8 +1,8 @@
 import { join, dirname } from "path";
 
 const getDirename = () => {
-    // dirname(new URL(import.meta.url).pathname);
-    return dirname(__dirname);
+    return dirname(new URL(import.meta.url).pathname);
+    // return dirname(__dirname);
 };
 
 /**

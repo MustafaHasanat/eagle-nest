@@ -3,11 +3,7 @@ import ControllerWrapper from "./decorators/controller-wrapper";
 import EditorsWrapper from "./decorators/editors-wrapper";
 import { MembersOnly } from "./decorators/members";
 import { FilterOperator, SortDirection } from "./enums/filters";
-import {
-    filteredGetQuery,
-    validateCreateUpdate,
-    validateGetConditions,
-} from "./helpers/crudHelpers";
+import { filteredGetQuery } from "./helpers/filters";
 import { filterNullsArray, filterNullsObject } from "./helpers/filterNulls";
 import {
     foundRes,
@@ -30,7 +26,7 @@ import {
     GetQueryProps,
 } from "./types/getOperators";
 import GetAllWrapper from "./decorators/get-all-wrapper";
-import updateBodyFormat from "./helpers/updateBodyFormat";
+import { validateNewInstance, validateGetConditions } from "./helpers/validators";
 
 export {
     AdminsOnly,
@@ -41,11 +37,10 @@ export {
     SortDirection,
     FilterOperator,
     filteredGetQuery,
-    validateCreateUpdate,
+    validateNewInstance,
     validateGetConditions,
     filterNullsObject,
     filterNullsArray,
-    updateBodyFormat,
     foundRes,
     notFoundRes,
     createUpdateRes,

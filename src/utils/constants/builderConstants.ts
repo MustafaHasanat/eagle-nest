@@ -107,7 +107,21 @@ const builderConstants: BuilderConstantsProps = {
     },
     // constants for the --create-app-files
     createAppFiles: {
-        destination: getDestination({ targetName: "app files" }),
+        mainDest: getDestination({
+            distName: "mainDest",
+            targetName: "app files",
+        }),
+        envDest: getDestination({
+            distName: "envDest",
+            targetName: ".env file",
+            defaultDest: ".",
+        }),
+        rolesGuard: {
+            name: "rolesGuard",
+            message: "Do you want us to add a user-guard?",
+            type: "confirm",
+            default: true,
+        },
     },
     // constants for the --database
     database: {
@@ -186,6 +200,26 @@ const builderConstants: BuilderConstantsProps = {
             message:
                 "Select the validators that should be applied to this column: (optional)",
             choices: columnDecoratorsChoices,
+        },
+        stringLength: {
+            name: "lengths",
+            type: "input",
+            message:
+                "Specify the min and max lengths for your string separated by a comma with no spaces (e.g: 3,25): ",
+            validate: (input: string) => {
+                if (input.indexOf(",") === -1)
+                    return "You must have a comma separating the lengths!";
+                if (input.indexOf(" ") !== -1)
+                    return "You shouldn't have any space!";
+                if (input.indexOf(".") !== -1)
+                    return "You shouldn't have any decimal points!";
+
+                const [minimum, maximum] = input.trim().split(",");
+                if (!!!Number(minimum) || !!!Number(maximum))
+                    return "Both sides of the comma must be integers!";
+
+                return true;
+            },
         },
     },
     // constants for the --create-relation
