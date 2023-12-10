@@ -2,14 +2,15 @@ import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import { join } from "path";
-import Manipulator from "../manipulator/index.js";
-import cloningCommands from "../manipulator/cloner/cloningCommands.js";
-import injectingCommands from "../manipulator/injector/injectingCommands.js";
+import cloningCommands from "../commander/cloningCommands.js";
+import injectingCommands from "../commander/injectingCommands.js";
+import cloneTemplates from "../manipulator/cloneTemplates.js";
+import injectTemplates from "../manipulator/injectTemplates.js";
 
 /**
  * This function will be fired by the --database option
  */
-const databaseBuilder = async (manipulator: Manipulator) => {
+const databaseBuilder = async () => {
     inquirer
         .prompt([
             constants.database.rootDir,
@@ -24,7 +25,7 @@ const databaseBuilder = async (manipulator: Manipulator) => {
         .then(async (answers) => {
             if (!answers.overwrite) return;
 
-            const isDone = await manipulator.cloneTemplates(
+            const isDone = await cloneTemplates(
                 cloningCommands.database(
                     pathConvertor(answers.appModuleLocation, "entities"),
                     pathConvertor(answers.appModuleLocation, "enums")
@@ -32,7 +33,7 @@ const databaseBuilder = async (manipulator: Manipulator) => {
             );
             if (!isDone) return;
 
-            await manipulator.injectTemplates(
+            await injectTemplates(
                 injectingCommands.database({
                     appModuleLocation: pathConvertor(
                         answers.appModuleLocation,

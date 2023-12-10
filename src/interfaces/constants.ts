@@ -34,3 +34,24 @@ export interface BuilderConstantsProps {
     };
     shared: { overwrite: (files: string[]) => QuestionCollection<any> };
 }
+
+// create command interfaces ----------------------------------------------------
+
+export interface CreatorConstantsPros {
+    installer: {
+        confirmation: (packages: string[]) => QuestionCollection;
+    };
+    neededDeps: {
+        [set: string]: PackageType[];
+    };
+}
+
+export interface PackageType {
+    packageName: string;
+    commandType: "--save" | "--save-dev";
+}
+
+export interface FullDependencies {
+    installedDeps: string[];
+    neededDeps: PackageType[];
+}

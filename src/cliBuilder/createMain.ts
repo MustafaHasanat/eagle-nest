@@ -1,13 +1,14 @@
 import inquirer from "inquirer";
-import Manipulator from "../manipulator/index.js";
+import injectTemplates from "../manipulator/injectTemplates.js";
 import constants from "../utils/constants/builderConstants.js";
-import cloningCommands from "../manipulator/cloner/cloningCommands.js";
-import injectingCommands from "../manipulator/injector/injectingCommands.js";
+import cloneTemplates from "../manipulator/cloneTemplates.js";
+import cloningCommands from "../commander/cloningCommands.js";
+import injectingCommands from "../commander/injectingCommands.js";
 
 /**
  * This function will be fired by the --create-main option
  */
-const createMainBuilder = async (manipulator: Manipulator) => {
+const createMainBuilder = async () => {
     inquirer
         .prompt([
             constants.createMain.projectName,
@@ -17,7 +18,7 @@ const createMainBuilder = async (manipulator: Manipulator) => {
         .then(async (answers) => {
             if (!answers.overwrite) return;
 
-            const isDone = await manipulator.cloneTemplates(
+            const isDone = await cloneTemplates(
                 cloningCommands.createMain(
                     answers.mainDist,
                     answers.projectName
@@ -25,9 +26,7 @@ const createMainBuilder = async (manipulator: Manipulator) => {
             );
             if (!isDone) return;
 
-            await manipulator.injectTemplates(
-                injectingCommands.createMain(".env")
-            );
+            await injectTemplates(injectingCommands.createMain(".env"));
         });
 };
 

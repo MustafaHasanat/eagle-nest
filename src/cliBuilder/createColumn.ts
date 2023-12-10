@@ -1,7 +1,6 @@
 import inquirer from "inquirer";
-import Manipulator from "../manipulator/index.js";
 import constants from "../utils/constants/builderConstants.js";
-import injectingCommands from "../manipulator/injector/injectingCommands.js";
+import injectingCommands from "../commander/injectingCommands.js";
 import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import {
@@ -10,9 +9,9 @@ import {
     propertiesEntityMap,
 } from "../utils/helpers/columnHelpers.js";
 import { addSpecialItems } from "../utils/helpers/columnSpecialTypes.js";
+import injectTemplates from "../manipulator/injectTemplates.js";
 
 const columnBuilder = async (
-    manipulator: Manipulator,
     mainDist: string,
     prevTableName: string = ""
 ) => {
@@ -57,7 +56,7 @@ const columnBuilder = async (
                 decorators,
             });
 
-            await manipulator.injectTemplates(
+            await injectTemplates(
                 injectingCommands.createColumn({
                     columnData: {
                         columnName,
@@ -81,7 +80,7 @@ const columnBuilder = async (
             await inquirer
                 .prompt([constants.createColumn.newColumn])
                 .then(async ({ newColumn }) => {
-                    if (newColumn) await columnBuilder(manipulator, tableName);
+                    if (newColumn) await columnBuilder(tableName);
                 });
         });
 };
@@ -89,7 +88,7 @@ const columnBuilder = async (
 /**
  * This function will be fired by the --create-column option
  */
-const createColumnBuilder = async (manipulator: Manipulator) => {
+const createColumnBuilder = async () => {
     inquirer
         .prompt([
             constants.shared.overwrite([
@@ -102,7 +101,7 @@ const createColumnBuilder = async (manipulator: Manipulator) => {
         ])
         .then(async (answers) => {
             if (!answers.overwrite) return;
-            await columnBuilder(manipulator, answers.mainDist);
+            await columnBuilder(answers.mainDist);
         });
 };
 

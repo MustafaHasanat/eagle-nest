@@ -2,28 +2,44 @@
 "use strict";
 
 import { Command } from "commander";
-import Receiver from "./receiver/index.js";
 import constants from "./utils/constants/appConstants.js";
-import CliBuilder from "./cliBuilder/index.js";
-import Manipulator from "./manipulator/index.js";
+import createAction from "./actions/createAction.js";
+import { isNodeProject } from "./middlewares/isNodeProject.js";
+import defaultAction from "./actions/defaultAction.js";
+import newAction from "./actions/newAction.js";
+import initAction from "./actions/initAction.js";
+import { CreateArgument } from "./enums/createArgument.js";
 
 const app = new Command();
 const options = app.opts();
-const manipulator = new Manipulator();
-const builder = new CliBuilder(manipulator);
-const receiver = new Receiver(app, options, manipulator, builder);
 
-const { cm, clp, caf, ct, db, cc, cr } = constants.options;
+app.version(constants.version).description(constants.description);
 
-app.version(constants.version)
-    .description(constants.description)
-    .option(cm.flags, cm.desc)
-    .option(clp.flags, clp.desc)
-    .option(caf.flags, caf.desc)
-    .option(ct.flags, ct.desc)
-    .option(db.flags, db.desc)
-    .option(cc.flags, cc.desc)
-    .option(cr.flags, cr.desc)
-    // .alias("createMain")
-    .action(receiver.action)
-    .parse(process.argv);
+app.command("init")
+    .description("Install Nest.js globally.")
+    .action(() => {
+        initAction();
+    });
+
+app.command("new <name>")
+    .description("Initialize a new Nest project.")
+    .action((projectName: string) => {
+        newAction(projectName);
+    });
+
+app.command("create <files-set>")
+    .description(
+        "Create the necessary files and directories for the selected 'files-set'."
+    )
+    .action(async (filesSet: CreateArgument) => {
+        isNodeProject();
+        await createAction(filesSet);
+    });
+
+app.action(() => {
+    defaultAction(app, options);
+});
+// .option(cr.flags, cr.desc)
+
+// Parse the command-line arguments
+app.parse(process.argv);

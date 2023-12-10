@@ -1,7 +1,7 @@
 import { InjectTemplate } from "../../types/injectTemplate";
-import { ColumnTypeChoice } from "../../enums/columns";
+import { ColumnTypeChoice } from "../../enums/columns.js";
 import inquirer from "inquirer";
-import replaceStrings from "./replaceStrings";
+import replaceStrings from "./replaceStrings.js";
 import constants from "../../utils/constants/builderConstants.js";
 
 // --- interfaces ---

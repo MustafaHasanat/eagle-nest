@@ -1,13 +1,13 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
-import Manipulator from "../manipulator/index.js";
-import cloningCommands from "../manipulator/cloner/cloningCommands.js";
+import cloningCommands from "../commander/cloningCommands.js";
+import cloneTemplates from "../manipulator/cloneTemplates.js";
 
 /**
  * This function will be fired by the --create-landing-page option
  */
-const createLandingPageBuilder = async (manipulator: Manipulator) => {
+const createLandingPageBuilder = async () => {
     inquirer
         .prompt([
             constants.createLandingPage.projectName,
@@ -20,7 +20,7 @@ const createLandingPageBuilder = async (manipulator: Manipulator) => {
         .then(async (answers) => {
             if (!answers.overwrite) return;
 
-            const isDone = await manipulator.cloneTemplates(
+            const isDone = await cloneTemplates(
                 cloningCommands.createLandingPage(
                     pathConvertor(answers.publicDir, "public"),
                     answers.projectName
