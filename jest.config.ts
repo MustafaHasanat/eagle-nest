@@ -1,7 +1,7 @@
 import type { Config } from "@jest/types";
 
 const config: Config.InitialOptions = {
-    rootDir: ".",
+    rootDir: "./__tests__",
     verbose: true,
     // collectCoverage: true,
     collectCoverageFrom: ["src/**/*.(ts|js)"],
