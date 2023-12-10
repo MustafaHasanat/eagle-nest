@@ -1,11 +1,11 @@
 import inquirer from "inquirer";
-import Manipulator from "../manipulator/index.js";
 import constants from "../utils/constants/builderConstants.js";
-import injectingCommands from "../manipulator/injector/injectingCommands.js";
+import injectingCommands from "../commander/injectingCommands.js";
 import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
+import injectTemplates from "../manipulator/injectTemplates.js";
 
-const relationBuilder = async (manipulator: Manipulator) => {
+const relationBuilder = async () => {
     await inquirer
         .prompt([
             constants.createRelation.mainDist,
@@ -43,7 +43,7 @@ const relationBuilder = async (manipulator: Manipulator) => {
                 pathConvertor(mainDist, `schemas/${pluralLowerCaseName2}`),
             ];
 
-            await manipulator.injectTemplates(
+            await injectTemplates(
                 injectingCommands.createRelation({
                     relationType: relationType[0],
                     entitiesPath,
@@ -69,7 +69,7 @@ const relationBuilder = async (manipulator: Manipulator) => {
             await inquirer
                 .prompt([constants.createRelation.newRelation])
                 .then(async ({ newRelation }) => {
-                    if (newRelation) await relationBuilder(manipulator);
+                    if (newRelation) await relationBuilder();
                 });
         });
 };
@@ -77,7 +77,7 @@ const relationBuilder = async (manipulator: Manipulator) => {
 /**
  * This function will be fired by the --create-relation option
  */
-const createRelationBuilder = async (manipulator: Manipulator) => {
+const createRelationBuilder = async () => {
     inquirer
         .prompt([
             constants.shared.overwrite([
@@ -91,7 +91,7 @@ const createRelationBuilder = async (manipulator: Manipulator) => {
         ])
         .then(async (answers) => {
             if (!answers.overwrite) return;
-            await relationBuilder(manipulator);
+            await relationBuilder();
         });
 };
 

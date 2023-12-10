@@ -1,13 +1,15 @@
 import inquirer from "inquirer";
 import Manipulator from "../manipulator/index.js";
 import constants from "../utils/constants/builderConstants.js";
-import cloningCommands from "../manipulator/cloner/cloningCommands.js";
-import injectingCommands from "manipulator/injector/injectingCommands.js";
+import cloningCommands from "../commander/cloningCommands.js";
+import injectingCommands from "../commander/injectingCommands.js";
+import cloneTemplates from "../manipulator/cloneTemplates.js";
+import injectTemplates from "../manipulator/injectTemplates.js";
 
 /**
  * This function will be fired by the --create-app-files option
  */
-const createAppFilesBuilder = async (manipulator: Manipulator) => {
+const createAppFilesBuilder = async () => {
     inquirer
         .prompt([
             constants.createAppFiles.mainDest,
@@ -24,12 +26,12 @@ const createAppFilesBuilder = async (manipulator: Manipulator) => {
 
             if (!overwrite) return;
 
-            const isDone = await manipulator.cloneTemplates(
+            const isDone = await cloneTemplates(
                 cloningCommands.createAppFiles(mainDest, rolesGuard)
             );
             if (!isDone) return;
 
-            await manipulator.injectTemplates(
+            await injectTemplates(
                 injectingCommands.createAppFiles({
                     mainDest,
                     envDest,

@@ -1,10 +1,8 @@
-// interfaces ---
-
 import {
     propertiesEntityMapObject,
     decoratorsMapObject,
     propertiesDtoMapObject,
-} from "../../utils/constants/builderMaps";
+} from "../../utils/constants/builderMaps.js";
 
 interface DecoratorsMapProps {
     decoratorsArr: string[];

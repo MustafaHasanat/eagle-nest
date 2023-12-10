@@ -1,11 +1,11 @@
 import { join } from "path";
-import { InjectTemplate } from "../../types/injectTemplate.js";
+import { InjectTemplate } from "../types/injectTemplate.js";
 import {
     CreateColumnProps,
     CreateRelationProps,
     CreateTableProps,
     DatabaseProps,
-} from "../../interfaces/cliBuilder.js";
+} from "../interfaces/cliBuilder.js";
 
 // maps -----------
 

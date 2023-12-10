@@ -1,5 +1,5 @@
 import { join } from "path";
-import CloneTemplate from "../../types/cloneTemplate.js";
+import CloneTemplate from "../types/cloneTemplate.js";
 
 interface CreateTableProps {
     paths: {
