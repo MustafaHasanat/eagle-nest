@@ -18,9 +18,10 @@
         // "emitDeclarationOnly": true,
         // "noEmit": true,
         "paths": {
-            "templates/*": ["./src/templates/*"],
-            "utils/*": ["./src/utils/*"],
+            // "templates/*": ["./src/templates/*"],
+            // "utils/*": ["./src/utils/*"],
             "__tests__/*": ["__tests__/*"],
+            // "@/*": ["./*"],
             "*": ["*"]
         }
     },
