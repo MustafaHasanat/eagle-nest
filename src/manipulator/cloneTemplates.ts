@@ -5,11 +5,7 @@ import pathCreator from "../utils/helpers/pathCreator.js";
 import replaceStrings from "../utils/helpers/replaceStrings.js";
 import { readFile } from "fs/promises";
 import { getCurrentRelativePath } from "../utils/helpers/pathHelpers.js";
-import {
-    logCliProcess,
-    logNewMessage,
-    logCliTitle,
-} from "../utils/helpers/logCliDecorators.js";
+import specialLog from "../utils/helpers/specialLog.js";
 
 /**
  * Create a copy of a template file with replacing the placeholders by a specific text
@@ -37,7 +33,7 @@ import {
  * ]);
  */
 const cloneTemplates = async (files: CloneTemplate[]): Promise<boolean> => {
-    logCliProcess("Cloning");
+    specialLog({ message: "Cloning templates", situation: "PROCESS" });
 
     try {
         await Promise.all(
@@ -67,13 +63,18 @@ const cloneTemplates = async (files: CloneTemplate[]): Promise<boolean> => {
 
                     await writeFile(outputFilePath, modifiedFile, "utf8");
 
-                    logNewMessage(
-                        `Great!! .. file '${newFileName}' has been saved successfully at '${process.cwd()}/${destination}'`
-                    );
+                    specialLog({
+                        message: `File '${newFileName}' has been saved successfully at '${process.cwd()}/${destination}'`,
+                        situation: "MESSAGE",
+                    });
                 }
             )
         );
-        logCliTitle("Cloning is done!");
+
+        specialLog({
+            message: "Cloning is done",
+            situation: "RESULT",
+        });
         return true;
     } catch (error) {
         console.log(`Error occurred at the cloneTemplates: ${error}`);

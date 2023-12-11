@@ -2,15 +2,15 @@ interface AppProps {
     version: string;
     description: string;
     commands: {
-        [option: string]: {
-            flags: string;
-            desc: string;
+        [command: string]: {
+            action: string;
+            description: string;
         };
     };
     options: {
         [option: string]: {
             flags: string;
-            desc: string;
+            description: string;
         };
     };
 }
@@ -19,9 +19,15 @@ const appConstants: AppProps = {
     version: "1.0.0",
     description: "Build Nest.js common blocks and files insanely faster!",
     commands: {
-        init: {
-            flags: "init <project-name>",
-            desc: "Install 'Nest.js' globally if it is not installed, and create a new project.",
+        install: {
+            action: "install",
+            description:
+                "Install the recommended dependencies if they're not installed.",
+        },
+        create: {
+            action: "create <files-set>",
+            description:
+                "Create the necessary files and directories for the selected 'files-set'.",
         },
     },
     options: {},

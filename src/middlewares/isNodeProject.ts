@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { logCliError } from "../utils/helpers/logCliDecorators.js";
+import specialLog from "../utils/helpers/specialLog.js";
 
 const isNodeProject = () => {
     // check if this is a node project
@@ -9,7 +9,10 @@ const isNodeProject = () => {
         .includes("package.json");
 
     if (!isNodeProject) {
-        logCliError("This is not a Node.js project!", "TOOL MISUSE");
+        specialLog({
+            message: "This is not a Node.js project!",
+            situation: "ERROR",
+        });
         process.exit(1);
     }
 };

@@ -17,7 +17,9 @@
     "globalize": "npm run build && npm run install-g",
     "prepublishOnly": "npm run build",
     "acp": "git add . && npm run commit && git push",
-    "semantic-release": "semantic-release --branches main"
+    "semantic-release": "semantic-release --branches main",
+    "eagle": "node ./dist/src/index.js",
+    "dev": "npm run globalize && npm run eagle"
   },
   "repository": {
     "type": "git",

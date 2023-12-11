@@ -3,12 +3,7 @@ import { InjectTemplate, InjectionAction } from "../types/injectTemplate.js";
 import { readFile, writeFile } from "fs/promises";
 import replaceStrings from "../utils/helpers/replaceStrings.js";
 import { missingFiles } from "../utils/helpers/filesHelpers.js";
-import {
-    logCliError,
-    logCliProcess,
-    logCliTitle,
-    logNewMessage,
-} from "../utils/helpers/logCliDecorators.js";
+import specialLog from "../utils/helpers/specialLog.js";
 import { getCurrentRelativePath } from "../utils/helpers/pathHelpers.js";
 
 type InjectStringProps = {
@@ -43,11 +38,11 @@ const injectString = (props: InjectStringProps): string => {
 
     const index = original.indexOf(keyword);
     if (index === -1 && !["*", "**"].includes(keyword)) {
-        logCliError(
-            `'keyword=${keyword}' doesn't exist in the 'original' string`,
-            "RUNTIME",
-            "injectString"
-        );
+        specialLog({
+            message: `'keyword=${keyword}' doesn't exist in the 'original' string`,
+            situation: "ERROR",
+            scope: "mismatch",
+        });
         return original;
     }
     let injectPosition;
@@ -97,11 +92,12 @@ const injectionAction = async ({
     } = actions[0];
 
     if (!additionIsFile && replacements.length > 0) {
-        logCliError(
-            "You shouldn't have items in 'replacements' while 'additionIsFile' is false!",
-            "TOOL MISUSE",
-            "injectionAction"
-        );
+        specialLog({
+            message:
+                "You shouldn't have items in 'replacements' while 'additionIsFile' is false!",
+            situation: "ERROR",
+            scope: "tool misuse",
+        });
         return await injectionAction({
             actions: actions.slice(1),
             injectableContents,
@@ -109,11 +105,12 @@ const injectionAction = async ({
     }
 
     if (supposedToBeThere && replica) {
-        logCliError(
-            "You can't have a value for 'supposedToBeThere' and set 'replica' to true!",
-            "TOOL MISUSE",
-            "injectionAction"
-        );
+        specialLog({
+            message:
+                "You can't have a value for 'supposedToBeThere' and set 'replica' to true!",
+            situation: "ERROR",
+            scope: "tool misuse",
+        });
         return await injectionAction({
             actions: actions.slice(1),
             injectableContents,
@@ -191,8 +188,10 @@ const injectionAction = async ({
  * )
  */
 const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
-    logCliProcess("Injecting");
-
+    specialLog({
+        message: "Injecting templates",
+        situation: "PROCESS",
+    });
     const injectableFiles = files.reduce(
         (acc: string[], { injectable }) => [
             ...acc,
@@ -203,7 +202,10 @@ const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
 
     const missingFilesRes = missingFiles(injectableFiles);
     if (missingFilesRes.length > 0) {
-        logNewMessage("You must have these files first so we can modify them:");
+        specialLog({
+            message: "You must have these files first so we can modify them:",
+            situation: "ERROR",
+        });
         missingFilesRes.forEach((file, index) => {
             console.log(`${index + 1}) ${file}"\n`);
         });
@@ -226,16 +228,23 @@ const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
 
                 await writeFile(injectablePath, modifiedInjectable, "utf8");
 
-                logNewMessage(
-                    `Great!! .. file '${injectable}' has been modified successfully!`
-                );
+                specialLog({
+                    message: `File '${injectable}' has been modified successfully`,
+                    situation: "MESSAGE",
+                });
             })
         );
 
-        logCliTitle("Injection is done!");
+        specialLog({
+            message: "Injection is done!",
+            situation: "ERROR",
+        });
         return true;
     } catch (error) {
-        logNewMessage(`Error occurred at the injectTemplate: ${error}`);
+        specialLog({
+            message: `Error occurred at the injectTemplate: ${error}`,
+            situation: "ERROR",
+        });
         return false;
     }
 };
