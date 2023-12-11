@@ -1,6 +1,6 @@
 import { RGB } from "../../enums/rgb.js";
-import constants from "../constants/coloringConstants.js";
 import { getColoredText } from "./coloringLog.js";
+import constants from "../constants/coloringConstants.js";
 
 const { colors } = constants;
 
