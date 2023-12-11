@@ -1,7 +1,4 @@
-import {
-    logCliError,
-    logCliProcess,
-} from "../utils/helpers/logCliDecorators.js";
+import specialLog from "../utils/helpers/specialLog.js";
 import { CreateArgument } from "../enums/createArgument.js";
 import { execSync } from "child_process";
 import installPackages from "../manipulator/installPackages.js";
@@ -18,13 +15,13 @@ const createAction = async (filesSet: CreateArgument) => {
     const availableFilesSets = Object.values(CreateArgument);
 
     if (!availableFilesSets.includes(filesSet)) {
-        logCliError(
-            `Invalid argument "${filesSet}", you can only choose one of the following:\n${availableFilesSets.join(
+        specialLog({
+            message: `Invalid argument "${filesSet}", you can only choose one of the following:\n${availableFilesSets.join(
                 ", "
             )}`,
-            "TOOL MISUSE",
-            "argument"
-        );
+            situation: "ERROR",
+            scope: "argument",
+        });
         return;
     }
 
@@ -34,7 +31,10 @@ const createAction = async (filesSet: CreateArgument) => {
     // get a copy from the installed dependencies of the project
     // (only if the option needs some dependencies)
     if (isNeedDeps) {
-        logCliProcess("Checking your dependencies");
+        specialLog({
+            message: "Checking your dependencies",
+            situation: "ERROR",
+        });
         installedDeps.push(
             ...execSync("npm ls --depth=0")
                 .toString()

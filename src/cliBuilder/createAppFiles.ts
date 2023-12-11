@@ -1,8 +1,7 @@
 import inquirer from "inquirer";
-import Manipulator from "../manipulator/index.js";
 import constants from "../utils/constants/builderConstants.js";
-import cloningCommands from "../commander/cloningCommands.js";
-import injectingCommands from "../commander/injectingCommands.js";
+import cloningCommands from "../commands/cloningCommands.js";
+import injectingCommands from "../commands/injectingCommands.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
 

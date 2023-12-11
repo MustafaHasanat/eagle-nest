@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
-import injectingCommands from "../commander/injectingCommands.js";
+import injectingCommands from "../commands/injectingCommands.js";
 import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import {

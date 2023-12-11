@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
-import cloningCommands from "../commander/cloningCommands.js";
+import cloningCommands from "../commands/cloningCommands.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
 
 /**
