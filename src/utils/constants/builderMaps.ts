@@ -29,6 +29,7 @@ const decoratorsMapObject: {
     },
     isPhoneNumber: { name: "IsPhoneNumber", usage: "@IsPhoneNumber()" },
     isDecimal: { name: "isDecimal", usage: "@isDecimal()" },
+    isInt: { name: "isInt", usage: "@isInt()" },
 };
 
 export {

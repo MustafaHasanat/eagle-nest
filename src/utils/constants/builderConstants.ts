@@ -1,5 +1,5 @@
 import { existsSync } from "fs";
-import { strictNameValidator } from "../validators/stringValidators.js";
+import { tableNameValidator } from "../validators/stringValidators.js";
 import { QuestionCollection } from "inquirer";
 import {
     columnDecoratorsChoices,
@@ -137,11 +137,7 @@ const builderConstants: BuilderConstantsProps = {
         tableName: {
             ...getName({
                 name: "table",
-                validator: (name: string) => {
-                    return strictNameValidator(name)
-                        ? "Name is invalid!"
-                        : true;
-                },
+                validator: (name: string) => tableNameValidator(name),
             }),
             message:
                 "What's the name of your table? (use singular camelCase nouns to avoid errors, like: user, product, ...)",

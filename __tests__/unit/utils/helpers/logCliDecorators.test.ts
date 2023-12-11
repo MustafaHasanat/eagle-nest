@@ -7,7 +7,6 @@ const { colors } = constants;
 
 const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 const stdoutSpy = jest.fn();
-const getColoredTextSpy = jest.fn(getColoredText);
 
 const originalStdoutWrite = process.stdout.write;
 

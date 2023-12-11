@@ -1,6 +1,8 @@
 import { join, dirname } from "path";
 
 const getDirename = () => {
+    // const dirsArray = process.argv;    
+    // return dirsArray[dirsArray.length-1];
     return dirname(new URL(import.meta.url).pathname);
     // return dirname(__dirname);
 };
@@ -18,24 +20,21 @@ const getCurrentRelativePath = (relativePathToRoot: string) => {
     return rootDir;
 };
 
-const getRelativePathFromDirs = (srcDir: string, distDir: string): string => {
-    const srcDirs = srcDir.split("/");
-    const distDirs = distDir.split("/");
+// const getRelativePathFromDirs = (srcDir: string, distDir: string): string => {
+//     const srcDirs = srcDir.split("/");
+//     const distDirs = distDir.split("/");
 
-    [...srcDirs].forEach((srcElement) => {
-        if (distDirs.includes(srcElement)) {
-            delete srcDirs[0];
-            delete distDirs[0];
-        }
-    });
+//     [...srcDirs].forEach((srcElement) => {
+//         if (distDirs.includes(srcElement)) {
+//             delete srcDirs[0];
+//             delete distDirs[0];
+//         }
+//     });
 
-    console.log(srcDirs);
-    console.log(distDirs);
+//     return (
+//         srcDirs.reduce((acc: string, curr: string) => acc + "../", "") +
+//         distDirs.join("/")
+//     );
+// };
 
-    return (
-        srcDirs.reduce((acc: string, curr: string) => acc + "../", "") +
-        distDirs.join("/")
-    );
-};
-
-export { getCurrentRelativePath, getRelativePathFromDirs };
+export { getCurrentRelativePath };
