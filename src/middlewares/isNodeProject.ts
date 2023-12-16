@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import specialLog from "../utils/helpers/specialLog.js";
+import { specialLog } from "../utils/helpers/logHelpers.js";
 
 const isNodeProject = () => {
     // check if this is a node project

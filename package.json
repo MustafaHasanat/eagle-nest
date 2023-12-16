@@ -50,7 +50,7 @@
     ]
   },
   "files": [
-    "templates",
+    "dist/templates",
     "dist/index.js"
   ],
   "exports": {

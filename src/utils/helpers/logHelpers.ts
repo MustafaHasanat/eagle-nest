@@ -4,17 +4,21 @@ import constants from "../constants/coloringConstants.js";
 
 const { colors } = constants;
 
+interface SpecialLogProps {
+    message: string;
+    situation: "RESULT" | "PROCESS" | "MESSAGE" | "ERROR";
+    headerColor?: RGB;
+    scope?: string;
+    isBreak?: boolean;
+}
+
 const specialLog = ({
     message,
     situation,
     headerColor,
     scope,
-}: {
-    message: string;
-    situation: "RESULT" | "PROCESS" | "MESSAGE" | "ERROR";
-    headerColor?: RGB;
-    scope?: string;
-}) => {
+    isBreak = false,
+}: SpecialLogProps) => {
     const mappedSituation: {
         [situation: string]: { head: string; trail: string; color: RGB };
     } = {
@@ -31,7 +35,19 @@ const specialLog = ({
     }: `;
 
     process.stdout.write(getColoredText(header, finalColor));
-    console.log(`${message}${mappedSituation[situation].trail}\n`);
+    console.log(
+        `${message}${mappedSituation[situation].trail}${isBreak ? "\n" : ""}`
+    );
 };
 
-export default specialLog;
+const logNumberedList = (array: (string | number)[], isLog = true): string =>
+    array
+        .map((item, index) => {
+            const current = `${index + 1}) ${item}"`;
+            isLog && console.log(current);
+
+            return current;
+        })
+        .join("\n");
+
+export { specialLog, logNumberedList };

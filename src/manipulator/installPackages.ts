@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import { execSync } from "child_process";
 import constants from "../utils/constants/creatorConstants.js";
-import specialLog from "../utils/helpers/specialLog.js";
+import { specialLog } from "../utils/helpers/logHelpers.js";
 import { FullDependencies, PackageType } from "../interfaces/constants.js";
 
 const getUninstalledPackages = ({
@@ -80,6 +80,7 @@ const installPackages = async ({
         specialLog({
             message: "You have all the required dependencies",
             situation: "MESSAGE",
+            isBreak: true,
         });
     }
 };

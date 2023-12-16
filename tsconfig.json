@@ -19,6 +19,7 @@
         // "noEmit": true,
         "paths": {
             "templates/*": ["./src/templates/*"],
+            "external/*": ["./src/external/*"],
             "utils/*": ["./src/utils/*"],
             "__tests__/*": ["__tests__/*"],
             "*": ["*"]
@@ -28,8 +29,9 @@
         "**/*.ts",
         "src/*.(ts|txt)",
         "src/templates/**/*.txt",
-        "cli-builder/*"
+        "src/external/**/*.ts",
+        "src/cli-builder/*"
     ],
     "exclude": ["node_modules"],
-    "files": ["src/index.ts"]
+    "files": ["src/index.ts", "src/external/index.ts"]
 }

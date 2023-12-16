@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 
 import { GetAllProps } from "../types/getOperators";
-import { FilterOperator, SortDirection } from "external/enums/filters";
+import { FilterOperator, SortDirection } from "../enums/filters";
 
 const mappedOperators = (value: any) => {
     return {

@@ -8,6 +8,7 @@ import {
     relationChoices,
 } from "./builderChoices.js";
 import { BuilderConstantsProps } from "../../interfaces/constants.js";
+import { logNumberedList } from "../../utils/helpers/logHelpers.js";
 
 // ----------------
 // helper functions
@@ -274,9 +275,10 @@ const builderConstants: BuilderConstantsProps = {
         overwrite: (files: string[]) => ({
             type: "confirm",
             name: "overwrite",
-            message: `May we overwrite the following files if they exist at the directory? \n[${files.join(
-                ",\n"
-            )}]\n(If we can't overwrite, then the command will be terminated)`,
+            message: `May we overwrite the following files? They must exist at the given directory before proceeding!\n${logNumberedList(
+                files,
+                false
+            )}\n(If we can't overwrite, then the command will be terminated)`,
             default: true,
         }),
     },

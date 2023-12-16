@@ -1,9 +1,9 @@
 import { join } from "path";
 import { InjectTemplate, InjectionAction } from "../types/injectTemplate.js";
 import { readFile, writeFile } from "fs/promises";
-import replaceStrings from "../utils/helpers/replaceStrings.js";
+import { replaceStrings } from "../utils/helpers/stringsHelpers.js";
 import { missingFiles } from "../utils/helpers/filesHelpers.js";
-import specialLog from "../utils/helpers/specialLog.js";
+import { logNumberedList, specialLog } from "../utils/helpers/logHelpers.js";
 import { getCurrentRelativePath } from "../utils/helpers/pathHelpers.js";
 
 type InjectStringProps = {
@@ -206,9 +206,7 @@ const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
             message: "You must have these files first so we can modify them:",
             situation: "ERROR",
         });
-        missingFilesRes.forEach((file, index) => {
-            console.log(`${index + 1}) ${file}"\n`);
-        });
+        logNumberedList(missingFilesRes);
         return false;
     }
 
@@ -237,7 +235,8 @@ const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
 
         specialLog({
             message: "Injection is done!",
-            situation: "ERROR",
+            situation: "RESULT",
+            isBreak: true,
         });
         return true;
     } catch (error) {

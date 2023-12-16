@@ -1,5 +1,5 @@
 import { RGB } from "../../../../src/enums/rgb.js";
-import specialLog from "../../../../src/utils/helpers/specialLog";
+import { specialLog } from "../../../../src/utils/helpers/logHelpers.js";
 import constants from "../../../../src/utils/constants/coloringConstants.js";
 import { getColoredText } from "../../../../src/utils/helpers/coloringLog.js";
 

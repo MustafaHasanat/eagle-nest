@@ -1,4 +1,4 @@
-import specialLog from "../utils/helpers/specialLog.js";
+import { specialLog } from "../utils/helpers/logHelpers.js";
 import { CreateArgument } from "../enums/createArgument.js";
 import { execSync } from "child_process";
 import installPackages from "../manipulator/installPackages.js";
@@ -25,7 +25,7 @@ const createAction = async (filesSet: CreateArgument) => {
         return;
     }
 
-    const isNeedDeps = !["createLandingPage"].includes(filesSet);
+    const isNeedDeps = !["landing-page"].includes(filesSet);
     const installedDeps: string[] = [];
 
     // get a copy from the installed dependencies of the project
@@ -33,7 +33,7 @@ const createAction = async (filesSet: CreateArgument) => {
     if (isNeedDeps) {
         specialLog({
             message: "Checking your dependencies",
-            situation: "ERROR",
+            situation: "PROCESS",
         });
         installedDeps.push(
             ...execSync("npm ls --depth=0")

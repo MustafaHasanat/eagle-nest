@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { GetConditionsProps } from "../../external/types/getOperators";
-import CustomResponseType from "external/types/customResponseType";
+import { GetConditionsProps } from "../types/getOperators";
+import CustomResponseType from "../types/customResponseType";
 
 function validateGetConditions<FieldType>(
     conditions: any

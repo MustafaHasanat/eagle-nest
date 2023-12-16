@@ -79,7 +79,7 @@ export default {
                         newFileName: "user-auth.guard.ts",
                     },
                     {
-                        target: "src/templates/base/typescript/enum/user-role.txt",
+                        target: "templates/base/typescript/enum/user-role.txt",
                         destination: join(mainDest, "enums"),
                         newFileName: "user-role.enum.ts",
                     },

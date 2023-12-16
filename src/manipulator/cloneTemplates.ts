@@ -2,10 +2,10 @@ import { join } from "path";
 import CloneTemplate from "../types/cloneTemplate.js";
 import { writeFile } from "fs/promises";
 import pathCreator from "../utils/helpers/pathCreator.js";
-import replaceStrings from "../utils/helpers/replaceStrings.js";
+import { replaceStrings } from "../utils/helpers/stringsHelpers.js";
 import { readFile } from "fs/promises";
 import { getCurrentRelativePath } from "../utils/helpers/pathHelpers.js";
-import specialLog from "../utils/helpers/specialLog.js";
+import { specialLog } from "../utils/helpers/logHelpers.js";
 
 /**
  * Create a copy of a template file with replacing the placeholders by a specific text

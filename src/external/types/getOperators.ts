@@ -1,4 +1,4 @@
-import { FilterOperator } from "external/enums/filters";
+import { FilterOperator } from "../enums/filters";
 
 enum FilteredTermDataType {
     STRING = "string",

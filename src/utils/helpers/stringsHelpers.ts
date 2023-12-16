@@ -40,4 +40,4 @@ const replaceStrings = async ({
     });
 };
 
-export default replaceStrings;
+export { replaceStrings };
