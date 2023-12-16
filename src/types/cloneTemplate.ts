@@ -8,4 +8,4 @@ type CloneTemplate = {
     }[];
 };
 
-export default CloneTemplate;
+export { CloneTemplate };

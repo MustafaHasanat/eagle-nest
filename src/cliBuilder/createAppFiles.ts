@@ -1,7 +1,9 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
-import cloningCommands from "../commands/cloningCommands.js";
-import injectingCommands from "../commands/injectingCommands.js";
+import {
+    createAppFilesInjection,
+    createAppFilesCloning,
+} from "../commands/createAction/createAppFiles.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
 
@@ -26,12 +28,12 @@ const createAppFilesBuilder = async () => {
             if (!overwrite) return;
 
             const isDone = await cloneTemplates(
-                cloningCommands.createAppFiles(mainDest, rolesGuard)
+                createAppFilesCloning(mainDest, rolesGuard)
             );
             if (!isDone) return;
 
             await injectTemplates(
-                injectingCommands.createAppFiles({
+                createAppFilesInjection({
                     mainDest,
                     envDest,
                     rolesGuard,

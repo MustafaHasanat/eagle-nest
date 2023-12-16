@@ -1,18 +1,14 @@
 import { join } from "path";
-import { InjectTemplate, InjectionAction } from "../types/injectTemplate.js";
+import {
+    InjectTemplate,
+    InjectionAdditionAction,
+    InjectionDeletionAction,
+} from "../types/injectTemplate.js";
 import { readFile, writeFile } from "fs/promises";
 import { replaceStrings } from "../utils/helpers/stringsHelpers.js";
 import { missingFiles } from "../utils/helpers/filesHelpers.js";
 import { logNumberedList, specialLog } from "../utils/helpers/logHelpers.js";
 import { getCurrentRelativePath } from "../utils/helpers/pathHelpers.js";
-
-type InjectStringProps = {
-    original: string;
-    keyword: string;
-    addition: string;
-    replica: boolean;
-    supposedToBeThere: string | null;
-};
 
 /**
  * Injects the 'addition' string at the 'keyword' index inside the 'original' string
@@ -23,15 +19,27 @@ type InjectStringProps = {
  * @param supposedToBeThere If a string was provided, abort the injection action IF the string was found in the original string
  * @returns The resultant string
  */
-const injectString = (props: InjectStringProps): string => {
-    const { original, keyword, addition, supposedToBeThere, replica } = props;
-
+const injectString = ({
+    original,
+    keyword,
+    addition: {
+        base,
+        conditional: { type, data } = {
+            type: "NONE",
+            data: null,
+        },
+    },
+    replica,
+}: InjectionAdditionAction & {
+    original: string;
+}): string => {
     // abort the injection action if:
-    // - the 'supposedToBeThere' wasn't a null and was found in the original string
-    // - or the 'addition' was found in the original string
+    // - the conditional type was 'SUPPOSED_TO_BE_THERE' and was found in the original string
+    // - or the 'base' was found in the original string
     if (
-        (supposedToBeThere && original.indexOf(supposedToBeThere) !== -1) ||
-        (original.indexOf(addition) !== -1 && !replica)
+        (type === "SUPPOSED_TO_BE_THERE" &&
+            original.indexOf(`${data}`) !== -1) ||
+        (original.indexOf(base) !== -1 && !replica)
     ) {
         return original;
     }
@@ -55,7 +63,7 @@ const injectString = (props: InjectStringProps): string => {
         original.slice(injectPosition),
     ];
 
-    return leftSide + addition + rightSide;
+    return leftSide + base + rightSide;
 };
 
 /**
@@ -65,31 +73,36 @@ const injectString = (props: InjectStringProps): string => {
  * @param injectableContents The accumulated result of the original content after injecting all the action objects
  * @returns The final result of the file after injecting all the contents
  */
-const injectionAction = async ({
-    actions,
+const additionAction = async ({
+    additions,
     injectableContents,
 }: {
-    actions: InjectionAction[];
+    additions: InjectionAdditionAction[];
     injectableContents: string;
 }): Promise<string> => {
-    if (!actions.length) {
+    if (!additions.length) {
         return injectableContents;
     }
-    if (actions[0] === null) {
-        return await injectionAction({
-            actions: actions.slice(1),
+    if (additions[0] === null) {
+        return await additionAction({
+            additions: additions.slice(1),
             injectableContents,
         });
     }
 
     const {
-        addition,
+        addition: {
+            base,
+            additionIsFile = true,
+            conditional: { type, data } = {
+                type: "NONE",
+                data: null,
+            },
+        },
         keyword,
         replacements = [],
-        additionIsFile = true,
-        supposedToBeThere = null,
         replica = false,
-    } = actions[0];
+    } = additions[0];
 
     if (!additionIsFile && replacements.length > 0) {
         specialLog({
@@ -98,32 +111,29 @@ const injectionAction = async ({
             situation: "ERROR",
             scope: "tool misuse",
         });
-        return await injectionAction({
-            actions: actions.slice(1),
+        return await additionAction({
+            additions: additions.slice(1),
             injectableContents,
         });
     }
 
-    if (supposedToBeThere && replica) {
+    if (type === "SUPPOSED_TO_BE_THERE" && replica) {
         specialLog({
             message:
-                "You can't have a value for 'supposedToBeThere' and set 'replica' to true!",
+                "You can't have a value for 'SUPPOSED_TO_BE_THERE' and set 'replica' to true!",
             situation: "ERROR",
             scope: "tool misuse",
         });
-        return await injectionAction({
-            actions: actions.slice(1),
+        return await additionAction({
+            additions: additions.slice(1),
             injectableContents,
         });
     }
 
     // read the contents of the file (if it was a file)
     const additionContents = additionIsFile
-        ? await readFile(
-              join(getCurrentRelativePath("../.."), addition),
-              "utf8"
-          )
-        : addition;
+        ? await readFile(join(getCurrentRelativePath("../.."), base), "utf8")
+        : base;
 
     // apply all the replacements on the contents
     const modifiedAddition = additionIsFile
@@ -137,14 +147,55 @@ const injectionAction = async ({
     const modifiedInjectable = injectString({
         original: injectableContents,
         keyword,
-        addition: modifiedAddition,
-        supposedToBeThere,
+        addition: {
+            base: modifiedAddition,
+            conditional: {
+                type,
+                data,
+            },
+        },
         replica,
     });
 
     // recursively apply all the actions on teh original file
-    return await injectionAction({
-        actions: actions.slice(1),
+    return await additionAction({
+        additions: additions.slice(1),
+        injectableContents: modifiedInjectable,
+    });
+};
+
+const deletionAction = async ({
+    deletions,
+    injectableContents,
+}: {
+    deletions: InjectionDeletionAction[];
+    injectableContents: string;
+}): Promise<string> => {
+    if (!deletions.length) {
+        return injectableContents;
+    }
+    if (deletions[0] === null) {
+        return await deletionAction({
+            deletions: deletions.slice(1),
+            injectableContents,
+        });
+    }
+
+    const { target } = deletions[0];
+
+    const modifiedInjectable = await replaceStrings({
+        contents: injectableContents,
+        items: [
+            {
+                oldString: target,
+                newString: "",
+            },
+        ],
+    });
+
+    // recursively apply all the actions on teh original file
+    return await deletionAction({
+        deletions: deletions.slice(1),
         injectableContents: modifiedInjectable,
     });
 };
@@ -212,29 +263,40 @@ const injectTemplates = async (files: InjectTemplate[]): Promise<boolean> => {
 
     try {
         await Promise.all(
-            files.map(async ({ injectable, actions }: InjectTemplate) => {
-                const injectablePath = join(process.cwd(), injectable);
-                const injectableContents = await readFile(
-                    injectablePath,
-                    "utf8"
-                );
+            files.map(
+                async ({
+                    injectable,
+                    additions,
+                    deletions,
+                }: InjectTemplate) => {
+                    const injectablePath = join(process.cwd(), injectable);
+                    const injectableContents = await readFile(
+                        injectablePath,
+                        "utf8"
+                    );
 
-                const modifiedInjectable = await injectionAction({
-                    actions: actions,
-                    injectableContents,
-                });
+                    const modifiedStage1 = await additionAction({
+                        additions,
+                        injectableContents,
+                    });
 
-                await writeFile(injectablePath, modifiedInjectable, "utf8");
+                    const modifiedStage2 = await deletionAction({
+                        deletions: deletions || [],
+                        injectableContents: modifiedStage1,
+                    });
 
-                specialLog({
-                    message: `File '${injectable}' has been modified successfully`,
-                    situation: "MESSAGE",
-                });
-            })
+                    await writeFile(injectablePath, modifiedStage2, "utf8");
+
+                    specialLog({
+                        message: `File '${injectable}' has been modified successfully`,
+                        situation: "MESSAGE",
+                    });
+                }
+            )
         );
 
         specialLog({
-            message: "Injection is done!",
+            message: "Injection is done",
             situation: "RESULT",
             isBreak: true,
         });

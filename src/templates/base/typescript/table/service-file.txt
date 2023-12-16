@@ -14,7 +14,7 @@ import {
   validationError,
   filteredGetQuery,
   validateNewInstance,
-} from '@mustafa-alhasanat/eagle-nest/external';
+} from '@mustafa-alhasanat/eagle-nest';
 
 import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";
 import { CreateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
@@ -98,8 +98,10 @@ export class TABLE_PLURAL_UPPER_NAMEService {
                 );
             }
 
-            // don't modify this until you finish creating the app to be able to add relations to this table
-            const { DUMMY_TABLE_NAME_CREATE_A, ...rest } = filteredData;
+            const {
+                // --- DUMMY_TABLE_NAME_CREATE ---
+                ...rest
+            } = filteredData;
 
             const TABLE_LOWER_NAMEObj = { ...rest };
 
@@ -146,8 +148,10 @@ export class TABLE_PLURAL_UPPER_NAMEService {
                 return notFoundRes(`TABLE_UPPER_NAME does not exist`);
             }
 
-            // don't modify this until you finish creating the app to be able to add relations to this table
-            const { DUMMY_TABLE_NAME_UPDATE, ...rest } = filteredData;
+            const {
+                // --- DUMMY_TABLE_NAME_UPDATE ---
+                ...rest
+            } = filteredData;
 
             const TABLE_LOWER_NAMEObj = { ...rest };
 

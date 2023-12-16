@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
-import injectingCommands from "../commands/injectingCommands.js";
+import { createRelationInjection } from "../commands/createAction/createRelation.js";
 import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
@@ -11,14 +11,20 @@ const relationBuilder = async () => {
             constants.createRelation.mainDist,
             constants.createRelation.relationType,
             constants.createRelation.tables,
+            constants.createRelation.fieldName,
         ])
         .then(async (answers) => {
             const {
                 mainDist,
                 tables,
                 relationType,
-            }: { mainDist: string; tables: string; relationType: string } =
-                answers;
+                fieldName,
+            }: {
+                mainDist: string;
+                tables: string;
+                relationType: string;
+                fieldName: string;
+            } = answers;
 
             const [firstTableName, secondTableName] = tables.split("-");
 
@@ -44,7 +50,7 @@ const relationBuilder = async () => {
             ];
 
             await injectTemplates(
-                injectingCommands.createRelation({
+                createRelationInjection({
                     relationType: relationType[0],
                     entitiesPath,
                     table1: {
@@ -61,6 +67,7 @@ const relationBuilder = async () => {
                         pluralUpperCaseName2,
                         dtoPath2,
                         schemasPath2,
+                        camelCaseFieldName2: fieldName,
                     },
                 })
             );

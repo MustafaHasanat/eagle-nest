@@ -28,6 +28,7 @@ export interface BuilderConstantsProps {
     };
     createRelation: {
         newRelation: QuestionCollection<any>;
+        fieldName: QuestionCollection<any>;
         mainDist: QuestionCollection<any>;
         relationType: QuestionCollection<any>;
         tables: QuestionCollection<any>;

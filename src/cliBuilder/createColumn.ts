@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
-import injectingCommands from "../commands/injectingCommands.js";
+import { createColumnInjection } from "../commands/createAction/createColumn.js";
 import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import {
@@ -11,10 +11,7 @@ import {
 import { addSpecialItems } from "../utils/helpers/columnSpecialTypes.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
 
-const columnBuilder = async (
-    mainDist: string,
-    prevTableName: string = ""
-) => {
+const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
     await inquirer
         .prompt([
             { ...constants.createColumn.tableName, default: prevTableName },
@@ -32,12 +29,17 @@ const columnBuilder = async (
                 columnDecorators,
             } = answers;
 
-            const { camelCaseName, pluralLowerCaseName } =
+            const { camelCaseName, upperCaseName, pluralLowerCaseName } =
                 getTableNameVariants(tableName);
 
-            const [entitiesPath, dtoPath] = [
+            const { upperSnakeCaseName: columnUpperSnakeCase } =
+                getTableNameVariants(columnName);
+
+            const [entitiesPath, dtoPath, enumsPath, schemasPath] = [
                 pathConvertor(mainDist, "entities"),
                 pathConvertor(mainDist, `dto/${pluralLowerCaseName}`),
+                pathConvertor(mainDist, `enums`),
+                pathConvertor(mainDist, `schemas/${pluralLowerCaseName}`),
             ];
 
             const entityProperties = propertiesEntityMap(columnProperties);
@@ -57,7 +59,7 @@ const columnBuilder = async (
             });
 
             await injectTemplates(
-                injectingCommands.createColumn({
+                createColumnInjection({
                     columnData: {
                         columnName,
                         columnType: columnType[0],
@@ -68,9 +70,16 @@ const columnBuilder = async (
                     paths: {
                         entitiesPath,
                         dtoPath,
+                        enumsPath,
+                        schemasPath,
                     },
-                    nameVariants: {
+                    tableNameVariants: {
                         camelCaseName,
+                        upperCaseName,
+                        pluralLowerCaseName,
+                    },
+                    columNameVariants: {
+                        upperSnakeCaseName: columnUpperSnakeCase,
                     },
                     specialInjections,
                 })

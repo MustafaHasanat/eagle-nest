@@ -2,8 +2,7 @@ import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import { join } from "path";
-import cloningCommands from "../commands/cloningCommands.js";
-import injectingCommands from "../commands/injectingCommands.js";
+import { createDatabaseCloning, createDatabaseInjection } from "../commands/createAction/createDatabase.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
 
@@ -26,7 +25,7 @@ const databaseBuilder = async () => {
             if (!answers.overwrite) return;
 
             const isDone = await cloneTemplates(
-                cloningCommands.database(
+                createDatabaseCloning(
                     pathConvertor(answers.appModuleLocation, "entities"),
                     pathConvertor(answers.appModuleLocation, "enums")
                 )
@@ -34,7 +33,7 @@ const databaseBuilder = async () => {
             if (!isDone) return;
 
             await injectTemplates(
-                injectingCommands.database({
+                createDatabaseInjection({
                     appModuleLocation: pathConvertor(
                         answers.appModuleLocation,
                         "app.module.ts"

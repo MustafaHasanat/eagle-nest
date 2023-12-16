@@ -2,8 +2,10 @@ import inquirer from "inquirer";
 import injectTemplates from "../manipulator/injectTemplates.js";
 import constants from "../utils/constants/builderConstants.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
-import cloningCommands from "../commands/cloningCommands.js";
-import injectingCommands from "../commands/injectingCommands.js";
+import {
+    createMainCloning,
+    createMainInjection,
+} from "../commands/createAction/createMain.js";
 
 /**
  * This function will be fired by the --create-main option
@@ -19,14 +21,11 @@ const createMainBuilder = async () => {
             if (!answers.overwrite) return;
 
             const isDone = await cloneTemplates(
-                cloningCommands.createMain(
-                    answers.mainDist,
-                    answers.projectName
-                )
+                createMainCloning(answers.mainDist, answers.projectName)
             );
             if (!isDone) return;
 
-            await injectTemplates(injectingCommands.createMain(".env"));
+            await injectTemplates(createMainInjection(".env"));
         });
 };
 

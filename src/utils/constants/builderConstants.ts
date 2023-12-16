@@ -203,7 +203,7 @@ const builderConstants: BuilderConstantsProps = {
             choices: columnDecoratorsChoices,
         },
         stringLength: {
-            name: "lengths",
+            name: "stringLength",
             type: "input",
             message:
                 "Specify the min and max lengths for your string separated by a comma with no spaces (e.g: 3,25): ",
@@ -216,8 +216,14 @@ const builderConstants: BuilderConstantsProps = {
                     return "You shouldn't have any decimal points!";
 
                 const [minimum, maximum] = input.trim().split(",");
-                if (!!!Number(minimum) || !!!Number(maximum))
+
+                if (
+                    (!!!Number(minimum) && minimum !== "0") ||
+                    (!!!Number(maximum) && maximum !== "0")
+                )
                     return "Both sides of the comma must be integers!";
+                if (Number(minimum) >= Number(maximum))
+                    return "The max limit MUST be less than the min limit";
 
                 return true;
             },
@@ -243,6 +249,11 @@ const builderConstants: BuilderConstantsProps = {
                 }
                 return true;
             },
+        },
+        fieldName: {
+            ...getName({ name: "fieldName" }),
+            message:
+                "Enter the name of one of your 2nd table's fields: (camelCased)",
         },
         mainDist: {
             ...getDestination({

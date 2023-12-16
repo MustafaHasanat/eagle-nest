@@ -25,6 +25,9 @@
     "type": "git",
     "url": "https://github.com/MustafaHasanat/eagle-nest.git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "keywords": [
     "nest",
     "backend",

@@ -2,8 +2,10 @@ import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import pathCreator from "../utils/helpers/pathCreator.js";
-import cloningCommands from "../commands/cloningCommands.js";
-import injectingCommands from "../commands/injectingCommands.js";
+import {
+    createTableInjection,
+    createTableCloning,
+} from "../commands/createAction/createTable.js";
 import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
@@ -47,7 +49,7 @@ const createTableBuilder = async () => {
             pathCreator([schemasPath, dtoPath, enumsPath]);
 
             const isDone = await cloneTemplates(
-                cloningCommands.createTable({
+                createTableCloning({
                     paths: { entitiesPath, dtoPath, schemasPath },
                     nameVariants: {
                         camelCaseName,
@@ -60,7 +62,7 @@ const createTableBuilder = async () => {
             if (!isDone) return;
 
             await injectTemplates(
-                injectingCommands.createTable({
+                createTableInjection({
                     paths: {
                         appModulePath: mainDist,
                         entitiesPath,

@@ -39,24 +39,25 @@ const addSpecialItems = async ({
 }> => {
     const fullEntityProperties = entityProperties;
     const fullDtoProperties = dtoProperties;
-    const fullDecorators = { decoratorsValues, decoratorsImports };
+    let modifiedDecoratorsValues = decoratorsValues;
+    let modifiedDecoratorsImports = decoratorsImports;
 
     if (decoratorsValues) {
         if (decoratorsValues.indexOf("MIN_LENGTH") !== -1) {
             await inquirer
                 .prompt([constants.createColumn.stringLength])
                 .then(async ({ stringLength }) => {
-                    const [minimum, maximum] = stringLength.split(",");
-                    await replaceStrings({
+                    const [minimum, maximum] = stringLength.trim().split(",");
+                    modifiedDecoratorsValues = await replaceStrings({
                         contents: decoratorsValues,
                         items: [
                             {
                                 oldString: "MIN_LENGTH",
-                                newString: Number(minimum).toString(),
+                                newString: minimum,
                             },
                             {
                                 oldString: "MAX_LENGTH",
-                                newString: Number(maximum).toString(),
+                                newString: maximum,
                             },
                         ],
                     });
@@ -82,7 +83,10 @@ const addSpecialItems = async ({
     return {
         fullEntityProperties,
         fullDtoProperties,
-        fullDecorators,
+        fullDecorators: {
+            decoratorsValues: modifiedDecoratorsValues,
+            decoratorsImports: modifiedDecoratorsImports,
+        },
         specialInjections: [],
     };
 };
