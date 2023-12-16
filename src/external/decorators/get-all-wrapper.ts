@@ -1,7 +1,7 @@
 import { applyDecorators } from "@nestjs/common";
 import { ApiOperation, ApiQuery } from "@nestjs/swagger";
 import { SwaggerEnumType } from "@nestjs/swagger/dist/types/swagger-enum.type";
-import { FilterOperator } from "../enums/filters";
+import { FilterOperator } from "../enums/filters.js";
 
 function GetAllWrapper({ fieldsEnum }: { fieldsEnum: SwaggerEnumType }) {
     return applyDecorators(

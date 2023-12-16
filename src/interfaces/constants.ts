@@ -39,7 +39,7 @@ export interface BuilderConstantsProps {
 
 export interface CreatorConstantsPros {
     installer: {
-        confirmation: (packages: string[]) => QuestionCollection;
+        confirmation: (packages: string, count: number) => QuestionCollection;
     };
     neededDeps: {
         [set: string]: PackageType[];

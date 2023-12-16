@@ -2,15 +2,15 @@
   "name": "@mustafa-alhasanat/eagle-nest",
   "version": "0.0.0-development",
   "description": "Build Nest.js common blocks and files insanely faster!",
-  "main": "./dist/src/index.js",
+  "main": "./dist/index.js",
   "type": "module",
   "bin": {
-    "eaglenest": "./dist/src/index.js"
+    "eaglenest": "./dist/index.js"
   },
   "scripts": {
     "test": "jest",
     "commit": "git-cz",
-    "start": "npm run build && node dist/src/index.js",
+    "start": "npm run build && node dist/index.js",
     "copy-files": "copyfiles -u 1 src/templates/**/*.txt dist/src/",
     "build": "rimraf ./dist && tsc && npm run copy-files",
     "install-g": "npm install -g .",
@@ -18,7 +18,7 @@
     "prepublishOnly": "npm run build",
     "acp": "git add . && npm run commit && git push",
     "semantic-release": "semantic-release --branches main",
-    "eagle": "node ./dist/src/index.js",
+    "eagle": "node ./dist/index.js",
     "dev": "npm run globalize && npm run eagle"
   },
   "repository": {

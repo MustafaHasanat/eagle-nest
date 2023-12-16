@@ -38,4 +38,15 @@ function deletedRes<DataType>(message: string, data: DataType) {
     };
 }
 
-export { foundRes, notFoundRes, createUpdateRes, forbiddenRes, deletedRes };
+function errorRes(error: any) {
+    return { message: "Error occurred", data: error, status: 500 };
+}
+
+export {
+    foundRes,
+    notFoundRes,
+    createUpdateRes,
+    forbiddenRes,
+    deletedRes,
+    errorRes,
+};

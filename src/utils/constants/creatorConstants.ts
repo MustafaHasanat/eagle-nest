@@ -3,9 +3,9 @@ import { CreatorConstantsPros } from "../../interfaces/constants.js";
 
 const creatorConstants: CreatorConstantsPros = {
     installer: {
-        confirmation: (packages: string[]): QuestionCollection => ({
+        confirmation: (packages: string, count: number): QuestionCollection => ({
             name: `confirmation`,
-            message: `Some packages aren't installed (${packages.length} package/s), do you want us to take care of this?\n${packages}`,
+            message: `Some packages aren't installed (${count} package/s), do you want us to take care of this?\n${packages}`,
             type: "confirm",
             default: true,
         }),

@@ -43,7 +43,7 @@ const specialLog = ({
 const logNumberedList = (array: (string | number)[], isLog = true): string =>
     array
         .map((item, index) => {
-            const current = `${index + 1}) ${item}"`;
+            const current = `${index + 1}) ${item}`;
             isLog && console.log(current);
 
             return current;

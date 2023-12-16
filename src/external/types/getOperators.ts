@@ -1,4 +1,4 @@
-import { FilterOperator } from "../enums/filters";
+import { FilterOperator } from "../enums/filters.js";
 
 enum FilteredTermDataType {
     STRING = "string",

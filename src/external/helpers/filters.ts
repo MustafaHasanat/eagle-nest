@@ -8,8 +8,8 @@ import {
     MoreThanOrEqual,
 } from "typeorm";
 
-import { GetAllProps } from "../types/getOperators";
-import { FilterOperator, SortDirection } from "../enums/filters";
+import { GetAllProps } from "../types/getOperators.js";
+import { FilterOperator, SortDirection } from "../enums/filters.js";
 
 const mappedOperators = (value: any) => {
     return {

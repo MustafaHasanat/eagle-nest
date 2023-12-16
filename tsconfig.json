@@ -33,5 +33,5 @@
         "src/cli-builder/*"
     ],
     "exclude": ["node_modules"],
-    "files": ["src/index.ts", "src/external/index.ts"]
+    "files": ["index.ts"]
 }
