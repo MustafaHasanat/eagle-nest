@@ -6,7 +6,7 @@ import createMainBuilder from "../cliBuilder/createMain.js";
 import constants from "../utils/constants/creatorConstants.js";
 import createLandingPageBuilder from "../cliBuilder/createLandingPage.js";
 import createAppFilesBuilder from "../cliBuilder/createAppFiles.js";
-import databaseBuilder from "../cliBuilder/database.js";
+import databaseBuilder from "../cliBuilder/createDatabase.js";
 import createTableBuilder from "../cliBuilder/createTable.js";
 import createColumnBuilder from "../cliBuilder/createColumn.js";
 import createRelationBuilder from "../cliBuilder/createRelation.js";

@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
-import cloningCommands from "../commands/cloningCommands.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
+import { createLandingPageCloning } from "../commands/createAction/createLandingPage.js";
 
 /**
  * This function will be fired by the --create-landing-page option
@@ -21,7 +21,7 @@ const createLandingPageBuilder = async () => {
             if (!answers.overwrite) return;
 
             const isDone = await cloneTemplates(
-                cloningCommands.createLandingPage(
+                createLandingPageCloning(
                     pathConvertor(answers.publicDir, "public"),
                     answers.projectName
                 )

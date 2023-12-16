@@ -22,7 +22,7 @@ import {
   CustomResponseType,
   ControllerWrapper,
   validateGetConditions,
-} from '@mustafa-alhasanat/eagle-nest/external';
+} from '@mustafa-alhasanat/eagle-nest';
 
 import { TABLE_PLURAL_UPPER_NAMEService } from "./TABLE_PLURAL_LOWER_NAME.service";
 import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";

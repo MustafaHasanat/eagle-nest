@@ -8,11 +8,25 @@ export interface DatabaseProps {
     pathToEntities: string;
 }
 
-export interface CreateTableProps {
+export interface CreateTableInjectionProps {
     paths: {
         appModulePath: string;
         entitiesPath: string;
         enumsPath: string;
+    };
+    nameVariants: {
+        camelCaseName: string;
+        upperCaseName: string;
+        pluralLowerCaseName: string;
+        pluralUpperCaseName: string;
+    };
+}
+
+export interface CreateTableCloningProps {
+    paths: {
+        entitiesPath: string;
+        dtoPath: string;
+        schemasPath: string;
     };
     nameVariants: {
         camelCaseName: string;
@@ -36,9 +50,16 @@ export interface CreateColumnProps {
     paths: {
         entitiesPath: string;
         dtoPath: string;
+        enumsPath: string;
+        schemasPath: string;
     };
-    nameVariants: {
+    tableNameVariants: {
         camelCaseName: string;
+        upperCaseName: string;
+        pluralLowerCaseName: string;
+    };
+    columNameVariants: {
+        upperSnakeCaseName: string;
     };
     specialInjections: InjectTemplate[];
 }
@@ -60,5 +81,6 @@ export interface CreateRelationProps {
         pluralUpperCaseName2: string;
         dtoPath2: string;
         schemasPath2: string;
+        camelCaseFieldName2: string;
     };
 }

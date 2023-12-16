@@ -5,7 +5,7 @@
     try {
       const response = await this.TABLE_LOWER_NAME_XRepository.findOne({
         where: { TABLE_LOWER_NAME_Y: { id: TABLE_LOWER_NAME_YId } },
-        order: { CHANGE_THIS_TO_MAIN_FIELD: 'ASC' },
+        order: { CHANGE_THIS_TO_DEFAULT_FIELD: 'ASC' },
       });
 
       if (!response) {

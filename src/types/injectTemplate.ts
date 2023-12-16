@@ -1,18 +1,28 @@
-type InjectionAction = {
-    addition: string;
-    additionIsFile?: boolean;
-    supposedToBeThere?: string;
-    replica?: boolean;
+type InjectionAdditionAction = {
     keyword: string;
+    addition: {
+        base: string;
+        additionIsFile?: boolean;
+        conditional?: {
+            type: "SUPPOSED_TO_BE_THERE" | "NONE";
+            data: string | null;
+        };
+    };
     replacements?: {
         oldString: string;
         newString: string;
     }[];
+    replica?: boolean;
 } | null;
+
+type InjectionDeletionAction = {
+    target: string;
+};
 
 type InjectTemplate = {
     injectable: string;
-    actions: InjectionAction[];
+    additions: InjectionAdditionAction[];
+    deletions?: InjectionDeletionAction[];
 };
 
-export { InjectTemplate, InjectionAction };
+export { InjectTemplate, InjectionAdditionAction, InjectionDeletionAction };
