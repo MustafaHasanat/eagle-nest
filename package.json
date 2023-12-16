@@ -30,8 +30,8 @@
     "backend",
     "blocks",
     "api",
-    "cli",
-    "npmtool"
+    "cli-tool",
+    "npm-tool"
   ],
   "author": "Mustafa Alhasanat",
   "license": "ISC",
@@ -50,8 +50,9 @@
     ]
   },
   "files": [
-    "dist/templates",
-    "dist/index.js"
+    "src/templates",
+    "src/external",
+    "./index.js"
   ],
   "exports": {
     ".": "./dist/index.js"
