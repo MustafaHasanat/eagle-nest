@@ -1,18 +1,22 @@
 import { specialLog } from "../utils/helpers/logHelpers.js";
-import { CreateArgument } from "../enums/createArgument.js";
+import { CreateFieldsetArgument } from "../enums/createArguments.js";
 import { execSync } from "child_process";
 import installPackages from "../manipulator/installPackages.js";
 import createMainBuilder from "../cliBuilder/createMain.js";
 import constants from "../utils/constants/creatorConstants.js";
 import createLandingPageBuilder from "../cliBuilder/createLandingPage.js";
 import createAppFilesBuilder from "../cliBuilder/createAppFiles.js";
-import databaseBuilder from "../cliBuilder/createDatabase.js";
+import createDatabaseBuilder from "../cliBuilder/createDatabase.js";
 import createTableBuilder from "../cliBuilder/createTable.js";
 import createColumnBuilder from "../cliBuilder/createColumn.js";
 import createRelationBuilder from "../cliBuilder/createRelation.js";
+import { OptionValues } from "commander";
 
-const createAction = async (filesSet: CreateArgument) => {
-    const availableFilesSets = Object.values(CreateArgument);
+const createAction = async (
+    filesSet: CreateFieldsetArgument,
+    options: OptionValues
+) => {
+    const availableFilesSets = Object.values(CreateFieldsetArgument);
 
     if (!availableFilesSets.includes(filesSet)) {
         specialLog({
@@ -45,45 +49,45 @@ const createAction = async (filesSet: CreateArgument) => {
     }
 
     switch (filesSet) {
-        case CreateArgument.MAIN:
+        case CreateFieldsetArgument.MAIN:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.main,
             });
             await createMainBuilder();
             break;
-        case CreateArgument.LANDING_PAGE:
+        case CreateFieldsetArgument.LANDING_PAGE:
             await createLandingPageBuilder();
             break;
-        case CreateArgument.APP:
+        case CreateFieldsetArgument.APP:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.app,
             });
             await createAppFilesBuilder();
             break;
-        case CreateArgument.DATABASE:
+        case CreateFieldsetArgument.DATABASE:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.database,
             });
-            await databaseBuilder();
+            await createDatabaseBuilder();
             break;
-        case CreateArgument.TABLE:
+        case CreateFieldsetArgument.TABLE:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.table,
             });
-            await createTableBuilder();
+            await createTableBuilder(options);
             break;
-        case CreateArgument.COLUMN:
+        case CreateFieldsetArgument.COLUMN:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.column,
             });
             await createColumnBuilder();
             break;
-        case CreateArgument.RELATION:
+        case CreateFieldsetArgument.RELATION:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.relation,

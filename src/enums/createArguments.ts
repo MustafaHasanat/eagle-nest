@@ -1,4 +1,4 @@
-export enum CreateArgument {
+export enum CreateFieldsetArgument {
     MAIN = "main",
     LANDING_PAGE = "landing-page",
     APP = "app",
@@ -6,4 +6,10 @@ export enum CreateArgument {
     TABLE = "table",
     COLUMN = "column",
     RELATION = "relation",
+}
+
+export enum CreateSpecialArgument {
+    USER = "user",
+    PRODUCT = "product",
+    NOTIFICATION = "notification",
 }

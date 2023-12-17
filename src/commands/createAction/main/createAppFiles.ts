@@ -1,6 +1,6 @@
 import { join } from "path";
-import { CloneTemplate } from "../../types/cloneTemplate.js";
-import { InjectTemplate } from "../../types/injectTemplate.js";
+import { CloneTemplate } from "../../../types/cloneTemplate.js";
+import { InjectTemplate } from "../../../types/injectTemplate.js";
 
 interface CreateAppFilesProps {
     mainDest: string;

@@ -93,7 +93,7 @@ Create the necessary files and directories for the selected 'files-set'.
 
 -   The main file is supposed to be located at the root `./main.ts`
 -   The default used app directory is `./src/`
--   Inside the app directory, we have organized and grouped directories for each section: 
+-   Inside the app directory, we have organized and grouped directories for each section:
     -   schemas
     -   dto
     -   enums

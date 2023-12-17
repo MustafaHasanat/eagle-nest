@@ -1,25 +1,27 @@
 import { join } from "path";
-import { InjectTemplate } from "../../types/injectTemplate.js";
-import { CreateRelationProps } from "../../interfaces/cliBuilder.js";
+import { InjectTemplate } from "../../../types/injectTemplate.js";
+import { CreateRelationProps } from "../../../interfaces/cliBuilder.js";
 
 const createRelationInjection = ({
     relationType,
-    entitiesPath,
     table1: {
-        camelCaseName1,
-        upperCaseName1,
-        pluralLowerCaseName1,
-        pluralUpperCaseName1,
-        schemasPath1,
+        nameVariant: {
+            camelCaseName: camelCaseName1,
+            upperCaseName: upperCaseName1,
+            pluralLowerCaseName: pluralLowerCaseName1,
+            pluralUpperCaseName: pluralUpperCaseName1,
+        },
+        paths: { schemasPath: schemasPath1, entitiesPath },
     },
     table2: {
-        camelCaseName2,
-        upperCaseName2,
-        pluralLowerCaseName2,
-        pluralUpperCaseName2,
-        dtoPath2,
-        schemasPath2,
-        camelCaseFieldName2,
+        nameVariant: {
+            camelCaseName: camelCaseName2,
+            upperCaseName: upperCaseName2,
+            pluralLowerCaseName: pluralLowerCaseName2,
+            pluralUpperCaseName: pluralUpperCaseName2,
+        },
+        paths: { dtoPath: dtoPath2, schemasPath: schemasPath2 },
+        camelCaseColumnName: camelCaseColumnName2,
     },
 }: CreateRelationProps): InjectTemplate[] => {
     // OneToMany relation
@@ -213,7 +215,7 @@ const createRelationInjection = ({
                     {
                         keyword: "CHANGE_THIS_TO_DEFAULT_FIELD",
                         addition: {
-                            base: `${camelCaseFieldName2}`,
+                            base: `${camelCaseColumnName2}`,
                             additionIsFile: false,
                         },
                     },

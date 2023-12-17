@@ -6,7 +6,8 @@ import constants from "../../utils/constants/builderConstants.js";
 
 // --- interfaces ---
 
-interface AddSpecialItemsProps {
+type AddSpecialItemsProps = {
+    columnName: string;
     columnType: ColumnTypeChoice;
     entityProperties: string | null;
     dtoProperties: string | null;
@@ -14,7 +15,11 @@ interface AddSpecialItemsProps {
         decoratorsValues: string | null;
         decoratorsImports: string | null;
     };
-}
+};
+
+type AddSpecialItemsReturn = AddSpecialItemsProps & {
+    specialInjections: InjectTemplate[];
+};
 
 // --- methods ---
 
@@ -24,19 +29,12 @@ const appendItem = (original: string | null, item: string): string => {
 };
 
 const addSpecialItems = async ({
+    columnName,
     columnType,
     entityProperties,
     dtoProperties,
     decorators: { decoratorsValues, decoratorsImports },
-}: AddSpecialItemsProps): Promise<{
-    fullEntityProperties: string | null;
-    fullDtoProperties: string | null;
-    fullDecorators: {
-        decoratorsValues: string | null;
-        decoratorsImports: string | null;
-    };
-    specialInjections: InjectTemplate[];
-}> => {
+}: AddSpecialItemsProps): Promise<AddSpecialItemsReturn> => {
     const fullEntityProperties = entityProperties;
     const fullDtoProperties = dtoProperties;
     let modifiedDecoratorsValues = decoratorsValues;
@@ -81,9 +79,11 @@ const addSpecialItems = async ({
     }
 
     return {
-        fullEntityProperties,
-        fullDtoProperties,
-        fullDecorators: {
+        columnName,
+        columnType,
+        entityProperties: fullEntityProperties,
+        dtoProperties: fullDtoProperties,
+        decorators: {
             decoratorsValues: modifiedDecoratorsValues,
             decoratorsImports: modifiedDecoratorsImports,
         },

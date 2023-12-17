@@ -1,41 +1,21 @@
-// helpers interfaces ----------------------------------------------------
-
+import NameVariant from "../models/nameVariant.js";
+import SubPath from "../models/subPath.js";
 import { InjectTemplate } from "../types/injectTemplate";
 
+// create database
 export interface DatabaseProps {
     appModuleLocation: string;
     envLocation: string;
     pathToEntities: string;
 }
 
-export interface CreateTableInjectionProps {
-    paths: {
-        appModulePath: string;
-        entitiesPath: string;
-        enumsPath: string;
-    };
-    nameVariants: {
-        camelCaseName: string;
-        upperCaseName: string;
-        pluralLowerCaseName: string;
-        pluralUpperCaseName: string;
-    };
+// create table
+export interface CreateTableProps {
+    paths: SubPath;
+    nameVariant: NameVariant;
 }
 
-export interface CreateTableCloningProps {
-    paths: {
-        entitiesPath: string;
-        dtoPath: string;
-        schemasPath: string;
-    };
-    nameVariants: {
-        camelCaseName: string;
-        upperCaseName: string;
-        pluralLowerCaseName: string;
-        pluralUpperCaseName: string;
-    };
-}
-
+// create column
 export interface CreateColumnProps {
     columnData: {
         columnName: string;
@@ -46,41 +26,23 @@ export interface CreateColumnProps {
             decoratorsImports: string | null;
         };
         dtoProperties: string | null;
+        specialInjections: InjectTemplate[];
     };
-    paths: {
-        entitiesPath: string;
-        dtoPath: string;
-        enumsPath: string;
-        schemasPath: string;
-    };
-    tableNameVariants: {
-        camelCaseName: string;
-        upperCaseName: string;
-        pluralLowerCaseName: string;
-    };
-    columNameVariants: {
-        upperSnakeCaseName: string;
-    };
-    specialInjections: InjectTemplate[];
+    paths: SubPath;
+    tableNameVariants: NameVariant;
+    columNameVariants: NameVariant;
 }
 
+// create relation
 export interface CreateRelationProps {
     relationType: string;
-    entitiesPath: string;
     table1: {
-        camelCaseName1: string;
-        upperCaseName1: string;
-        pluralLowerCaseName1: string;
-        pluralUpperCaseName1: string;
-        schemasPath1: string;
+        nameVariant: NameVariant;
+        paths: SubPath;
     };
     table2: {
-        camelCaseName2: string;
-        upperCaseName2: string;
-        pluralLowerCaseName2: string;
-        pluralUpperCaseName2: string;
-        dtoPath2: string;
-        schemasPath2: string;
-        camelCaseFieldName2: string;
+        nameVariant: NameVariant;
+        paths: SubPath;
+        camelCaseColumnName: string;
     };
 }

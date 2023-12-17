@@ -1,20 +1,17 @@
 import { join } from "path";
-import {
-    CreateTableInjectionProps,
-    CreateTableCloningProps,
-} from "../../interfaces/cliBuilder.js";
-import { InjectTemplate } from "../../types/injectTemplate.js";
-import { CloneTemplate } from "../../types/cloneTemplate.js";
+import { CreateTableProps } from "../../../interfaces/cliBuilder.js";
+import { InjectTemplate } from "../../../types/injectTemplate.js";
+import { CloneTemplate } from "../../../types/cloneTemplate.js";
 
 const createTableCloning = ({
     paths: { entitiesPath, dtoPath, schemasPath },
-    nameVariants: {
+    nameVariant: {
         camelCaseName,
         upperCaseName,
         pluralLowerCaseName,
         pluralUpperCaseName,
     },
-}: CreateTableCloningProps): CloneTemplate[] => {
+}: CreateTableProps): CloneTemplate[] => {
     return [
         {
             target: "templates/base/typescript/db/entity.txt",
@@ -126,14 +123,14 @@ const createTableCloning = ({
 };
 
 const createTableInjection = ({
-    paths: { entitiesPath, appModulePath, enumsPath },
-    nameVariants: {
+    paths: { entitiesPath, mainPath: appModulePath, enumsPath },
+    nameVariant: {
         camelCaseName,
         upperCaseName,
         pluralUpperCaseName,
         pluralLowerCaseName,
     },
-}: CreateTableInjectionProps): InjectTemplate[] => [
+}: CreateTableProps): InjectTemplate[] => [
     {
         injectable: join(entitiesPath, "index.ts"),
         additions: [
