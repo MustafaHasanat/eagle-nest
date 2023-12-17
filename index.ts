@@ -40,9 +40,9 @@ import {
 import { Command } from "commander";
 import InitAction from "./src/actions/index.js";
 
-// Initialize the cli-tool app
-const app = new Command();
-InitAction(app);
+// Initialize the cli-tool program
+const program = new Command();
+InitAction(program);
 
 export {
     AdminsOnly,

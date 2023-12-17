@@ -1,15 +1,16 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
-import { createColumnInjection } from "../commands/createAction/createColumn.js";
-import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
-import { pathConvertor } from "../utils/helpers/filesHelpers.js";
+import { createColumnInjection } from "../commands/createAction/main/createColumn.js";
 import {
     decoratorsMap,
+    getColumnAttributes,
     propertiesDtoMap,
     propertiesEntityMap,
 } from "../utils/helpers/columnHelpers.js";
 import { addSpecialItems } from "../utils/helpers/columnSpecialTypes.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
+import NameVariant from "../models/nameVariant.js";
+import SubPath from "../models/subPath.js";
 
 const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
     await inquirer
@@ -29,59 +30,27 @@ const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
                 columnDecorators,
             } = answers;
 
-            const { camelCaseName, upperCaseName, pluralLowerCaseName } =
-                getTableNameVariants(tableName);
-
-            const { upperSnakeCaseName: columnUpperSnakeCase } =
-                getTableNameVariants(columnName);
-
-            const [entitiesPath, dtoPath, enumsPath, schemasPath] = [
-                pathConvertor(mainDist, "entities"),
-                pathConvertor(mainDist, `dto/${pluralLowerCaseName}`),
-                pathConvertor(mainDist, `enums`),
-                pathConvertor(mainDist, `schemas/${pluralLowerCaseName}`),
-            ];
-
-            const entityProperties = propertiesEntityMap(columnProperties);
-            const dtoProperties = propertiesDtoMap(columnProperties);
-            const decorators = decoratorsMap(columnDecorators);
-
-            const {
-                fullEntityProperties,
-                fullDtoProperties,
-                fullDecorators,
-                specialInjections,
-            } = await addSpecialItems({
-                columnType,
-                entityProperties,
-                dtoProperties,
-                decorators,
+            // get the names variants and the paths
+            const tableNameVariantObj = new NameVariant(tableName);
+            const columnNameVariantObj = new NameVariant(columnName);
+            const subPathObj = new SubPath({
+                mainDir: mainDist,
+                nameVariant: tableNameVariantObj,
             });
 
             await injectTemplates(
                 createColumnInjection({
-                    columnData: {
+                    columnData: await addSpecialItems({
                         columnName,
                         columnType: columnType[0],
-                        entityProperties: fullEntityProperties,
-                        dtoProperties: fullDtoProperties,
-                        decorators: fullDecorators,
-                    },
-                    paths: {
-                        entitiesPath,
-                        dtoPath,
-                        enumsPath,
-                        schemasPath,
-                    },
-                    tableNameVariants: {
-                        camelCaseName,
-                        upperCaseName,
-                        pluralLowerCaseName,
-                    },
-                    columNameVariants: {
-                        upperSnakeCaseName: columnUpperSnakeCase,
-                    },
-                    specialInjections,
+                        ...getColumnAttributes({
+                            columnProperties,
+                            columnDecorators,
+                        }),
+                    }),
+                    paths: subPathObj,
+                    tableNameVariants: tableNameVariantObj,
+                    columNameVariants: columnNameVariantObj,
                 })
             );
 

@@ -1,5 +1,5 @@
-import { CloneTemplate } from "../../types/cloneTemplate.js";
-import { InjectTemplate } from "../../types/injectTemplate.js";
+import { CloneTemplate } from "../../../types/cloneTemplate.js";
+import { InjectTemplate } from "../../../types/injectTemplate.js";
 
 const createMainCloning = (mainDest: string, name: string): CloneTemplate[] => [
     {

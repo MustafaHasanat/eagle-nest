@@ -83,12 +83,14 @@ const columnDecoratorsChoices = [
     {
         name: "isStrongPassword",
         value: "isStrongPassword",
-        description: "the string must have uppercase, lowercase, number, special character, and be longer than 8",
+        description:
+            "the string must have uppercase, lowercase, number, special character, and be longer than 8",
     },
     {
         name: "isPhoneNumber",
         value: "isPhoneNumber",
-        description: "the string must follow the phone number format: +(country-code)(number)",
+        description:
+            "the string must follow the phone number format: +(country-code)(number)",
     },
     {
         name: "isDecimal",

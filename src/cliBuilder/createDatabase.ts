@@ -2,14 +2,17 @@ import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import { join } from "path";
-import { createDatabaseCloning, createDatabaseInjection } from "../commands/createAction/createDatabase.js";
+import {
+    createDatabaseCloning,
+    createDatabaseInjection,
+} from "../commands/createAction/main/createDatabase.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
 
 /**
  * This function will be fired by the --database option
  */
-const databaseBuilder = async () => {
+const createDatabaseBuilder = async () => {
     inquirer
         .prompt([
             constants.database.rootDir,
@@ -51,4 +54,4 @@ const databaseBuilder = async () => {
             );
         });
 };
-export default databaseBuilder;
+export default createDatabaseBuilder;

@@ -9,7 +9,21 @@ interface DecoratorsMapProps {
     importsArr: string[];
 }
 
-// methods ---
+interface GetColumnAttributesProps {
+    columnProperties: string[];
+    columnDecorators: string[];
+}
+
+interface GetColumnAttributesReturn {
+    entityProperties: string | null;
+    dtoProperties: string | null;
+    decorators: {
+        decoratorsValues: string | null;
+        decoratorsImports: string | null;
+    };
+}
+
+// --- methods ---
 
 const propertiesEntityMap = (properties: string[]): string | null => {
     if (properties.length === 0) return null;
@@ -62,4 +76,20 @@ const decoratorsMap = (
     return { decoratorsValues, decoratorsImports };
 };
 
-export { propertiesEntityMap, decoratorsMap, propertiesDtoMap };
+const getColumnAttributes = ({
+    columnProperties,
+    columnDecorators,
+}: GetColumnAttributesProps): GetColumnAttributesReturn => {
+    return {
+        entityProperties: propertiesEntityMap(columnProperties),
+        dtoProperties: propertiesDtoMap(columnProperties),
+        decorators: decoratorsMap(columnDecorators),
+    };
+};
+
+export {
+    getColumnAttributes,
+    propertiesEntityMap,
+    decoratorsMap,
+    propertiesDtoMap,
+};

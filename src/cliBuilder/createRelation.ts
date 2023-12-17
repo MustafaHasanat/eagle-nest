@@ -1,9 +1,10 @@
 import inquirer from "inquirer";
 import constants from "../utils/constants/builderConstants.js";
-import { createRelationInjection } from "../commands/createAction/createRelation.js";
-import { getTableNameVariants } from "../utils/helpers/getTableNameVariants.js";
+import { createRelationInjection } from "../commands/createAction/main/createRelation.js";
 import { pathConvertor } from "../utils/helpers/filesHelpers.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
+import NameVariant from "../models/nameVariant.js";
+import SubPath from "../models/subPath.js";
 
 const relationBuilder = async () => {
     await inquirer
@@ -28,46 +29,29 @@ const relationBuilder = async () => {
 
             const [firstTableName, secondTableName] = tables.split("-");
 
-            const {
-                camelCaseName: camelCaseName1,
-                upperCaseName: upperCaseName1,
-                pluralLowerCaseName: pluralLowerCaseName1,
-                pluralUpperCaseName: pluralUpperCaseName1,
-            } = getTableNameVariants(firstTableName);
-
-            const {
-                camelCaseName: camelCaseName2,
-                upperCaseName: upperCaseName2,
-                pluralLowerCaseName: pluralLowerCaseName2,
-                pluralUpperCaseName: pluralUpperCaseName2,
-            } = getTableNameVariants(secondTableName);
-
-            const [entitiesPath, dtoPath2, schemasPath1, schemasPath2] = [
-                pathConvertor(mainDist, "entities"),
-                pathConvertor(mainDist, `dto/${pluralLowerCaseName2}`),
-                pathConvertor(mainDist, `schemas/${pluralLowerCaseName1}`),
-                pathConvertor(mainDist, `schemas/${pluralLowerCaseName2}`),
-            ];
+            // get the names variants and the paths
+            const tableNameVariantObj1 = new NameVariant(firstTableName);
+            const tableNameVariantObj2 = new NameVariant(secondTableName);
+            const subPathObj1 = new SubPath({
+                mainDir: mainDist,
+                nameVariant: tableNameVariantObj1,
+            });
+            const subPathObj2 = new SubPath({
+                mainDir: mainDist,
+                nameVariant: tableNameVariantObj2,
+            });
 
             await injectTemplates(
                 createRelationInjection({
                     relationType: relationType[0],
-                    entitiesPath,
                     table1: {
-                        camelCaseName1,
-                        upperCaseName1,
-                        pluralLowerCaseName1,
-                        pluralUpperCaseName1,
-                        schemasPath1,
+                        nameVariant: tableNameVariantObj1,
+                        paths: subPathObj1,
                     },
                     table2: {
-                        camelCaseName2,
-                        upperCaseName2,
-                        pluralLowerCaseName2,
-                        pluralUpperCaseName2,
-                        dtoPath2,
-                        schemasPath2,
-                        camelCaseFieldName2: fieldName,
+                        nameVariant: tableNameVariantObj2,
+                        paths: subPathObj2,
+                        camelCaseColumnName: fieldName,
                     },
                 })
             );

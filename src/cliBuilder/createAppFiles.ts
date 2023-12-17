@@ -3,7 +3,7 @@ import constants from "../utils/constants/builderConstants.js";
 import {
     createAppFilesInjection,
     createAppFilesCloning,
-} from "../commands/createAction/createAppFiles.js";
+} from "../commands/createAction/main/createAppFiles.js";
 import cloneTemplates from "../manipulator/cloneTemplates.js";
 import injectTemplates from "../manipulator/injectTemplates.js";
 

@@ -1,6 +1,6 @@
-import { columnTypeDefaultMap } from "../../utils/constants/builderMaps.js";
-import { CreateColumnProps } from "../../interfaces/cliBuilder.js";
-import { InjectTemplate } from "../../types/injectTemplate.js";
+import { columnTypeDefaultMap } from "../../../utils/constants/builderMaps.js";
+import { CreateColumnProps } from "../../../interfaces/cliBuilder.js";
+import { InjectTemplate } from "../../../types/injectTemplate.js";
 import { join } from "path";
 
 const createColumnInjection = ({
@@ -10,11 +10,11 @@ const createColumnInjection = ({
         entityProperties,
         dtoProperties,
         decorators: { decoratorsValues, decoratorsImports },
+        specialInjections,
     },
     paths: { entitiesPath, dtoPath, enumsPath, schemasPath },
     tableNameVariants: { camelCaseName, upperCaseName, pluralLowerCaseName },
     columNameVariants: { upperSnakeCaseName },
-    specialInjections,
 }: CreateColumnProps): InjectTemplate[] => {
     const { dtoCreate, dtoUpdate, entityType, dtoType } =
         columnTypeDefaultMap[columnType];

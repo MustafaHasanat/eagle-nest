@@ -1,4 +1,4 @@
-import { getTableNameVariants } from "../../../../src/utils/helpers/getTableNameVariants";
+import NameVariant from "../../../src/models/nameVariant";
 
 it("should return the correct variants when entering: user", () => {
     const {
@@ -7,7 +7,7 @@ it("should return the correct variants when entering: user", () => {
         pluralName,
         pluralUpperCaseName,
         pluralLowerCaseName,
-    } = getTableNameVariants("user");
+    } = new NameVariant("user");
 
     expect(camelCaseName).toBe("user");
     expect(upperCaseName).toBe("User");
@@ -23,7 +23,7 @@ it("should return the correct variants when entering: category", () => {
         pluralName,
         pluralUpperCaseName,
         pluralLowerCaseName,
-    } = getTableNameVariants("category");
+    } = new NameVariant("category");
 
     expect(camelCaseName).toBe("category");
     expect(upperCaseName).toBe("Category");

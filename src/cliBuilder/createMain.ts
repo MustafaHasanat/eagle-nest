@@ -5,7 +5,7 @@ import cloneTemplates from "../manipulator/cloneTemplates.js";
 import {
     createMainCloning,
     createMainInjection,
-} from "../commands/createAction/createMain.js";
+} from "../commands/createAction/main/createMain.js";
 
 /**
  * This function will be fired by the --create-main option

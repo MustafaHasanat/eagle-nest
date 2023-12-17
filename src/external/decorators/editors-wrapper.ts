@@ -5,11 +5,7 @@ import {
     applyDecorators,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import {
-    ApiConsumes,
-    ApiOkResponse,
-    ApiOperation,
-} from "@nestjs/swagger";
+import { ApiConsumes, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
 
 function EditorsWrapper(
     dto: any,
