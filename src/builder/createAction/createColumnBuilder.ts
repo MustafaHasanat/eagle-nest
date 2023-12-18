@@ -1,16 +1,16 @@
 import inquirer from "inquirer";
-import constants from "../utils/constants/builderConstants.js";
-import { createColumnInjection } from "../commands/createAction/main/createColumn.js";
+import constants from "../../utils/constants/builderConstants.js";
+import { createColumnInjection } from "../../commands/createAction/main/createColumn.js";
 import {
     decoratorsMap,
     getColumnAttributes,
     propertiesDtoMap,
     propertiesEntityMap,
-} from "../utils/helpers/columnHelpers.js";
-import { addSpecialItems } from "../utils/helpers/columnSpecialTypes.js";
-import injectTemplates from "../manipulator/injectTemplates.js";
-import NameVariant from "../models/nameVariant.js";
-import SubPath from "../models/subPath.js";
+} from "../../utils/helpers/columnHelpers.js";
+import { addSpecialItems } from "../../utils/helpers/columnSpecialTypes.js";
+import injectTemplates from "../../manipulator/injectTemplates.js";
+import NameVariant from "../../models/nameVariant.js";
+import SubPath from "../../models/subPath.js";
 
 const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
     await inquirer

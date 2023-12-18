@@ -1,0 +1,24 @@
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, Length, IsStrongPassword } from 'class-validator';
+
+export class EmailDto {
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty({ example: 'example@example.com', required: true })
+  email: string;
+}
+
+export class PasswordDto {
+  @IsNotEmpty()
+  @Length(8, 25)
+  @IsStrongPassword()
+  @ApiProperty({
+    example: 's5Rsa2?#sd1154',
+    description:
+      'password must contain lowercase letters, uppercase letters, numbers, and symbols. It must have length between (8, 25) characters',
+    required: true,
+  })
+  password: string;
+}
+
+export class LoginUserDto extends IntersectionType(EmailDto, PasswordDto) {}

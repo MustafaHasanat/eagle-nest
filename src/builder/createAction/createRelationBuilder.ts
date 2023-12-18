@@ -1,10 +1,9 @@
 import inquirer from "inquirer";
-import constants from "../utils/constants/builderConstants.js";
-import { createRelationInjection } from "../commands/createAction/main/createRelation.js";
-import { pathConvertor } from "../utils/helpers/filesHelpers.js";
-import injectTemplates from "../manipulator/injectTemplates.js";
-import NameVariant from "../models/nameVariant.js";
-import SubPath from "../models/subPath.js";
+import constants from "../../utils/constants/builderConstants.js";
+import { createRelationInjection } from "../../commands/createAction/main/createRelation.js";
+import injectTemplates from "../../manipulator/injectTemplates.js";
+import NameVariant from "../../models/nameVariant.js";
+import SubPath from "../../models/subPath.js";
 
 const relationBuilder = async () => {
     await inquirer

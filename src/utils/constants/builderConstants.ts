@@ -125,7 +125,7 @@ const builderConstants: BuilderConstantsProps = {
         },
     },
     // constants for the --database
-    database: {
+    createDatabase: {
         rootDir: getDestination({
             targetName: "root directory",
             defaultDest: ".",
@@ -147,6 +147,10 @@ const builderConstants: BuilderConstantsProps = {
             message:
                 "What's the name of your table? (use singular camelCase nouns to avoid errors, like: user, product, ...)",
         },
+        isSpecial: (tableName) => ({
+            type: "confirm",
+            message: `You're trying to create a special type of tables: "${tableName}". Do you want us to build the standard form of this table?`,
+        }),
         mainDist: getDestination({
             targetName: "tables",
             defaultDest: "src",

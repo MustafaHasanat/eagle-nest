@@ -1,0 +1,72 @@
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import {
+  IsNotEmpty,
+  Length,
+  IsPhoneNumber,
+  IsEnum,
+  IsOptional,
+  IsAlphanumeric,
+  NotContains,
+} from 'class-validator';
+import { LoginUserDto } from './login-user.dto';
+import { UserGender } from 'src/enums/users/user-gender.enum';
+import { UserRole } from 'src/enums/users/user-role.enum';
+
+export class CreateUserDto extends PartialType(LoginUserDto) {
+  @IsNotEmpty()
+  @Length(3, 25)
+  @IsAlphanumeric()
+  @NotContains(' ')
+  @ApiProperty({
+    example: 'Jack',
+    description: 'username must have length between (5, 25) characters',
+    required: true,
+  })
+  username: string;
+
+  @IsNotEmpty()
+  @Length(2, 25)
+  @ApiProperty({
+    example: 'Jack',
+    description: 'firstName must have length between (2, 25) characters',
+    required: true,
+  })
+  firstName: string;
+
+  @IsNotEmpty()
+  @Length(2, 25)
+  @ApiProperty({
+    example: 'Jack',
+    description: 'lastName must have length between (2, 25) characters',
+    required: true,
+  })
+  lastName: string;
+
+  @IsOptional()
+  @IsPhoneNumber()
+  @ApiProperty({
+    nullable: true,
+    example: '+962780387522',
+    description:
+      "Phone number must start with a '+' sign followed by country code, then the number",
+  })
+  phoneNumber?: string;
+
+  @IsOptional()
+  @IsEnum(UserGender)
+  @ApiProperty({ example: UserGender.MALE, default: UserGender.NOT_SPECIFIED })
+  gender?: UserGender;
+
+  @IsOptional()
+  @IsEnum(UserRole)
+  @ApiProperty({ example: UserRole.MEMBER, default: UserRole.MEMBER })
+  role?: UserRole;
+
+  @IsOptional()
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    example: 'url',
+  })
+  avatar?: Express.Multer.File;
+}

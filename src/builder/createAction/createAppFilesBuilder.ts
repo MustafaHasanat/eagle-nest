@@ -1,11 +1,11 @@
 import inquirer from "inquirer";
-import constants from "../utils/constants/builderConstants.js";
+import constants from "../../utils/constants/builderConstants.js";
 import {
     createAppFilesInjection,
     createAppFilesCloning,
-} from "../commands/createAction/main/createAppFiles.js";
-import cloneTemplates from "../manipulator/cloneTemplates.js";
-import injectTemplates from "../manipulator/injectTemplates.js";
+} from "../../commands/createAction/main/createAppFiles.js";
+import cloneTemplates from "../../manipulator/cloneTemplates.js";
+import injectTemplates from "../../manipulator/injectTemplates.js";
 
 /**
  * This function will be fired by the --create-app-files option

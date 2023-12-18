@@ -1,0 +1,14 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsUUID, Length } from 'class-validator';
+
+export class CreateNotificationDto {
+  @Length(3, 1000)
+  @ApiProperty({
+    example: 'hello there',
+  })
+  content: string;
+
+  @IsUUID()
+  @ApiProperty({ example: 'd996b291-ea4e-486d-a2a3-f79676bfe13c' })
+  user: string;
+}
