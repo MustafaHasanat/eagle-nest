@@ -8,10 +8,13 @@ type CommandType = {
     description: string;
 };
 
-type CreateCommandType = CommandType & {
+type CommandTypeArgument = CommandType & {
     argument: string;
+};
+
+type CommandTypeOption = CommandType & {
     options: {
-        special: OptionType;
+        [option: string]: OptionType;
     };
 };
 
@@ -27,7 +30,8 @@ type AppProps = {
     };
     commands: {
         install: CommandType;
-        create: CreateCommandType;
+        create: CommandTypeArgument & CommandTypeOption;
+        docker: CommandTypeArgument;
     };
     options?: {
         [option: string]: OptionType;
@@ -61,6 +65,12 @@ const appConstants: AppProps = {
                     description: "Create a special type of tables.",
                 },
             },
+        },
+        docker: {
+            command: "docker",
+            description:
+                "Configure docker images and containers for the server.",
+            argument: "<files-set>",
         },
     },
 };

@@ -31,7 +31,7 @@ class SubPath {
         // get the paths
         const [entitiesPath, enumsPath, schemasPath, dtoPath] = [
             pathConvertor(mainDir, "entities"),
-            pathConvertor(mainDir, `enums`),
+            pathConvertor(mainDir, "enums"),
             pathConvertor(mainDir, `schemas/${pluralLowerCaseName}`),
             pathConvertor(mainDir, `dto/${pluralLowerCaseName}`),
         ];

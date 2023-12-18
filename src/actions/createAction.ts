@@ -1,22 +1,22 @@
 import { specialLog } from "../utils/helpers/logHelpers.js";
-import { CreateFieldsetArgument } from "../enums/createArguments.js";
+import { CreateFileSetArgument } from "../enums/actions.js";
 import { execSync } from "child_process";
 import installPackages from "../manipulator/installPackages.js";
-import createMainBuilder from "../cliBuilder/createMain.js";
+import createMainBuilder from "../builder/createAction/createMainBuilder.js";
 import constants from "../utils/constants/creatorConstants.js";
-import createLandingPageBuilder from "../cliBuilder/createLandingPage.js";
-import createAppFilesBuilder from "../cliBuilder/createAppFiles.js";
-import createDatabaseBuilder from "../cliBuilder/createDatabase.js";
-import createTableBuilder from "../cliBuilder/createTable.js";
-import createColumnBuilder from "../cliBuilder/createColumn.js";
-import createRelationBuilder from "../cliBuilder/createRelation.js";
+import createLandingPageBuilder from "../builder/createAction/createLandingPageBuilder.js";
+import createAppFilesBuilder from "../builder/createAction/createAppFilesBuilder.js";
+import createDatabaseBuilder from "../builder/createAction/createDatabaseBuilder.js";
+import createTableBuilder from "../builder/createAction/createTableBuilder.js";
+import createColumnBuilder from "../builder/createAction/createColumnBuilder.js";
+import createRelationBuilder from "../builder/createAction/createRelationBuilder.js";
 import { OptionValues } from "commander";
 
-const createAction = async (
-    filesSet: CreateFieldsetArgument,
+export default async function createAction(
+    filesSet: CreateFileSetArgument,
     options: OptionValues
-) => {
-    const availableFilesSets = Object.values(CreateFieldsetArgument);
+) {
+    const availableFilesSets = Object.values(CreateFileSetArgument);
 
     if (!availableFilesSets.includes(filesSet)) {
         specialLog({
@@ -49,45 +49,45 @@ const createAction = async (
     }
 
     switch (filesSet) {
-        case CreateFieldsetArgument.MAIN:
+        case CreateFileSetArgument.MAIN:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.main,
             });
             await createMainBuilder();
             break;
-        case CreateFieldsetArgument.LANDING_PAGE:
+        case CreateFileSetArgument.LANDING_PAGE:
             await createLandingPageBuilder();
             break;
-        case CreateFieldsetArgument.APP:
+        case CreateFileSetArgument.APP:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.app,
             });
             await createAppFilesBuilder();
             break;
-        case CreateFieldsetArgument.DATABASE:
+        case CreateFileSetArgument.DATABASE:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.database,
             });
             await createDatabaseBuilder();
             break;
-        case CreateFieldsetArgument.TABLE:
+        case CreateFileSetArgument.TABLE:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.table,
             });
             await createTableBuilder(options);
             break;
-        case CreateFieldsetArgument.COLUMN:
+        case CreateFileSetArgument.COLUMN:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.column,
             });
             await createColumnBuilder();
             break;
-        case CreateFieldsetArgument.RELATION:
+        case CreateFileSetArgument.RELATION:
             await installPackages({
                 installedDeps,
                 neededDeps: constants.neededDeps.relation,
@@ -97,6 +97,4 @@ const createAction = async (
         default:
             break;
     }
-};
-
-export default createAction;
+}

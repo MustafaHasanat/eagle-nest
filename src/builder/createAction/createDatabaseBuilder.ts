@@ -1,13 +1,13 @@
 import inquirer from "inquirer";
-import constants from "../utils/constants/builderConstants.js";
-import { pathConvertor } from "../utils/helpers/filesHelpers.js";
+import constants from "../../utils/constants/builderConstants.js";
+import { pathConvertor } from "../../utils/helpers/filesHelpers.js";
 import { join } from "path";
 import {
     createDatabaseCloning,
     createDatabaseInjection,
-} from "../commands/createAction/main/createDatabase.js";
-import cloneTemplates from "../manipulator/cloneTemplates.js";
-import injectTemplates from "../manipulator/injectTemplates.js";
+} from "../../commands/createAction/main/createDatabase.js";
+import cloneTemplates from "../../manipulator/cloneTemplates.js";
+import injectTemplates from "../../manipulator/injectTemplates.js";
 
 /**
  * This function will be fired by the --database option
@@ -15,8 +15,8 @@ import injectTemplates from "../manipulator/injectTemplates.js";
 const createDatabaseBuilder = async () => {
     inquirer
         .prompt([
-            constants.database.rootDir,
-            constants.database.appModuleLocation,
+            constants.createDatabase.rootDir,
+            constants.createDatabase.appModuleLocation,
             constants.shared.overwrite([
                 "app.module.ts",
                 "entities/index.ts",

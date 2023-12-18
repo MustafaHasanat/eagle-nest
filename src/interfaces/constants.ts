@@ -14,8 +14,12 @@ export interface BuilderConstantsProps {
         envDest: QuestionCollection<any>;
         rolesGuard: QuestionCollection<any>;
     };
-    database: CollectionProps;
-    createTable: CollectionProps;
+    createDatabase: CollectionProps;
+    createTable: {
+        tableName: QuestionCollection<any>;
+        isSpecial: ([...any]) => QuestionCollection<any>;
+        mainDist: QuestionCollection<any>;
+    };
     createColumn: {
         newColumn: QuestionCollection<any>;
         tableName: QuestionCollection<any>;

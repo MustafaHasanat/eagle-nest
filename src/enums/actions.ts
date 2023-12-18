@@ -1,4 +1,4 @@
-export enum CreateFieldsetArgument {
+export enum CreateFileSetArgument {
     MAIN = "main",
     LANDING_PAGE = "landing-page",
     APP = "app",
@@ -12,4 +12,9 @@ export enum CreateSpecialArgument {
     USER = "user",
     PRODUCT = "product",
     NOTIFICATION = "notification",
+}
+
+export enum DockerFileSetArgument {
+    INIT = "init",
+    DATABASE = "database",
 }

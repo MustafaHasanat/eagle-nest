@@ -1,0 +1,555 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { deleteFile, deleteFiles } from 'src/utils/storageProcess/deleteFiles';
+import { compare, hash } from 'bcrypt';
+import { filterNullsObject } from 'src/utils/helpers/filterNulls';
+import { JwtService } from '@nestjs/jwt';
+import { FullTokenPayload, TokenPayload } from 'src/types/token-payload.type';
+import { Request } from 'express';
+import { UserRole } from 'src/enums/users/user-role.enum';
+import { CustomResponseType } from 'src/types/custom-response.type';
+import {
+  FilteredTermDataType,
+  GetAllProps,
+} from 'src/types/get-operators.type';
+import { UserFields } from 'src/enums/shared/tables-fields.enum';
+import { AppService } from 'src/app.service';
+import { crudResponse } from 'src/responses/crud.response';
+import { FilterOperator } from 'src/enums/shared/filters.enum';
+import { resettingPassword } from 'src/utils/constants/nodeMailer.constants';
+import { PasswordDto } from './dto/login-user.dto';
+import emailValidator from 'src/utils/helpers/emailValidator';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private jwtService: JwtService,
+    private readonly appService: AppService,
+  ) {}
+
+  private uniqueFieldsArray = (
+    username: string,
+    email: string,
+    phoneNumber: string,
+  ) => [
+    {
+      field: UserFields.USERNAME,
+      filteredTerm: {
+        dataType: FilteredTermDataType.STRING,
+        value: username,
+      },
+      filterOperator: FilterOperator.STRING_EQUALS,
+    },
+    {
+      field: UserFields.EMAIL,
+      filteredTerm: {
+        dataType: FilteredTermDataType.STRING,
+        value: email,
+      },
+      filterOperator: FilterOperator.STRING_EQUALS,
+    },
+    phoneNumber && phoneNumber !== ''
+      ? {
+          field: UserFields.PHONE_NUMBER,
+          filteredTerm: {
+            dataType: FilteredTermDataType.STRING,
+            value: phoneNumber,
+          },
+          filterOperator: FilterOperator.STRING_EQUALS,
+        }
+      : null,
+  ];
+
+  private passwordRemover(user: User): User {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+    return rest as User;
+  }
+
+  private async hashPassword(pass: string): Promise<string> {
+    return await hash(pass, 12);
+  }
+
+  private async checkUserCredentials({
+    identifier,
+    password = '',
+    isOnlyEmail = false,
+  }: {
+    identifier: { type: 'email' | 'username'; value: string };
+    password?: string;
+    isOnlyEmail?: boolean;
+  }): Promise<CustomResponseType<User>> {
+    try {
+      const response = await this.getUsers({
+        withPass: true,
+        conditions: [
+          {
+            filteredTerm: {
+              dataType: FilteredTermDataType.STRING,
+              value: identifier.value,
+            },
+            filterOperator: FilterOperator.STRING_EQUALS,
+            field:
+              identifier.type === 'email'
+                ? UserFields.EMAIL
+                : UserFields.USERNAME,
+          },
+        ],
+      });
+
+      if (!response?.data?.length) {
+        return crudResponse.notFoundRes('Email does not exist');
+      }
+
+      const user: User = response.data[0];
+
+      if (isOnlyEmail) {
+        return crudResponse.foundRes('User has been found', user);
+      }
+      if (!(await compare(password, user?.password))) {
+        return crudResponse.forbiddenRes('Invalid password');
+      }
+
+      return crudResponse.foundRes('User has been found', user);
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  getUserTokenData(req: Request) {
+    if (Object.keys(req?.user).length === 0) {
+      return null;
+    }
+
+    const userTokenData = {
+      ...req?.user,
+    } as FullTokenPayload;
+
+    userTokenData['expiredIn'] = `${Math.floor(
+      (userTokenData.exp - userTokenData.iat) / 3600,
+    )} Hours`;
+
+    return userTokenData;
+  }
+
+  private async checkForUniqueness(
+    items: {
+      field: UserFields;
+      filteredTerm: {
+        dataType: FilteredTermDataType;
+        value: any;
+      };
+      filterOperator: FilterOperator;
+    }[],
+  ): Promise<string[]> {
+    const result = [];
+
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
+      if (!item) {
+        continue;
+      }
+
+      const { field, filteredTerm, filterOperator } = item;
+      const user = await this.getUsers({
+        conditions: [
+          {
+            field,
+            filteredTerm,
+            filterOperator,
+          },
+        ],
+      });
+
+      if (user?.status !== 200) {
+        result.push(field);
+      }
+    }
+    return result;
+  }
+
+  // -------------------------------------------------------------------
+  // CRUD API
+
+  async getUsers({
+    sortBy = UserFields.USERNAME,
+    reverse = false,
+    page = 1,
+    withPass = false,
+    conditions = [],
+  }: GetAllProps<UserFields> & { withPass?: boolean }): Promise<
+    CustomResponseType<User[]>
+  > {
+    try {
+      const findQuery = this.appService.filteredGetQuery({
+        conditions,
+        sortBy,
+        page,
+        reverse,
+      });
+
+      if (findQuery.status !== 200) {
+        return crudResponse.notFoundRes(findQuery.message);
+      }
+
+      const response = await this.userRepository.find(findQuery.data);
+
+      // remove the password from all the users before sending response
+      const updatedUsers = response.map((user) => {
+        return withPass ? user : this.passwordRemover(user);
+      });
+
+      return crudResponse.foundRes<User[]>(
+        response.length ? 'Users have been found' : 'Users list is empty',
+        updatedUsers,
+      );
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  async getUserById(id: string): Promise<CustomResponseType<User>> {
+    try {
+      const response = await this.userRepository.findOneBy({ id });
+      if (!response) {
+        return crudResponse.notFoundRes("User doesn't exist");
+      }
+
+      return crudResponse.foundRes(
+        'User has been found',
+        this.passwordRemover(response),
+      );
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  async createUser(
+    createUserDto: CreateUserDto,
+    userTokenData: FullTokenPayload,
+  ): Promise<CustomResponseType<User>> {
+    try {
+      // validate the provided fields
+      const validationErrors = await this.appService.validateCreateUpdate({
+        dto: CreateUserDto,
+        data: filterNullsObject(createUserDto),
+      });
+
+      if (validationErrors.status !== 200) {
+        return crudResponse.validationError(
+          validationErrors.message,
+          validationErrors.errors,
+        );
+      }
+
+      const { password, avatar, streak, ...rest } = createUserDto;
+
+      // prevent the non-admins from creating an admin account
+      if (
+        createUserDto.role === UserRole.ADMIN &&
+        (!userTokenData || userTokenData.role === UserRole.MEMBER)
+      ) {
+        return crudResponse.forbiddenRes(
+          'Unauthorized entrance, you must be an admin to create another admin account',
+        );
+      }
+
+      // check the unique fields
+      const isExistArray = await this.checkForUniqueness(
+        this.uniqueFieldsArray(
+          createUserDto.username,
+          createUserDto.email,
+          createUserDto.phoneNumber,
+        ),
+      );
+
+      if (isExistArray.length > 0) {
+        return crudResponse.validationError(
+          `${isExistArray[0]} is already assigned to another user`,
+          null,
+        );
+      }
+
+      // create the user object and save it in the DB
+      const newUser = this.userRepository.create({
+        ...rest,
+        avatar: avatar?.filename || '',
+        password: await this.hashPassword(password),
+        streak: streak
+          ? typeof streak === 'object'
+            ? streak
+            : JSON.parse(streak)
+          : undefined,
+      });
+      const response = await this.userRepository.save(newUser);
+
+      return crudResponse.createUpdateRes<User>(
+        'User has been created successfully',
+        this.passwordRemover(response),
+      );
+    } catch (error) {
+      console.log(error);
+      return crudResponse.error(error);
+    }
+  }
+
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    userTokenData: FullTokenPayload,
+  ): Promise<CustomResponseType<UpdateResult>> {
+    try {
+      // validate the provided fields
+      const validationErrors = await this.appService.validateCreateUpdate({
+        dto: UpdateUserDto,
+        data: filterNullsObject(updateUserDto),
+      });
+
+      if (validationErrors.status !== 200) {
+        return crudResponse.validationError(
+          validationErrors.message,
+          validationErrors.errors,
+        );
+      }
+
+      const { password, role, avatar, streak, ...rest } = updateUserDto;
+
+      // prevent everyone from changing their passwords or roles
+      if (password || role) {
+        return crudResponse.forbiddenRes(
+          "You're not allowed to change your password or role from this endpoint",
+        );
+      }
+
+      // check if the user exists
+      const user = await this.getUserById(id);
+      if (user.status !== 200) {
+        return crudResponse.notFoundRes("User doesn't exist");
+      }
+
+      // prevent non-admins from changing others' data
+      if (
+        userTokenData.userId !== id &&
+        userTokenData.role !== UserRole.ADMIN
+      ) {
+        return crudResponse.forbiddenRes(
+          "Unauthorized entrance, you're only allowed to update your account",
+        );
+      }
+
+      // check the unique fields
+      const isExistArray = await this.checkForUniqueness(
+        this.uniqueFieldsArray(
+          updateUserDto.username,
+          updateUserDto.email,
+          updateUserDto.phoneNumber,
+        ),
+      );
+      if (isExistArray.length > 0) {
+        return crudResponse.validationError(
+          `${isExistArray[0]} is already assigned to another user`,
+          null,
+        );
+      }
+
+      // update the user and save the changes in the DB
+      const response = await this.userRepository.update(
+        {
+          id,
+        },
+        filterNullsObject({
+          ...rest,
+          avatar: avatar?.filename,
+          streak: streak
+            ? typeof streak === 'object'
+              ? streak
+              : JSON.parse(streak)
+            : undefined,
+        }),
+      );
+
+      return crudResponse.createUpdateRes<UpdateResult>(
+        'User has been updated successfully',
+        response,
+      );
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  async deleteAllUsers(): Promise<CustomResponseType<any>> {
+    try {
+      const response = await this.userRepository.query(
+        `TRUNCATE TABLE "user" CASCADE;`,
+      );
+
+      // delete all files in the dir
+      deleteFiles('./public/assets/users/');
+
+      return crudResponse.deletedRes<any>('Users data are wiped out', response);
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  async deleteUser(
+    id: string,
+    userTokenData: FullTokenPayload,
+  ): Promise<CustomResponseType<DeleteResult>> {
+    try {
+      // check if the user exists
+      const user = await this.getUserById(id);
+      if (user.status !== 200) {
+        return crudResponse.notFoundRes("User doesn't exist");
+      }
+
+      // prevent non-admins from deleting others' accounts
+      if (
+        userTokenData.userId !== id &&
+        userTokenData.role !== UserRole.ADMIN
+      ) {
+        return crudResponse.forbiddenRes(
+          "Unauthorized entrance, you're only allowed to delete your account",
+        );
+      }
+
+      // delete the user form the DB
+      const response = await this.userRepository.delete(id);
+
+      // delete the image related to the file
+      user?.data?.avatar &&
+        deleteFile('./public/assets/users/' + user?.data?.avatar);
+
+      return crudResponse.deletedRes<DeleteResult>(
+        'User has been deleted successfully',
+        response,
+      );
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // authentication processes
+
+  async logIn(
+    identifier: string,
+    password: string,
+  ): Promise<CustomResponseType<string>> {
+    try {
+      const user = await this.checkUserCredentials({
+        identifier: {
+          type: emailValidator(identifier) ? 'email' : 'username',
+          value: identifier,
+        },
+        password,
+      });
+
+      if (user.status !== 200) {
+        return { ...user, data: null };
+      }
+
+      const { password: userPass, id, ...rest } = user.data;
+
+      const payload: TokenPayload = {
+        userId: id,
+        ...rest,
+      };
+
+      return crudResponse.validRes(
+        'Token has been generated',
+        await this.jwtService.signAsync(payload),
+      );
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  async requestPasswordReset(
+    identifier: string,
+  ): Promise<CustomResponseType<string>> {
+    try {
+      const user = await this.checkUserCredentials({
+        identifier: {
+          type: emailValidator(identifier) ? 'email' : 'username',
+          value: identifier,
+        },
+        isOnlyEmail: true,
+      });
+
+      if (user.status !== 200) {
+        return { ...user, data: null };
+      }
+
+      const options = {
+        to: user.data.email,
+        from: process.env.OFFICIAL_EMAIL,
+        subject: 'Resetting Password Request',
+        text: resettingPassword.requestPassReset.getText(user.data.email),
+        html: resettingPassword.requestPassReset.getHTML(),
+      };
+
+      const response = await this.appService.sendEmail(options);
+
+      return response;
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+
+  async resetPassword(
+    identifier: string,
+    newPassword: string,
+  ): Promise<CustomResponseType<UpdateResult>> {
+    try {
+      const user = await this.checkUserCredentials({
+        identifier: {
+          type: emailValidator(identifier) ? 'email' : 'username',
+          value: identifier,
+        },
+        isOnlyEmail: true,
+      });
+
+      if (user.status !== 200) {
+        return { ...user, data: null };
+      }
+
+      const validationErrors = await this.appService.validateCreateUpdate({
+        dto: PasswordDto,
+        data: {
+          password: newPassword,
+        },
+      });
+
+      if (validationErrors.status !== 200) {
+        return crudResponse.validationError(
+          validationErrors.message,
+          validationErrors.errors,
+        );
+      }
+
+      const response = await this.userRepository.update(
+        {
+          id: user.data.id,
+        },
+        {
+          password: await this.hashPassword(newPassword),
+        },
+      );
+
+      return crudResponse.createUpdateRes<UpdateResult>(
+        'Password has been updated successfully',
+        response,
+      );
+    } catch (error) {
+      return crudResponse.error(error);
+    }
+  }
+}

@@ -1,11 +1,11 @@
 import inquirer from "inquirer";
-import injectTemplates from "../manipulator/injectTemplates.js";
-import constants from "../utils/constants/builderConstants.js";
-import cloneTemplates from "../manipulator/cloneTemplates.js";
+import injectTemplates from "../../manipulator/injectTemplates.js";
+import constants from "../../utils/constants/builderConstants.js";
+import cloneTemplates from "../../manipulator/cloneTemplates.js";
 import {
     createMainCloning,
     createMainInjection,
-} from "../commands/createAction/main/createMain.js";
+} from "../../commands/createAction/main/createMain.js";
 
 /**
  * This function will be fired by the --create-main option

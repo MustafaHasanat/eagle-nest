@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
-import constants from "../utils/constants/builderConstants.js";
-import { pathConvertor } from "../utils/helpers/filesHelpers.js";
-import cloneTemplates from "../manipulator/cloneTemplates.js";
-import { createLandingPageCloning } from "../commands/createAction/main/createLandingPage.js";
+import constants from "../../utils/constants/builderConstants.js";
+import { pathConvertor } from "../../utils/helpers/filesHelpers.js";
+import cloneTemplates from "../../manipulator/cloneTemplates.js";
+import { createLandingPageCloning } from "../../commands/createAction/main/createLandingPage.js";
 
 /**
  * This function will be fired by the --create-landing-page option
