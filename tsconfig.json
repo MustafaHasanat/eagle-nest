@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        // "composite": true,
         "target": "es6",
         "module": "esnext",
         "lib": ["es6"],
@@ -14,9 +13,6 @@
         "resolveJsonModule": true,
         "declaration": true,
         "baseUrl": "./src",
-        // "allowImportingTsExtensions": true,
-        // "emitDeclarationOnly": true,
-        // "noEmit": true,
         "paths": {
             "templates/*": ["./src/templates/*"],
             "external/*": ["./src/external/*"],
@@ -32,6 +28,6 @@
         "src/external/**/*.ts",
         "src/cli-builder/*"
     ],
-    "exclude": ["node_modules"],
+    "exclude": ["node_modules", "dist"],
     "files": ["index.ts"]
 }
