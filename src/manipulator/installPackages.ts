@@ -80,7 +80,7 @@ const installPackages = async ({
                 } else {
                     specialLog({
                         message:
-                            "Process is canceled! (no dependencies have ben installed)",
+                            "Process is canceled! (no dependencies have been installed)",
                         situation: "ERROR",
                     });
                 }

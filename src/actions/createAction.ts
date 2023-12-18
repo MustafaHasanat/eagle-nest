@@ -1,4 +1,4 @@
-import { specialLog } from "../utils/helpers/logHelpers.js";
+import { logNumberedList, specialLog } from "../utils/helpers/logHelpers.js";
 import { CreateFileSetArgument } from "../enums/actions.js";
 import { execSync } from "child_process";
 import installPackages from "../manipulator/installPackages.js";
@@ -20,12 +20,11 @@ export default async function createAction(
 
     if (!availableFilesSets.includes(filesSet)) {
         specialLog({
-            message: `Invalid argument "${filesSet}", you can only choose one of the following:\n${availableFilesSets.join(
-                ", "
-            )}`,
+            message: `Invalid argument "${filesSet}", you can only choose one of the allowed values\n`,
             situation: "ERROR",
             scope: "argument",
         });
+        logNumberedList(availableFilesSets);
         return;
     }
 
