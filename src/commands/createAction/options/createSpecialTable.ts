@@ -1,4 +1,4 @@
-import { CreateTableProps } from "../../../interfaces/cliBuilder.js";
+import { CreateTableProps } from "../../../interfaces/builder.js";
 import { InjectTemplate } from "../../../types/injectTemplate.js";
 import { CloneTemplate } from "../../../types/cloneTemplate.js";
 import { CreateSpecialArgument } from "../../../enums/actions.js";

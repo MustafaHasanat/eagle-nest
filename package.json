@@ -2,6 +2,8 @@
     "name": "@mustafa-alhasanat/eagle-nest",
     "version": "0.0.0-development",
     "description": "Build Nest.js common blocks and files insanely faster!",
+    "author": "Mustafa Alhasanat",
+    "license": "ISC",
     "main": "./dist/index.js",
     "type": "module",
     "bin": {
@@ -35,8 +37,6 @@
         "cli-tool",
         "npm-tool"
     ],
-    "author": "Mustafa Alhasanat",
-    "license": "ISC",
     "bugs": {
         "url": "https://github.com/MustafaHasanat/eagle-nest/issues"
     },
@@ -60,6 +60,7 @@
         ".": "./dist/index.js"
     },
     "dependencies": {
+        "fae": "git+https://MustafaHasanat:token@github.com/MustafaHasanat/fae.git",
         "@nestjs/common": "^10.2.9",
         "@nestjs/platform-express": "^10.2.9",
         "@nestjs/swagger": "^7.1.16",

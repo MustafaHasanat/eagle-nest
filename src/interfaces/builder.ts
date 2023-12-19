@@ -1,6 +1,6 @@
 import NameVariant from "../models/nameVariant.js";
 import SubPath from "../models/subPath.js";
-import { InjectTemplate } from "../types/injectTemplate";
+import { InjectTemplate } from "../types/injectTemplate.js";
 
 // create database
 export interface DatabaseProps {

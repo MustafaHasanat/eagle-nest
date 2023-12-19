@@ -1,5 +1,5 @@
 import { CloneTemplate } from "../../../types/cloneTemplate.js";
-import { DatabaseProps } from "../../../interfaces/cliBuilder.js";
+import { DatabaseProps } from "../../../interfaces/builder.js";
 import { InjectTemplate } from "../../../types/injectTemplate.js";
 
 const createDatabaseCloning = (

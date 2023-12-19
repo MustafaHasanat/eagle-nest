@@ -1,5 +1,5 @@
 import { columnTypeDefaultMap } from "../../../utils/constants/builderMaps.js";
-import { CreateColumnProps } from "../../../interfaces/cliBuilder.js";
+import { CreateColumnProps } from "../../../interfaces/builder.js";
 import { InjectTemplate } from "../../../types/injectTemplate.js";
 import { join } from "path";
 

@@ -1,6 +1,6 @@
 import { join } from "path";
 import { InjectTemplate } from "../../../types/injectTemplate.js";
-import { CreateRelationProps } from "../../../interfaces/cliBuilder.js";
+import { CreateRelationProps } from "../../../interfaces/builder.js";
 
 const createRelationInjection = ({
     relationType,

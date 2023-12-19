@@ -1,86 +1,109 @@
 import {
+
+ DecoratorsMapProps, GetColumnAttributesProps, GetColumnAttributesReturn
+} from "../../interfaces/utils.js";
+import {
+
     propertiesEntityMapObject,
     decoratorsMapObject,
     propertiesDtoMapObject,
 } from "../../utils/constants/builderMaps.js";
 
-interface DecoratorsMapProps {
-    decoratorsArr: string[];
-    importsArr: string[];
-}
-
-interface GetColumnAttributesProps {
-    columnProperties: string[];
-    columnDecorators: string[];
-}
-
-interface GetColumnAttributesReturn {
-    entityProperties: string | null;
-    dtoProperties: string | null;
-    decorators: {
-        decoratorsValues: string | null;
-        decoratorsImports: string | null;
-    };
-}
-
-// --- methods ---
-
 const propertiesEntityMap = (properties: string[]): string | null => {
+
     if (properties.length === 0) return null;
-    return `${properties
+    return `${
+
+properties
         .map((property) => propertiesEntityMapObject[property])
-        .join(",\n")}`;
+        .join(",\n")
+}`;
 };
 
 const propertiesDtoMap = (properties: string[]): string | null => {
+
     if (properties.length === 0) return null;
-    return `${properties
+    return `${
+
+properties
         .reduce((acc: string[], property: string) => {
+
             const mapped = propertiesDtoMapObject[property];
             if (mapped) {
+
                 return [...acc, mapped];
             }
             return acc;
         }, [])
-        .join(",\n")}`;
+        .join(",\n")
+}`;
 };
 
 const decoratorsMap = (
     decorators: string[]
-): { decoratorsValues: string | null; decoratorsImports: string | null } => {
+): {
+ decoratorsValues: string | null;
+  decoratorsImports: string | null
+} => {
+
     if (decorators.length === 0)
         return {
+
             decoratorsValues: null,
             decoratorsImports: null,
         };
 
-    const { decoratorsArr, importsArr }: DecoratorsMapProps = decorators.reduce(
+    const {
+
+ decoratorsArr, importsArr
+}: DecoratorsMapProps = decorators.reduce(
         (
-            { decoratorsArr, importsArr }: DecoratorsMapProps,
+            {
+
+ decoratorsArr, importsArr
+}: DecoratorsMapProps,
             attribute: string
         ) => {
-            const { name, usage } = decoratorsMapObject[attribute];
+            const {
+
+ name, usage
+} = decoratorsMapObject[attribute];
             return {
+
                 decoratorsArr: [...decoratorsArr, usage],
                 importsArr: [...importsArr, name],
             };
         },
-        { decoratorsArr: [], importsArr: [] }
+        {
+
+ decoratorsArr: [], importsArr: []
+}
     );
 
     const decoratorsValues = decoratorsArr.join("\n");
-    const decoratorsImports = `import { ${importsArr.join(
-        ", "
-    )} } from 'class-validator';`;
+    const decoratorsImports = `import {
 
-    return { decoratorsValues, decoratorsImports };
+ ${
+
+importsArr.join(
+        ", "
+    )
+}
+} from 'class-validator';`;
+
+    return {
+
+ decoratorsValues, decoratorsImports
+};
 };
 
 const getColumnAttributes = ({
+
     columnProperties,
     columnDecorators,
 }: GetColumnAttributesProps): GetColumnAttributesReturn => {
     return {
+
         entityProperties: propertiesEntityMap(columnProperties),
         dtoProperties: propertiesDtoMap(columnProperties),
         decorators: decoratorsMap(columnDecorators),
@@ -88,6 +111,7 @@ const getColumnAttributes = ({
 };
 
 export {
+
     getColumnAttributes,
     propertiesEntityMap,
     decoratorsMap,
