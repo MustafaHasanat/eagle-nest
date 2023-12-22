@@ -1,3 +1,4 @@
+import { execSync } from "child_process";
 import { existsSync } from "fs";
 
 const pathConvertor = (dest: string, suffix: string): string =>
@@ -67,10 +68,15 @@ const pluralize = (string: string): string => {
     return string + "s";
 };
 
+const generateJWTSecret = () => {
+    return execSync("openssl rand -base64 32").toString();
+};
+
 export {
     pathConvertor,
     missingFiles,
     firstCharToUpper,
     firstCharToLower,
     pluralize,
+    generateJWTSecret,
 };

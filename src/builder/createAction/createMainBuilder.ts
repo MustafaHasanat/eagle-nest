@@ -1,31 +1,37 @@
 import inquirer from "inquirer";
-import injectTemplates from "../../manipulator/injectTemplates.js";
 import constants from "../../utils/constants/builderConstants.js";
-import cloneTemplates from "../../manipulator/cloneTemplates.js";
 import {
     createMainCloning,
     createMainInjection,
 } from "../../commands/createAction/main/createMain.js";
+import manipulator from "../../manipulator/index.js";
+import { MemoValues, QuestionQuery } from "../../types/actions.js";
+import { memosToQuestions } from "../../manipulator/memorizer.js";
+import { MemoCategory } from "../../enums/actions.js";
 
 /**
  * This function will be fired by the --create-main option
  */
-const createMainBuilder = async () => {
+const createMainBuilder = async (memoValues: MemoValues) => {
     inquirer
         .prompt([
-            constants.createMain.projectName,
-            constants.createMain.mainDist,
+            ...memosToQuestions(memoValues, [
+                constants.createMain.projectName,
+                constants.createMain.mainDest,
+            ] as QuestionQuery[]),
             constants.shared.overwrite(["main.ts", ".env"]),
         ])
-        .then(async (answers) => {
-            if (!answers.overwrite) return;
+        .then(async ({ mainDest, projectName, overwrite }) => {
+            if (!overwrite) return;
 
-            const isDone = await cloneTemplates(
-                createMainCloning(answers.mainDist, answers.projectName)
-            );
-            if (!isDone) return;
-
-            await injectTemplates(createMainInjection(".env"));
+            manipulator({
+                cloningCommands: createMainCloning(mainDest, projectName),
+                injectionCommands: createMainInjection(".env"),
+                memo: {
+                    pairs: { mainDest, projectName },
+                    category: MemoCategory.EAGLE_NEST,
+                },
+            });
         });
 };
 

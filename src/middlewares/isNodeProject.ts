@@ -10,7 +10,7 @@ const isNodeProject = () => {
 
     if (!isNodeProject) {
         specialLog({
-            message: "This is not a Node.js project",
+            message: "This is not a Node.js project directory",
             situation: "ERROR",
         });
         process.exit(1);

@@ -6,17 +6,21 @@ import {
     createDatabaseCloning,
     createDatabaseInjection,
 } from "../../commands/createAction/main/createDatabase.js";
-import cloneTemplates from "../../manipulator/cloneTemplates.js";
-import injectTemplates from "../../manipulator/injectTemplates.js";
+import manipulator from "../../manipulator/index.js";
+import { MemoValues, QuestionQuery } from "../../types/actions.js";
+import { memosToQuestions } from "../../manipulator/memorizer.js";
+import { MemoCategory } from "../../enums/actions.js";
 
 /**
  * This function will be fired by the --database option
  */
-const createDatabaseBuilder = async () => {
+const createDatabaseBuilder = async (memoValues: MemoValues) => {
     inquirer
         .prompt([
-            constants.createDatabase.rootDir,
-            constants.createDatabase.appModuleLocation,
+            ...memosToQuestions(memoValues, [
+                constants.createDatabase.rootDir,
+                constants.createDatabase.appDest,
+            ] as QuestionQuery[]),
             constants.shared.overwrite([
                 "app.module.ts",
                 "entities/index.ts",
@@ -24,34 +28,27 @@ const createDatabaseBuilder = async () => {
                 ".env",
             ]),
         ])
-        .then(async (answers) => {
-            if (!answers.overwrite) return;
+        .then(async ({ overwrite, rootDir, appDest }) => {
+            if (!overwrite) return;
 
-            const isDone = await cloneTemplates(
-                createDatabaseCloning(
-                    pathConvertor(answers.appModuleLocation, "entities"),
-                    pathConvertor(answers.appModuleLocation, "enums")
-                )
-            );
-            if (!isDone) return;
-
-            await injectTemplates(
-                createDatabaseInjection({
-                    appModuleLocation: pathConvertor(
-                        answers.appModuleLocation,
+            manipulator({
+                cloningCommands: createDatabaseCloning(
+                    pathConvertor(appDest, "entities"),
+                    pathConvertor(appDest, "enums")
+                ),
+                injectionCommands: createDatabaseInjection({
+                    appModuleDest: pathConvertor(
+                        appDest,
                         "app.module.ts"
                     ),
-                    envLocation: pathConvertor(answers.rootDir, ".env"),
-                    pathToEntities: join(
-                        process.cwd(),
-                        answers.appModuleLocation
-                    ),
-                    // pathToEntities: getRelativePathFromDirs(
-                    //     join(process.cwd(), answers.rootDir, "entities"),
-                    //     join(process.cwd(), answers.appModuleLocation)
-                    // ),
-                })
-            );
+                    envLocation: pathConvertor(rootDir, ".env"),
+                    pathToEntities: join(process.cwd(), appDest),
+                }),
+                memo: {
+                    pairs: { rootDir, appDest },
+                    category: MemoCategory.EAGLE_NEST,
+                },
+            });
         });
 };
 export default createDatabaseBuilder;

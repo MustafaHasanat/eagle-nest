@@ -40,4 +40,21 @@ const replaceStrings = async ({
     });
 };
 
-export { replaceStrings };
+const getStrInBetween = (
+    searchTerm: string,
+    start: number,
+    end: number
+): string | null => {
+    if (
+        start < 0 ||
+        start > searchTerm.length ||
+        end > searchTerm.length ||
+        end < start
+    ) {
+        return null;
+    }
+
+    return searchTerm.substring(start, end + 1);
+};
+
+export { replaceStrings, getStrInBetween };

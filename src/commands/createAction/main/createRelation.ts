@@ -212,17 +212,16 @@ const createRelationInjection = ({
                             },
                         ],
                     },
-                    {
-                        keyword: "CHANGE_THIS_TO_DEFAULT_FIELD",
-                        addition: {
-                            base: `${camelCaseColumnName2}`,
-                            additionIsFile: false,
-                        },
-                    },
                 ],
                 deletions: [
                     {
-                        target: "CHANGE_THIS_TO_DEFAULT_FIELD",
+                        keyword: "CHANGE_THIS_TO_DEFAULT_FIELD",
+                        deletion: {
+                            conditional: {
+                                type: "REPLACED_WITH",
+                                data: camelCaseColumnName2,
+                            },
+                        },
                     },
                 ],
             },

@@ -4,41 +4,58 @@ import {
     createAppFilesInjection,
     createAppFilesCloning,
 } from "../../commands/createAction/main/createAppFiles.js";
-import cloneTemplates from "../../manipulator/cloneTemplates.js";
-import injectTemplates from "../../manipulator/injectTemplates.js";
+import { OptionValues } from "commander";
+import manipulator from "../../manipulator/index.js";
+import { MemoValues, QuestionQuery } from "../../types/actions.js";
+import { memosToQuestions } from "../../manipulator/memorizer.js";
+import { MemoCategory } from "../../enums/actions.js";
 
 /**
  * This function will be fired by the --create-app-files option
  */
-const createAppFilesBuilder = async () => {
+const createAppFilesBuilder = async (memoValues: MemoValues, options: OptionValues) => {
+    const { guard: isUserGuard, format: isFormat } = options;
+
     inquirer
         .prompt([
-            constants.createAppFiles.mainDest,
-            constants.createAppFiles.envDest,
-            constants.createAppFiles.rolesGuard,
+            ...memosToQuestions(memoValues, [
+                constants.createAppFiles.appDest,
+                constants.createAppFiles.rootDir,
+            ] as QuestionQuery[]),
             constants.shared.overwrite([
-                "app.module.ts",
-                "app.controller.ts",
-                "app.service.ts",
+                "src/app.module.ts",
+                "src/app.controller.ts",
+                "src/app.service.ts",
+                ...(isUserGuard
+                    ? [
+                          "src/guards/user-auth.guard.ts",
+                          "src/enums/user-role.enum.ts",
+                      ]
+                    : []),
+                ...(isFormat ? [".prettierrc", ".eslintrc.js"] : []),
             ]),
         ])
-        .then(async (answers) => {
-            const { overwrite, mainDest, envDest, rolesGuard } = answers;
-
+        .then(async ({ overwrite, appDest, rootDir }) => {
             if (!overwrite) return;
 
-            const isDone = await cloneTemplates(
-                createAppFilesCloning(mainDest, rolesGuard)
-            );
-            if (!isDone) return;
-
-            await injectTemplates(
-                createAppFilesInjection({
-                    mainDest,
-                    envDest,
-                    rolesGuard,
-                })
-            );
+            manipulator({
+                cloningCommands: createAppFilesCloning({
+                    appDest,
+                    rootDir,
+                    isUserGuard,
+                    isFormat,
+                }),
+                injectionCommands: createAppFilesInjection({
+                    appDest,
+                    rootDir,
+                    isUserGuard,
+                    isFormat,
+                }),
+                memo: {
+                    pairs: { appDest, rootDir },
+                    category: MemoCategory.EAGLE_NEST,
+                },
+            });
         });
 };
 

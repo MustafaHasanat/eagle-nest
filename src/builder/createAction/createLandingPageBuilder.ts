@@ -1,32 +1,40 @@
 import inquirer from "inquirer";
 import constants from "../../utils/constants/builderConstants.js";
 import { pathConvertor } from "../../utils/helpers/filesHelpers.js";
-import cloneTemplates from "../../manipulator/cloneTemplates.js";
 import { createLandingPageCloning } from "../../commands/createAction/main/createLandingPage.js";
+import manipulator from "../../manipulator/index.js";
+import { MemoValues, QuestionQuery } from "../../types/actions.js";
+import { memosToQuestions } from "../../manipulator/memorizer.js";
+import { MemoCategory } from "../../enums/actions.js";
 
 /**
  * This function will be fired by the --create-landing-page option
  */
-const createLandingPageBuilder = async () => {
+const createLandingPageBuilder = async (memoValues: MemoValues) => {
     inquirer
         .prompt([
-            constants.createLandingPage.projectName,
-            constants.createLandingPage.publicDir,
+            ...memosToQuestions(memoValues, [
+                constants.createLandingPage.projectName,
+                constants.createLandingPage.publicDir,
+            ] as QuestionQuery[]),
             constants.shared.overwrite([
                 "public/index.html",
                 "public/styles.css",
             ]),
         ])
-        .then(async (answers) => {
-            if (!answers.overwrite) return;
+        .then(async ({ projectName, publicDir, overwrite }) => {
+            if (!overwrite) return;
 
-            const isDone = await cloneTemplates(
-                createLandingPageCloning(
-                    pathConvertor(answers.publicDir, "public"),
-                    answers.projectName
-                )
-            );
-            if (!isDone) return;
+            manipulator({
+                cloningCommands: createLandingPageCloning(
+                    pathConvertor(publicDir, "public"),
+                    projectName
+                ),
+                memo: {
+                    pairs: { publicDir, projectName },
+                    category: MemoCategory.EAGLE_NEST,
+                },
+            });
         });
 };
 

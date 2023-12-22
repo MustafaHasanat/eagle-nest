@@ -11,10 +11,8 @@
     },
     "plugins": ["@typescript-eslint"],
     "rules": {
-        "indent": ["warn", 4],
-        "linebreak-style": ["warn", "unix"],
-        "quotes": ["warn", "double"],
-        "semi": ["warn", "always"],
-        "no-trailing-spaces": ["warn"]
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-types": "off",
+        "no-extra-boolean-cast": "off"
     }
 }

@@ -113,18 +113,15 @@ const createColumnInjection = ({
         },
         {
             injectable: `${schemasPath}/${pluralLowerCaseName}.service.ts`,
-            additions: [
-                {
-                    keyword: "CHANGE_THIS_TO_DEFAULT_FIELD",
-                    addition: {
-                        base: `${upperSnakeCaseName}`,
-                        additionIsFile: false,
-                    },
-                },
-            ],
             deletions: [
                 {
-                    target: "CHANGE_THIS_TO_DEFAULT_FIELD",
+                    keyword: "CHANGE_THIS_TO_DEFAULT_FIELD",
+                    deletion: {
+                        conditional: {
+                            type: "REPLACED_WITH",
+                            data: upperSnakeCaseName,
+                        },
+                    },
                 },
             ],
         },

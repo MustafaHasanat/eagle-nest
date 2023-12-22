@@ -77,7 +77,11 @@ const cloneTemplates = async (files: CloneTemplate[]): Promise<boolean> => {
         });
         return true;
     } catch (error) {
-        console.log(`Error occurred at the cloneTemplates: ${error}`);
+        specialLog({
+            message: `${error}`,
+            situation: "ERROR",
+            scope: "cloneTemplates",
+        });
         return false;
     }
 };

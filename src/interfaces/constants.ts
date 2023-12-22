@@ -2,28 +2,32 @@ import { QuestionCollection } from "inquirer";
 
 // builder constants' interfaces ----------------------------------------------------
 
-export interface CollectionProps {
-    [questionName: string]: QuestionCollection<any>;
-}
-
 export interface BuilderConstantsProps {
-    createMain: CollectionProps;
-    createLandingPage: CollectionProps;
-    createAppFiles: {
+    createMain: {
+        projectName: QuestionCollection<any>;
         mainDest: QuestionCollection<any>;
-        envDest: QuestionCollection<any>;
-        rolesGuard: QuestionCollection<any>;
     };
-    createDatabase: CollectionProps;
+    createLandingPage: {
+        projectName: QuestionCollection<any>;
+        publicDir: QuestionCollection<any>;
+    };
+    createAppFiles: {
+        appDest: QuestionCollection<any>;
+        rootDir: QuestionCollection<any>;
+    };
+    createDatabase: {
+        rootDir: QuestionCollection<any>;
+        appDest: QuestionCollection<any>;
+    };
     createTable: {
         tableName: QuestionCollection<any>;
         isSpecial: ([...any]) => QuestionCollection<any>;
-        mainDist: QuestionCollection<any>;
+        mainDest: QuestionCollection<any>;
     };
     createColumn: {
         newColumn: QuestionCollection<any>;
         tableName: QuestionCollection<any>;
-        mainDist: QuestionCollection<any>;
+        mainDest: QuestionCollection<any>;
         columnName: QuestionCollection<any>;
         columnType: QuestionCollection<any>;
         columnProperties: QuestionCollection<any>;
@@ -33,7 +37,7 @@ export interface BuilderConstantsProps {
     createRelation: {
         newRelation: QuestionCollection<any>;
         fieldName: QuestionCollection<any>;
-        mainDist: QuestionCollection<any>;
+        mainDest: QuestionCollection<any>;
         relationType: QuestionCollection<any>;
         tables: QuestionCollection<any>;
     };

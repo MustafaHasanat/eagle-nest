@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { InjectTemplate } from "../../types/injectTemplate";
 import { ColumnTypeChoice } from "../../enums/columns.js";
 import inquirer from "inquirer";

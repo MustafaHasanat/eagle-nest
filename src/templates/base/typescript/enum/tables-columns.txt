@@ -1,3 +1,2 @@
-type AllTablesColumns = null;
 
-export { AllTablesColumns };
+export type AllTablesColumns = null;

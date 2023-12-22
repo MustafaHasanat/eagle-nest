@@ -8,21 +8,29 @@ import {
     createSpecialTableCloning,
     createSpecialTableInjection,
 } from "../../commands/createAction/options/createSpecialTable.js";
-import cloneTemplates from "../../manipulator/cloneTemplates.js";
-import injectTemplates from "../../manipulator/injectTemplates.js";
 import { OptionValues } from "commander";
 import NameVariant from "../../models/nameVariant.js";
 import SubPath from "../../models/subPath.js";
 import { CreateSpecialArgument } from "../../enums/actions.js";
+import manipulator from "../../manipulator/index.js";
+import { MemoValues, QuestionQuery } from "../../types/actions.js";
+import { memosToQuestions } from "../../manipulator/memorizer.js";
+import { MemoCategory } from "../../enums/actions.js";
 
 /**
  * This function will be fired by the --create-table option
  */
-const createTableBuilder = async (options: OptionValues) => {
-    let isSpecialTable = !!options.special;
+const createTableBuilder = async (
+    memoValues: MemoValues,
+    options: OptionValues
+) => {
+    const { special } = options;
+    let isSpecialTable = !!special;
 
     const questions = [
-        constants.createTable.mainDist,
+        ...memosToQuestions(memoValues, [
+            constants.createTable.mainDest,
+        ] as QuestionQuery[]),
         constants.shared.overwrite([
             "/entities/index.ts",
             "/entities/TABLE.entity.ts",
@@ -40,7 +48,7 @@ const createTableBuilder = async (options: OptionValues) => {
 
     await inquirer
         .prompt(questions)
-        .then(async ({ overwrite, tableName, mainDist }) => {
+        .then(async ({ overwrite, tableName, mainDest }) => {
             if (!overwrite) return;
 
             // if the user entered a special table name,
@@ -55,11 +63,10 @@ const createTableBuilder = async (options: OptionValues) => {
 
                 if (isSpecial) isSpecialTable = true;
             }
-
             // get the names variants and the paths
-            const nameVariantObj = new NameVariant(tableName);
+            const nameVariantObj = new NameVariant(special || tableName);
             const subPathObj = new SubPath({
-                mainDir: mainDist,
+                mainDir: mainDest,
                 nameVariant: nameVariantObj,
             });
             const createTableObj = {
@@ -67,26 +74,24 @@ const createTableBuilder = async (options: OptionValues) => {
                 nameVariant: nameVariantObj,
             };
 
-            // call the cloning function
-            const isDone = await cloneTemplates(
-                isSpecialTable
+            manipulator({
+                cloningCommands: isSpecialTable
                     ? createSpecialTableCloning({
                           ...createTableObj,
-                          tableName: options.special || tableName,
+                          tableName: special || tableName,
                       })
-                    : createTableCloning(createTableObj)
-            );
-            if (!isDone) return;
-
-            // call the injection function
-            await injectTemplates(
-                isSpecialTable
+                    : createTableCloning(createTableObj),
+                injectionCommands: isSpecialTable
                     ? createSpecialTableInjection({
                           ...createTableObj,
-                          tableName: options.special || tableName,
+                          tableName: special || tableName,
                       })
-                    : createTableInjection(createTableObj)
-            );
+                    : createTableInjection(createTableObj),
+                memo: {
+                    pairs: { mainDest },
+                    category: MemoCategory.EAGLE_NEST,
+                },
+            });
         });
 };
 
