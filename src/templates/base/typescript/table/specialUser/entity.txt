@@ -6,8 +6,8 @@ import {
     IsUUID,
     Length,
   } from 'class-validator';
-  import { UserGender } from 'src/enums/users/user-gender.enum';
-  import { UserRole } from 'src/enums/users/user-role.enum';
+import { UserGender, UserRole } from "src/enums/users.enum";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
   @Entity()
   export class User {

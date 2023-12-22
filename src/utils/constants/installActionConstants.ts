@@ -1,4 +1,4 @@
-const newActionConstants = {
+const installActionConstants = {
     nestDependencies: [
         "@nestjs/config",
         "@nestjs/typeorm",
@@ -15,7 +15,7 @@ const newActionConstants = {
         "bcrypt",
         "fs",
     ],
-    nestDevDependencies: ["@types/multer", "@types/bcrypt"],
+    nestDevDependencies: ["@types/multer", "@types/bcrypt", "prettier"],
 };
 
-export default newActionConstants;
+export default installActionConstants;

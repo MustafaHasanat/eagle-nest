@@ -16,12 +16,23 @@ type InjectionAdditionAction = {
 } | null;
 
 type InjectionDeletionAction = {
-    target: string;
+    keyword: string;
+    deletion?: {
+        isWholeLine?: boolean;
+        conditional?: {
+            type:
+                | "WHOLE_LINE"
+                | "REPLACED_WITH"
+                | "REPLACED_OR_ADD_WITH"
+                | "NONE";
+            data: string | null;
+        };
+    };
 };
 
 type InjectTemplate = {
     injectable: string;
-    additions: InjectionAdditionAction[];
+    additions?: InjectionAdditionAction[];
     deletions?: InjectionDeletionAction[];
 };
 

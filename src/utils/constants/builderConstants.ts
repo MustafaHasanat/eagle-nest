@@ -1,6 +1,3 @@
-import { existsSync } from "fs";
-import { strictNameValidator } from "../validators/stringValidators.js";
-import { QuestionCollection } from "inquirer";
 import {
     columnDecoratorsChoices,
     columnPropertiesChoices,
@@ -9,155 +6,139 @@ import {
 } from "./builderChoices.js";
 import { BuilderConstantsProps } from "../../interfaces/constants.js";
 import { logNumberedList } from "../../utils/helpers/logHelpers.js";
+import {
+    checkboxValidator,
+    inputValidator,
+    stringLengthValidator,
+    tableNamesValidator,
+} from "../../utils/validators/stringValidators.js";
+import { dirFilter, inputTrimmer } from "../../utils/filters/stringFilters.js";
 
-// ----------------
-// helper functions
-// ----------------
-const trimmer = (input: string) => {
-    return input.trim();
-};
-
-const getName = (props: {
-    name: string;
-    defaultValue?: string;
-    validator?: (name: string) => string | boolean;
-}): QuestionCollection<any> => {
-    const {
-        name,
-        defaultValue = "",
-        validator = (name: string) => {
-            return !name ? "You must pick a name!" : true;
+const sharedAttrs = {
+    input: {
+        name: {
+            default: "",
+            validate: (input: string) => inputValidator({ input }),
+            filter: inputTrimmer,
         },
-    } = props;
-    return {
-        type: "input",
-        name: name + "Name",
-        default: defaultValue,
-        message: `What's the name of your ${name}?`,
-        validate: validator,
-        filter: trimmer,
-    };
-};
-
-const getDestination = (props: {
-    targetName: string;
-    defaultDest?: string;
-    distName?: string;
-    whenCallback?: Function;
-    transformerCallback?: Function;
-}): QuestionCollection => {
-    const {
-        targetName,
-        defaultDest = "src",
-        distName = "destination",
-        whenCallback = () => true,
-        transformerCallback = (answer: string) => answer,
-    } = props;
-    return {
-        type: "input",
-        name: distName,
-        message: `Where do you want to locate your ${targetName}?`,
-        default: defaultDest,
-        filter: trimmer,
-        validate(destination: string) {
-            return !existsSync(destination) ? "Path doesn't exist!" : true;
+        dest: {
+            validate: (input: string) =>
+                inputValidator({ input, isDestination: true }),
+            filter: inputTrimmer,
+            when: (input: string) => dirFilter(input),
         },
-        when: whenCallback(),
-        transformer: transformerCallback(),
-    };
-};
-
-const getFileLocation = (
-    fileName: string,
-    realName: string,
-    defaultValue: string = "."
-): QuestionCollection => ({
-    type: "input",
-    name: fileName + "Location",
-    message: `What is the path to your ${realName} file?`,
-    default: defaultValue,
-    validate(destination: string) {
-        return !existsSync(destination) ? "Path doesn't exist!" : true;
     },
-    filter: trimmer,
-});
+    checkbox: {
+        multiple: {
+            validate: (options: string[]) => checkboxValidator({ options }),
+        },
+        onlyOne: {
+            validate: (options: string[]) =>
+                checkboxValidator({ options, isOne: true }),
+        },
+    },
+};
 
-// -----------------
-// builder constants
-// -----------------
 const builderConstants: BuilderConstantsProps = {
-    // constants for the --create-main option
+    // constants for the "main" choice
     createMain: {
-        projectName: getName({ name: "project" }),
-        mainDist: getDestination({
-            distName: "mainDist",
-            targetName: "main.ts file",
-        }),
-    },
-    // constants for the --create-landing-page
-    createLandingPage: {
-        projectName: getName({ name: "project" }),
-        publicDir: getDestination({
-            targetName: "public folder",
-            distName: "publicDir",
-            defaultDest: ".",
-            whenCallback: () => !existsSync(process.cwd() + "/public"),
-            transformerCallback: (answer: string) =>
-                answer === "." ? "" : answer,
-        }),
-    },
-    // constants for the --create-app-files
-    createAppFiles: {
-        mainDest: getDestination({
-            distName: "mainDest",
-            targetName: "app files",
-        }),
-        envDest: getDestination({
-            distName: "envDest",
-            targetName: ".env file",
-            defaultDest: ".",
-        }),
-        rolesGuard: {
-            name: "rolesGuard",
-            message: "Do you want us to add a user-guard?",
-            type: "confirm",
-            default: true,
+        projectName: {
+            ...sharedAttrs.input.name,
+            type: "input",
+            name: "projectName",
+            message: "What's the name of your project?",
+            validate: (input: string) =>
+                inputValidator({ input, allowSpaces: true }),
+        },
+        mainDest: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "mainDest",
+            default: "src",
+            message: "What is the destination of your 'main.ts' file?",
         },
     },
-    // constants for the --database
-    createDatabase: {
-        rootDir: getDestination({
-            targetName: "root directory",
-            defaultDest: ".",
-            distName: "rootDir",
-        }),
-        appModuleLocation: getFileLocation("appModule", "app.module.ts", "src"),
+    // constants for the "main" choice
+    createLandingPage: {
+        projectName: {
+            ...sharedAttrs.input.name,
+            type: "input",
+            name: "projectName",
+            message: "What's the name of your project?",
+            validate: (input: string) =>
+                inputValidator({ input, allowSpaces: true }),
+        },
+        publicDir: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "publicDir",
+            default: ".",
+            message: "What is the destination of your 'public' folder?",
+            when: () => dirFilter("public"),
+            transformer: (answer: string) => (answer === "." ? "" : answer),
+        },
     },
-    // constants for the --create-table
+    // constants for the "landing-page" choice
+    createAppFiles: {
+        appDest: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "appDest",
+            default: "src",
+            message:
+                "What is the destination of your app files (module, controller, service)?",
+        },
+        rootDir: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "rootDir",
+            default: ".",
+            message: "What is the destination of your '.env' file?",
+        },
+    },
+    // constants for the "app" choice
+    createDatabase: {
+        rootDir: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "rootDir",
+            default: ".",
+            message:
+                "What is the destination of your project's root directory?",
+        },
+        appDest: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "appDest",
+            default: "src",
+            message:
+                "What is the destination of your app files (module, controller, service)?",
+        },
+    },
+    // constants for the "database" choice
     createTable: {
         tableName: {
-            ...getName({
-                name: "table",
-                validator: (name: string) => {
-                    return strictNameValidator(name)
-                        ? "Name is invalid!"
-                        : true;
-                },
-            }),
+            ...sharedAttrs.input.name,
+            type: "input",
+            name: "tableName",
             message:
                 "What's the name of your table? (use singular camelCase nouns to avoid errors, like: user, product, ...)",
         },
+        mainDest: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "mainDest",
+            default: "src",
+            message:
+                "Where have you located your schemas, entities, dtos, ... ?",
+        },
         isSpecial: (tableName) => ({
             type: "confirm",
+            name: "isSpecial",
             message: `You're trying to create a special type of tables: "${tableName}". Do you want us to build the standard form of this table?`,
         }),
-        mainDist: getDestination({
-            targetName: "tables",
-            defaultDest: "src",
-            distName: "mainDist",
-        }),
     },
-    // constants for the --create-column option
+    // constants for the "column" choice
     createColumn: {
         newColumn: {
             type: "confirm",
@@ -165,75 +146,61 @@ const builderConstants: BuilderConstantsProps = {
             message: "Do you want to create a new column?",
             default: true,
         },
-        mainDist: {
-            ...getDestination({
-                targetName: "tables",
-                defaultDest: "src",
-                distName: "mainDist",
-            }),
+        mainDest: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "mainDest",
+            default: "src",
             message:
                 "Where have you located your schemas, entities, dtos, ... ?",
         },
         tableName: {
-            ...getName({ name: "table" }),
+            ...sharedAttrs.input.name,
+            type: "input",
+            name: "tableName",
             message:
                 "What's the name of your table? (use singular camelCase nouns to avoid errors, like: user, product, ...)",
         },
-        columnName: getName({ name: "column" }),
+        columnName: {
+            ...sharedAttrs.input.name,
+            type: "input",
+            name: "columnName",
+            message:
+                "What's the name of your new column? (use camelCase nouns to avoid errors, like: userAge, cartItems, ...)",
+        },
         columnType: {
-            name: "columnType",
+            ...sharedAttrs.checkbox.onlyOne,
             type: "checkbox",
+            name: "columnType",
             message:
                 "Select the type of the new column: (exactly one must be selected)",
             choices: columnTypeChoices,
-            validate: (options) => {
-                if (options.length !== 1) {
-                    return "Choose exactly one of the above!";
-                }
-                return true;
-            },
         },
         columnProperties: {
-            name: "columnProperties",
+            ...sharedAttrs.checkbox.multiple,
             type: "checkbox",
+            name: "columnProperties",
             message: "Select the properties of this column: (optional)",
             choices: columnPropertiesChoices,
         },
         columnDecorators: {
-            name: "columnDecorators",
+            ...sharedAttrs.checkbox.multiple,
             type: "checkbox",
+            name: "columnDecorators",
             message:
                 "Select the validators that should be applied to this column: (optional)",
             choices: columnDecoratorsChoices,
         },
         stringLength: {
-            name: "stringLength",
+            ...sharedAttrs.input.name,
             type: "input",
+            name: "stringLength",
             message:
-                "Specify the min and max lengths for your string separated by a comma with no spaces (e.g: 3,25): ",
-            validate: (input: string) => {
-                if (input.indexOf(",") === -1)
-                    return "You must have a comma separating the lengths!";
-                if (input.indexOf(" ") !== -1)
-                    return "You shouldn't have any space!";
-                if (input.indexOf(".") !== -1)
-                    return "You shouldn't have any decimal points!";
-
-                const [minimum, maximum] = input.trim().split(",");
-
-                if (
-                    (!!!Number(minimum) && minimum !== "0") ||
-                    (!!!Number(maximum) && maximum !== "0")
-                )
-                    return "Both sides of the comma must be integers!";
-                if (Number(minimum) >= Number(maximum))
-                    return "The max limit MUST be less than the min limit";
-
-                return true;
-            },
+                "Specify the 'min' and 'max' lengths for your string separated by a comma with no spaces (e.g: 3,25): ",
+            validate: stringLengthValidator,
         },
     },
-    // constants for the --create-relation
+    // constants for the "relation" choice
     createRelation: {
         newRelation: {
             type: "confirm",
@@ -242,47 +209,35 @@ const builderConstants: BuilderConstantsProps = {
             default: true,
         },
         relationType: {
-            name: "relationType",
+            ...sharedAttrs.checkbox.onlyOne,
             type: "checkbox",
+            name: "relationType",
             message:
                 "Select the type of the new relation: (exactly one must be selected)",
             choices: relationChoices,
-            validate: (options) => {
-                if (options.length !== 1) {
-                    return "Choose exactly one of the above!";
-                }
-                return true;
-            },
         },
         fieldName: {
-            ...getName({ name: "fieldName" }),
+            ...sharedAttrs.input.name,
+            type: "input",
+            name: "fieldName",
             message:
                 "Enter the name of one of your 2nd table's fields: (camelCased)",
         },
-        mainDist: {
-            ...getDestination({
-                targetName: "tables",
-                defaultDest: "src",
-                distName: "mainDist",
-            }),
+        mainDest: {
+            ...sharedAttrs.input.dest,
+            type: "input",
+            name: "mainDest",
+            default: "src",
             message:
                 "Where have you located your schemas, entities, dtos, ... ?",
         },
         tables: {
+            ...sharedAttrs.input.name,
             type: "input",
             name: "tables",
             message:
                 "Enter the names of the tables separated by a dash \n(use singular camelCase nouns to avoid errors, like: user-product)",
-            validate: (tables: string) => {
-                if (!tables) return "You must enter the names of your tables!";
-                if (tables.indexOf("-") === -1)
-                    return "You must have the dash symbol: -";
-                if (tables.indexOf(" ") !== -1)
-                    return "You must not use any space";
-
-                return true;
-            },
-            filter: trimmer,
+            validate: tableNamesValidator,
         },
     },
     // shared constants

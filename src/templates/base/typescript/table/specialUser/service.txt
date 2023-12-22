@@ -11,7 +11,7 @@ import { filterNullsObject } from 'src/utils/helpers/filterNulls';
 import { JwtService } from '@nestjs/jwt';
 import { FullTokenPayload, TokenPayload } from 'src/types/token-payload.type';
 import { Request } from 'express';
-import { UserRole } from 'src/enums/users/user-role.enum';
+import { UserRole } from "src/enums/users.enum";
 import { CustomResponseType } from 'src/types/custom-response.type';
 import {
   FilteredTermDataType,

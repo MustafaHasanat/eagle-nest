@@ -60,6 +60,15 @@ const appConstants: AppProps = {
                 "Create the necessary files and directories for the selected 'files-set'.",
             argument: "<files-set>",
             options: {
+                guard: {
+                    flags: "--guard",
+                    description: "Add a user-role guard to the app.",
+                },
+                format: {
+                    flags: "--format",
+                    description:
+                        "Add the '.prettierrc' and '.eslintrc.js' files to the app.",
+                },
                 special: {
                     flags: "--special <table-name>",
                     description: "Create a special type of tables.",

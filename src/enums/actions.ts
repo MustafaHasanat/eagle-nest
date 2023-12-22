@@ -1,3 +1,11 @@
+export enum MemoCategory {
+    EAGLE_NEST = "eaglenest",
+}
+
+export enum ProjectType {
+    NODE = "node",
+}
+
 export enum CreateFileSetArgument {
     MAIN = "main",
     LANDING_PAGE = "landing-page",

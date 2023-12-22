@@ -1,18 +1,27 @@
 import inquirer from "inquirer";
 import constants from "../../utils/constants/builderConstants.js";
 import { createColumnInjection } from "../../commands/createAction/main/createColumn.js";
-import {
-    decoratorsMap,
-    getColumnAttributes,
-    propertiesDtoMap,
-    propertiesEntityMap,
-} from "../../utils/helpers/columnHelpers.js";
+import { getColumnAttributes } from "../../utils/helpers/columnHelpers.js";
 import { addSpecialItems } from "../../utils/helpers/columnSpecialTypes.js";
-import injectTemplates from "../../manipulator/injectTemplates.js";
 import NameVariant from "../../models/nameVariant.js";
 import SubPath from "../../models/subPath.js";
+import manipulator from "../../manipulator/index.js";
+import { MemoValues, QuestionQuery } from "../../types/actions.js";
+import {
+    MemorizerProps,
+    memosToQuestions,
+} from "../../manipulator/memorizer.js";
+import { MemoCategory } from "../../enums/actions.js";
 
-const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
+const columnBuilder = async ({
+    mainDest,
+    prevTableName = "",
+    memo,
+}: {
+    mainDest: string;
+    prevTableName?: string;
+    memo: MemorizerProps;
+}) => {
     await inquirer
         .prompt([
             { ...constants.createColumn.tableName, default: prevTableName },
@@ -34,12 +43,12 @@ const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
             const tableNameVariantObj = new NameVariant(tableName);
             const columnNameVariantObj = new NameVariant(columnName);
             const subPathObj = new SubPath({
-                mainDir: mainDist,
+                mainDir: mainDest,
                 nameVariant: tableNameVariantObj,
             });
 
-            await injectTemplates(
-                createColumnInjection({
+            const isDone = await manipulator({
+                injectionCommands: createColumnInjection({
                     columnData: await addSpecialItems({
                         columnName,
                         columnType: columnType[0],
@@ -51,14 +60,22 @@ const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
                     paths: subPathObj,
                     tableNameVariants: tableNameVariantObj,
                     columNameVariants: columnNameVariantObj,
-                })
-            );
+                }),
+                memo,
+            });
+
+            if (!isDone) return;
 
             // ask the user if they want to add another column
             await inquirer
                 .prompt([constants.createColumn.newColumn])
                 .then(async ({ newColumn }) => {
-                    if (newColumn) await columnBuilder(tableName);
+                    if (newColumn)
+                        await columnBuilder({
+                            mainDest,
+                            prevTableName: tableName,
+                            memo,
+                        });
                 });
         });
 };
@@ -66,20 +83,29 @@ const columnBuilder = async (mainDist: string, prevTableName: string = "") => {
 /**
  * This function will be fired by the --create-column option
  */
-const createColumnBuilder = async () => {
+const createColumnBuilder = async (memoValues: MemoValues) => {
     inquirer
         .prompt([
+            ...memosToQuestions(memoValues, [
+                constants.createColumn.mainDest,
+            ] as QuestionQuery[]),
             constants.shared.overwrite([
                 "src/entities/TABLE.entity.ts",
                 "src/dto/create-TABLE.dto.ts",
                 "src/dto/update-TABLE.dto.ts",
                 "src/enums/tables-columns.enum.ts",
             ]),
-            constants.createColumn.mainDist,
         ])
-        .then(async (answers) => {
-            if (!answers.overwrite) return;
-            await columnBuilder(answers.mainDist);
+        .then(async ({ mainDest, overwrite }) => {
+            if (!overwrite) return;
+
+            await columnBuilder({
+                mainDest,
+                memo: {
+                    pairs: { mainDest },
+                    category: MemoCategory.EAGLE_NEST,
+                },
+            });
         });
 };
 

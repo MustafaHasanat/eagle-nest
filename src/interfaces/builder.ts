@@ -4,7 +4,7 @@ import { InjectTemplate } from "../types/injectTemplate.js";
 
 // create database
 export interface DatabaseProps {
-    appModuleLocation: string;
+    appModuleDest: string;
     envLocation: string;
     pathToEntities: string;
 }

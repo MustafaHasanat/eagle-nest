@@ -28,6 +28,14 @@ const {
             description: createDescription,
             argument: createArgument,
             options: {
+                guard: {
+                    flags: createFlagsGuard,
+                    description: createDescriptionGuard,
+                },
+                format: {
+                    flags: createFlagsFormat,
+                    description: createDescriptionFormat,
+                },
                 special: {
                     flags: createFlagsSpecial,
                     description: createDescriptionSpecial,
@@ -66,6 +74,8 @@ export default function InitAction(program: Command) {
                 Object.values(CreateFileSetArgument)
             )
         )
+        .addOption(new Option(createFlagsGuard, createDescriptionGuard))
+        .addOption(new Option(createFlagsFormat, createDescriptionFormat))
         .addOption(
             new Option(createFlagsSpecial, createDescriptionSpecial).choices(
                 Object.values(CreateSpecialArgument)

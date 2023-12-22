@@ -27,12 +27,15 @@ You might also notice some placeholder variables or values written in an upperca
 -   Install **nest-cli** globally:  
      `npm install -g @nestjs/cli`
 
+-   Install **eaglenest** globally:  
+     `npm install -g @mustafa-alhasanat/eagle-nest`
+
 -   Create a new project:  
      `nest new project-name`  
      `cd project-name`
 
--   Install **eaglenest** globally:  
-     `npm install -g @mustafa-alhasanat/eagle-nest`
+-   Install **eaglenest** for your project as a dev-dependency:  
+     `npm install --save-dev @mustafa-alhasanat/eagle-nest`
 
 -   Install the recommended dependencies:  
      `eaglenest install`
@@ -69,13 +72,16 @@ Install the recommended dependencies in your project if they're not yet installe
 ```
 "@types/multer"
 "@types/bcrypt"
+"prettier"
 ```
 
 ## The `create` command
 
 Create the necessary files and directories for the selected 'files-set'.
 
-> Usage: `eaglenest create <files-set>`
+> Usage: `eaglenest create [options] <files-set>`
+
+### Argument choices
 
 | Files Set    | Description                                                                          |
 | :----------- | :----------------------------------------------------------------------------------- |
@@ -86,6 +92,20 @@ Create the necessary files and directories for the selected 'files-set'.
 | table        | Create the necessary files for the table (module, controller, service, dto, entity). |
 | column       | Perform the necessary file changes to add a new column to a table.                   |
 | relation     | Perform the necessary file changes to establish a relation between two tables.       |
+
+### Available options
+
+| Option  | Files Set | Description                       | Details                      |
+| :------ | :------- | :-------------------------------- | :--------------------------- |
+| guard   | app      | Add a user-role guard to the app. | member, admin, plus          |
+| format  | app      | Add the format files to the app.  | .prettierrc and .eslintrc.js |
+| special | table    | Create a special type of tables.  | user, product, notification  |
+
+### Examples
+
+- ```eaglenest create main```
+- ```eaglenest create --guard --format app```
+- ```eaglenest create --special user table```
 
 # Specifications
 

@@ -138,6 +138,10 @@ const createTableInjection = ({
                 addition: {
                     base: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n`,
                     additionIsFile: false,
+                    conditional: {
+                        type: "SUPPOSED_TO_BE_THERE",
+                        data: `import { ${upperCaseName} }`,
+                    },
                 },
                 keyword: "*",
             },
@@ -145,6 +149,10 @@ const createTableInjection = ({
                 addition: {
                     base: `\n${upperCaseName},\n`,
                     additionIsFile: false,
+                    conditional: {
+                        type: "SUPPOSED_TO_BE_THERE",
+                        data: upperCaseName,
+                    },
                 },
                 keyword: "entities = [",
             },
@@ -165,7 +173,7 @@ const createTableInjection = ({
                     base: `\n${pluralUpperCaseName}Module,`,
                     additionIsFile: false,
                 },
-                keyword: "// --- tables ---",
+                keyword: "// ===== tables =====",
             },
         ],
     },
@@ -174,7 +182,7 @@ const createTableInjection = ({
         additions: [
             {
                 addition: {
-                    base: `enum ${upperCaseName}Fields {}\n\n`,
+                    base: `export enum ${upperCaseName}Fields {}\n\n`,
                     additionIsFile: false,
                 },
                 keyword: "*",
@@ -186,12 +194,10 @@ const createTableInjection = ({
                 },
                 keyword: "AllTablesColumns = ",
             },
+        ],
+        deletions: [
             {
-                addition: {
-                    base: ` ${upperCaseName}Fields, `,
-                    additionIsFile: false,
-                },
-                keyword: "export {",
+                keyword: "| null",
             },
         ],
     },

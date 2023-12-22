@@ -3,7 +3,7 @@ import { InjectTemplate } from "../../../types/injectTemplate.js";
 
 const createMainCloning = (mainDest: string, name: string): CloneTemplate[] => [
     {
-        target: "/templates/base/typescript/app/main-file.txt",
+        target: "templates/base/typescript/app/main-file.txt",
         destination: mainDest,
         newFileName: "main.ts",
         replacements: [
@@ -20,10 +20,14 @@ const createMainInjection = (envLocation: string): InjectTemplate[] => [
         injectable: envLocation,
         additions: [
             {
-                addition: {
-                    base: "/templates/components/others/app-env.txt",
-                },
                 keyword: "*",
+                addition: {
+                    base: "templates/components/others/app-env.txt",
+                    conditional: {
+                        type: "SUPPOSED_TO_BE_THERE",
+                        data: "PORT=8000",
+                    },
+                },
             },
         ],
     },

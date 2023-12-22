@@ -9,8 +9,7 @@ import {
   NotContains,
 } from 'class-validator';
 import { LoginUserDto } from './login-user.dto';
-import { UserGender } from 'src/enums/users/user-gender.enum';
-import { UserRole } from 'src/enums/users/user-role.enum';
+import { UserGender, UserRole } from "src/enums/users.enum";
 
 export class CreateUserDto extends PartialType(LoginUserDto) {
   @IsNotEmpty()
