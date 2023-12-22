@@ -20,7 +20,7 @@ import { specialLog } from "../utils/helpers/logHelpers.js";
  * @usage
  * await manipulator.cloneTemplates([
  *  {
- *      target: "templates/base/typescript/app/main-file.txt",
+ *      target: "base/typescript/app/main-file.txt",
  *      dest: ".",
  *      newFileName: "main.ts",
  *      replacements: [
@@ -53,7 +53,10 @@ const cloneTemplates = async (files: CloneTemplate[]): Promise<boolean> => {
                     pathCreator([destination]);
 
                     const contents = await readFile(
-                        join(getCurrentRelativePath("../.."), target),
+                        join(
+                            getCurrentRelativePath("../../.."),
+                            join("lib/templates", target)
+                        ),
                         "utf8"
                     );
                     const modifiedFile = await replaceStrings({

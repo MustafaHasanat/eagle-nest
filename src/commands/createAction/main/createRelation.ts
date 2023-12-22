@@ -138,7 +138,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Table ID check - create ---",
                         addition: {
-                            base: "templates/components/typescript/table/tableIdCheck-service-file.txt",
+                            base: "components/typescript/table/tableIdCheck-service-file.txt",
                         },
                         replacements: [
                             {
@@ -162,7 +162,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Table ID check - update ---",
                         addition: {
-                            base: "templates/components/typescript/table/tableIdCheck-service-file.txt",
+                            base: "components/typescript/table/tableIdCheck-service-file.txt",
                         },
                         replica: true,
                         replacements: [
@@ -187,7 +187,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Relational REST APIs ---",
                         addition: {
-                            base: "templates/components/typescript/table/getRows-x-By-y-Id-service-file.txt",
+                            base: "components/typescript/table/getRows-x-By-y-Id-service-file.txt",
                         },
                         replacements: [
                             {
@@ -231,7 +231,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Relational REST endpoints ---",
                         addition: {
-                            base: "templates/components/typescript/table/getRows-x-By-y-Id-controller-file.txt",
+                            base: "components/typescript/table/getRows-x-By-y-Id-controller-file.txt",
                         },
                         replacements: [
                             {
@@ -370,7 +370,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Relational REST APIs ---",
                         addition: {
-                            base: "templates/components/typescript/table/getRow-x-By-y-Id-service-file.txt",
+                            base: "components/typescript/table/getRow-x-By-y-Id-service-file.txt",
                         },
                         replacements: [
                             {
@@ -403,7 +403,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Relational REST endpoints ---",
                         addition: {
-                            base: "templates/components/typescript/table/getRow-x-By-y-Id-controller.txt",
+                            base: "components/typescript/table/getRow-x-By-y-Id-controller.txt",
                         },
                         replacements: [
                             {
@@ -485,7 +485,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Table ID check - create ---",
                         addition: {
-                            base: "templates/components/typescript/table/tableIdCheck-service-file.txt",
+                            base: "components/typescript/table/tableIdCheck-service-file.txt",
                         },
                         replacements: [
                             {
@@ -509,7 +509,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Relational REST APIs ---",
                         addition: {
-                            base: "templates/components/typescript/table/getRow-x-By-y-Id-service-file.txt",
+                            base: "components/typescript/table/getRow-x-By-y-Id-service-file.txt",
                         },
                         replacements: [
                             {
@@ -542,7 +542,7 @@ const createRelationInjection = ({
                     {
                         keyword: "// --- Relational REST endpoints ---",
                         addition: {
-                            base: "templates/components/typescript/table/getRow-x-By-y-Id-controller.txt",
+                            base: "components/typescript/table/getRow-x-By-y-Id-controller.txt",
                         },
                         replacements: [
                             {

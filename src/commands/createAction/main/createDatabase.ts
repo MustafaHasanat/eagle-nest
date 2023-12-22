@@ -7,12 +7,12 @@ const createDatabaseCloning = (
     enumsDest: string
 ): CloneTemplate[] => [
     {
-        target: "templates/base/typescript/db/entities-file.txt",
+        target: "base/typescript/db/entities-file.txt",
         destination: entitiesDest,
         newFileName: "index.ts",
     },
     {
-        target: "templates/base/typescript/enum/tables-columns.txt",
+        target: "base/typescript/enum/tables-columns.txt",
         destination: enumsDest,
         newFileName: "tables-columns.enum.ts",
     },
@@ -28,13 +28,13 @@ const createDatabaseInjection = ({
         additions: [
             {
                 addition: {
-                    base: "templates/components/typescript/db/config.txt",
+                    base: "components/typescript/db/config.txt",
                 },
                 keyword: "// ===== configs =====",
             },
             {
                 addition: {
-                    base: "templates/components/typescript/db/imports.txt",
+                    base: "components/typescript/db/imports.txt",
                 },
                 keyword: "*",
                 replacements: [
@@ -51,7 +51,7 @@ const createDatabaseInjection = ({
         additions: [
             {
                 addition: {
-                    base: "templates/components/others/db-env.txt",
+                    base: "components/others/db-env.txt",
                 },
                 keyword: "*",
             },

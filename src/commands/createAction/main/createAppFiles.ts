@@ -17,29 +17,29 @@ const createAppFilesCloning = ({
     rootDir,
 }: CreateAppFilesProps): CloneTemplate[] => [
     {
-        target: "templates/base/typescript/app/module-file.txt",
+        target: "base/typescript/app/module-file.txt",
         destination: appDest,
         newFileName: "app.module.ts",
     },
     {
-        target: "templates/base/typescript/app/controller-file.txt",
+        target: "base/typescript/app/controller-file.txt",
         destination: appDest,
         newFileName: "app.controller.ts",
     },
     {
-        target: "templates/base/typescript/app/service-file.txt",
+        target: "base/typescript/app/service-file.txt",
         destination: appDest,
         newFileName: "app.service.ts",
     },
     ...(isUserGuard
         ? [
               {
-                  target: "templates/base/typescript/jwt/auth-guard-file.txt",
+                  target: "base/typescript/jwt/auth-guard-file.txt",
                   destination: join(appDest, "guards"),
                   newFileName: "user-auth.guard.ts",
               },
               {
-                  target: "templates/base/typescript/enum/user-role.txt",
+                  target: "base/typescript/enum/user-role.txt",
                   destination: join(appDest, "enums"),
                   newFileName: "user-role.enum.ts",
               },
@@ -48,12 +48,12 @@ const createAppFilesCloning = ({
     ...(isFormat
         ? [
               {
-                  target: "templates/base/others/prettierrc-file.txt",
+                  target: "base/others/prettierrc-file.txt",
                   destination: rootDir,
                   newFileName: ".prettierrc",
               },
               {
-                  target: "templates/base/others/eslintrc-file.txt",
+                  target: "base/others/eslintrc-file.txt",
                   destination: rootDir,
                   newFileName: ".eslintrc.js",
               },
@@ -102,7 +102,7 @@ const createAppFilesInjection = ({
                           {
                               keyword: "// ===== services =====",
                               addition: {
-                                  base: "templates/components/typescript/jwt/main-configs.txt",
+                                  base: "components/typescript/jwt/main-configs.txt",
                               },
                           },
                           {

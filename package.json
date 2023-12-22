@@ -13,7 +13,7 @@
         "test": "jest",
         "commit": "git-cz",
         "start": "npm run build && node dist/index.js",
-        "copy-files": "copyfiles -u 1 src/templates/**/*.txt dist/src/",
+        "copy-files": "copyfiles -u 1 lib/templates/**/*.txt dist/lib/",
         "build": "rimraf ./dist && tsc && npm run copy-files",
         "install-g": "npm install -g .",
         "globalize": "npm run build && npm run install-g",
@@ -52,8 +52,9 @@
         ]
     },
     "files": [
-        "src/templates",
-        "src/external",
+        "lib/templates",
+        "lib/external",
+        "lib/index.js",
         "index.js"
     ],
     "dependencies": {

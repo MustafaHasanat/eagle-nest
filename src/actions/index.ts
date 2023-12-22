@@ -50,7 +50,9 @@ const {
     },
 } = constants;
 
-export default function InitAction(program: Command) {
+export default function InitAction() {
+    // Initialize the cli-tool program
+    const program = new Command();
     const options = program.opts();
 
     program

@@ -140,7 +140,10 @@ const additionAction = async (props: {
         // read the contents of the file (if it was a file)
         const additionContents = additionIsFile
             ? await readFile(
-                  join(getCurrentRelativePath("../.."), base),
+                  join(
+                      getCurrentRelativePath("../../.."),
+                      join("lib/templates", base)
+                  ),
                   "utf8"
               )
             : base;
@@ -283,11 +286,11 @@ const deletionAction = async (props: {
  *              injectable: appModuleLocation,
  *              actions: [
  *                 {
- *                     addition: "templates/components/typescript/app/db/config.txt",
+ *                     addition: "components/typescript/app/db/config.txt",
  *                     keyword: "imports: [",
  *                 },
  *                 {
- *                     addition: "templates/components/typescript/app/db/imports.txt",
+ *                     addition: "components/typescript/app/db/imports.txt",
  *                     keyword: "*",
  *                     replacements: [
  *                         {

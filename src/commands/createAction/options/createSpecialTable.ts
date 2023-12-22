@@ -14,32 +14,32 @@ const createSpecialTableCloning = ({
 }): CloneTemplate[] => {
     const sharedClones = (dirName: string): CloneTemplate[] => [
         {
-            target: `templates/base/typescript/table/${dirName}/entity.txt`,
+            target: `base/typescript/table/${dirName}/entity.txt`,
             destination: entitiesPath,
             newFileName: camelCaseName + ".entity.ts",
         },
         {
-            target: `templates/base/typescript/table/${dirName}/createDto.txt`,
+            target: `base/typescript/table/${dirName}/createDto.txt`,
             destination: dtoPath,
             newFileName: `create-${camelCaseName}.dto.ts`,
         },
         {
-            target: `templates/base/typescript/table/${dirName}/updateDto.txt`,
+            target: `base/typescript/table/${dirName}/updateDto.txt`,
             destination: dtoPath,
             newFileName: `update-${camelCaseName}.dto.ts`,
         },
         {
-            target: `templates/base/typescript/table/${dirName}/module.txt`,
+            target: `base/typescript/table/${dirName}/module.txt`,
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.module.ts`,
         },
         {
-            target: `templates/base/typescript/table/${dirName}/controller.txt`,
+            target: `base/typescript/table/${dirName}/controller.txt`,
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.controller.ts`,
         },
         {
-            target: `templates/base/typescript/table/${dirName}/service.txt`,
+            target: `base/typescript/table/${dirName}/service.txt`,
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.service.ts`,
         },
@@ -49,12 +49,12 @@ const createSpecialTableCloning = ({
         return [
             ...sharedClones("specialUser"),
             {
-                target: "templates/base/typescript/table/specialUser/loginDto.txt",
+                target: "base/typescript/table/specialUser/loginDto.txt",
                 destination: dtoPath,
                 newFileName: "login-user.dto.ts",
             },
             {
-                target: "templates/base/typescript/table/specialUser/enums.txt",
+                target: "base/typescript/table/specialUser/enums.txt",
                 destination: enumsPath,
                 newFileName: "users.enum.ts",
             },

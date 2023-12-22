@@ -3,7 +3,7 @@ import { InjectTemplate } from "../../types/injectTemplate.js";
 
 const installInitCloning = (): CloneTemplate[] => [
     {
-        target: "templates/base/others/memo-json.txt",
+        target: "base/others/memo-json.txt",
         destination: ".",
         newFileName: "memo.json",
     },

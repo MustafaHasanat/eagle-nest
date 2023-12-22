@@ -14,7 +14,7 @@ const createTableCloning = ({
 }: CreateTableProps): CloneTemplate[] => {
     return [
         {
-            target: "templates/base/typescript/db/entity.txt",
+            target: "base/typescript/db/entity.txt",
             destination: entitiesPath,
             newFileName: camelCaseName + ".entity.ts",
             replacements: [
@@ -25,7 +25,7 @@ const createTableCloning = ({
             ],
         },
         {
-            target: "templates/base/typescript/dto/create-dto.txt",
+            target: "base/typescript/dto/create-dto.txt",
             destination: dtoPath,
             newFileName: `create-${camelCaseName}.dto.ts`,
             replacements: [
@@ -36,7 +36,7 @@ const createTableCloning = ({
             ],
         },
         {
-            target: "templates/base/typescript/dto/update-dto.txt",
+            target: "base/typescript/dto/update-dto.txt",
             destination: dtoPath,
             newFileName: `update-${camelCaseName}.dto.ts`,
             replacements: [
@@ -51,7 +51,7 @@ const createTableCloning = ({
             ],
         },
         {
-            target: "templates/base/typescript/table/module-file.txt",
+            target: "base/typescript/table/module-file.txt",
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.module.ts`,
             replacements: [
@@ -74,7 +74,7 @@ const createTableCloning = ({
             ],
         },
         {
-            target: "templates/base/typescript/table/controller-file.txt",
+            target: "base/typescript/table/controller-file.txt",
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.controller.ts`,
             replacements: [
@@ -97,7 +97,7 @@ const createTableCloning = ({
             ],
         },
         {
-            target: "templates/base/typescript/table/service-file.txt",
+            target: "base/typescript/table/service-file.txt",
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.service.ts`,
             replacements: [

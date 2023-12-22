@@ -14,8 +14,8 @@
         "declaration": true,
         "baseUrl": "./src",
         "paths": {
-            "templates/*": ["./src/templates/*"],
-            "external/*": ["./src/external/*"],
+            "templates/*": ["./lib/templates/*"],
+            "external/*": ["./lib/external/*"],
             "utils/*": ["./src/utils/*"],
             "__tests__/*": ["__tests__/*"],
             "*": ["*"]
@@ -24,9 +24,9 @@
     "include": [
         "**/*.ts",
         "src/*.(ts|txt)",
-        "src/templates/**/*.txt",
-        "src/external/**/*.ts",
-        "src/cli-builder/*"
+        "lib/templates/**/*.txt",
+        "lib/external/**/*.ts",
+        "lib/index.ts",
     ],
     "exclude": ["node_modules", "dist"],
     "files": ["index.ts"]
