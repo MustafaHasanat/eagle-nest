@@ -60,7 +60,6 @@
         ".": "./dist/index.js"
     },
     "dependencies": {
-        "fae": "git+https://MustafaHasanat:token@github.com/MustafaHasanat/fae.git",
         "@nestjs/common": "^10.2.9",
         "@nestjs/platform-express": "^10.2.9",
         "@nestjs/swagger": "^7.1.16",
