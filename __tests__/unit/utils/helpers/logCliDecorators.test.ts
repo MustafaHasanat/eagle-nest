@@ -1,13 +1,13 @@
-import { RGB } from "../../../../src/enums/rgb.js";
-import { specialLog } from "../../../../src/utils/helpers/logHelpers.js";
-import constants from "../../../../src/utils/constants/coloringConstants.js";
-import { getColoredText } from "../../../../src/utils/helpers/coloringLog.js";
+// import { RGB } from "../../../../lib/enums/rgb.js";
+import { specialLog } from "../../../../lib/utils/helpers/logHelpers.js";
+// import constants from "../../../../lib/utils/constants/coloringConstants.js";
+// import { getColoredText } from "../../../../lib/utils/helpers/coloringLog.js";
 
-const { colors } = constants;
+// const { colors } = constants;
 
-const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+// const consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 const stdoutSpy = jest.fn();
-const getColoredTextSpy = jest.fn(getColoredText);
+// const getColoredTextSpy = jest.fn(getColoredText);
 
 const originalStdoutWrite = process.stdout.write;
 

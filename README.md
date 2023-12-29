@@ -105,7 +105,7 @@ Create the necessary files and directories for the selected 'files-set'.
 ### Examples
 
 -   `eaglenest create main`
--   `eaglenest create --guard --format app`
+-   `eaglenest create --guard --format --aws app`
 -   `eaglenest create --special user table`
 
 # Specifications

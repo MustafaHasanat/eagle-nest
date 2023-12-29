@@ -4,11 +4,11 @@ const config: Config.InitialOptions = {
     rootDir: "./__tests__",
     verbose: true,
     // collectCoverage: true,
-    collectCoverageFrom: ["src/**/*.(ts|js)"],
+    collectCoverageFrom: ["lib/**/*.(ts|js)"],
     testMatch: ["**/**/?(*.)+(test).+(ts|js)"],
     moduleFileExtensions: ["ts", "js", "tsx", "jsx", "json", "node"],
     moduleNameMapper: {
-        // '^@/(.*)$': './src/$1',
+        // '^@/(.*)$': './lib/$1',
         "(.+)\\.(ts|js)": "$1",
     },
     transform: {

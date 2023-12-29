@@ -44,7 +44,7 @@ const createDatabaseInjection = ({
                     base: "components/typescript/db/imports.txt",
                     conditional: {
                         type: "SUPPOSED_TO_BE_THERE",
-                        data: "TypeOrmModule",
+                        data: "@nestjs/typeorm",
                     },
                 },
                 keyword: "*",

@@ -1,4 +1,4 @@
-import NameVariant from "../../../src/models/nameVariant";
+import NameVariant from "../../../lib/models/nameVariant";
 
 it("should return the correct variants when entering: user", () => {
     const {

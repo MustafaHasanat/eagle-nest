@@ -122,7 +122,7 @@ const createSpecialTableInjection = ({
             additions: [
                 {
                     addition: {
-                        base: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n`,
+                        base: `import { ${upperCaseName} } from "./${camelCaseName}.entity";\n\n`,
                         additionIsFile: false,
                         conditional: {
                             type: "SUPPOSED_TO_BE_THERE",

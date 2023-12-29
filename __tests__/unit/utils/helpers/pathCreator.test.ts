@@ -1,4 +1,4 @@
-import pathCreator from "../../../../src/utils/helpers/pathCreator";
+import pathCreator from "../../../../lib/utils/helpers/pathCreator";
 import fs from "fs";
 
 jest.mock("fs");

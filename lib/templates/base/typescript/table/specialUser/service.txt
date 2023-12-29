@@ -20,13 +20,11 @@ import {
     forbiddenRes,
     filteredGetQuery,
     validateNewInstance,
-    validationError,
     validRes,
     newInstanceRes,
     sendEmail,
     mailing,
     emailValidator,
-    passwordRemover,
     checkForUniqueness,
 } from "@mustafa-alhasanat/eagle-nest/lib";
 
@@ -50,6 +48,12 @@ export class UsersService {
     ) {}
 
     // --- helper methods ---
+
+    private passwordRemover<returnType>(user: User): returnType {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...rest } = user;
+        return rest as returnType;
+    }
 
     private uniqueFieldsArray = ({
         username,
@@ -178,7 +182,7 @@ export class UsersService {
             const response = await this.userRepository.find(findQuery.data);
             // remove the password from all the users before sending response
             const updatedUsers = response.map((user) => {
-                return withPass ? user : passwordRemover(user);
+                return withPass ? user : this.passwordRemover<User>(user);
             });
             return foundRes<User[]>(
                 response.length
@@ -197,7 +201,10 @@ export class UsersService {
             if (!response) {
                 return notFoundRes("User doesn't exist");
             }
-            return foundRes("User has been found", passwordRemover(response));
+            return foundRes<User>(
+                "User has been found",
+                this.passwordRemover<User>(response)
+            );
         } catch (error) {
             return errorRes(error);
         }
@@ -249,7 +256,7 @@ export class UsersService {
             // return the response
             return newInstanceRes<User>(
                 "User has been created successfully",
-                passwordRemover(response)
+                this.passwordRemover<User>(response)
             );
         } catch (error) {
             console.log(error);
@@ -468,24 +475,16 @@ export class UsersService {
                 },
                 isOnlyEmail: true,
             });
-
             if (user.status !== 200) {
                 return { ...user, data: null };
             }
-
-            const validationErrors = await validateNewInstance({
+            // validate the provided fields
+            await validateNewInstance({
                 dto: PasswordDto,
                 data: {
                     password: newPassword,
                 },
             });
-
-            if (validationErrors.status !== 200) {
-                return validationError(
-                    validationErrors.message,
-                    validationErrors.errors
-                );
-            }
 
             const response = await this.userRepository.update(
                 {

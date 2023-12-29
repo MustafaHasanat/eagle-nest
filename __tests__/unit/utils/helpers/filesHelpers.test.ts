@@ -4,7 +4,7 @@ import {
     missingFiles,
     pathConvertor,
     pluralize,
-} from "../../../../src/utils/helpers/filesHelpers";
+} from "../../../../lib/utils/helpers/filesHelpers";
 import fs from "fs";
 
 jest.mock("fs");

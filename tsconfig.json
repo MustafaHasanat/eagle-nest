@@ -12,18 +12,16 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "declaration": true,
-        "baseUrl": "./src",
+        "baseUrl": "./lib",
         "paths": {
             "templates/*": ["./lib/templates/*"],
-            "external/*": ["./lib/external/*"],
-            "utils/*": ["./src/utils/*"],
+            "external/*": ["lib/external/*"],
             "__tests__/*": ["__tests__/*"],
             "*": ["*"]
         }
     },
     "include": [
         "**/*.ts",
-        "src/*.(ts|txt)",
         "lib/**/*.(ts|js|txt)",
     ],
     "exclude": ["node_modules", "dist"],
