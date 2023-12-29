@@ -129,6 +129,7 @@ const createTableInjection = ({
         upperCaseName,
         pluralUpperCaseName,
         pluralLowerCaseName,
+        upperSnakeCaseName,
     },
 }: CreateTableProps): InjectTemplate[] => [
     {
@@ -178,7 +179,7 @@ const createTableInjection = ({
         ],
     },
     {
-        injectable: join(enumsPath, "tables-columns.enum.ts"),
+        injectable: join(enumsPath, "tables-data.enum.ts"),
         additions: [
             {
                 addition: {
@@ -186,6 +187,13 @@ const createTableInjection = ({
                     additionIsFile: false,
                 },
                 keyword: "*",
+            },
+            {
+                addition: {
+                    base: `\n${upperSnakeCaseName} = '${camelCaseName}', `,
+                    additionIsFile: false,
+                },
+                keyword: "TablesNames {",
             },
             {
                 addition: {

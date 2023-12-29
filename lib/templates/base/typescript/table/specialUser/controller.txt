@@ -2,213 +2,213 @@ import {
     Body,
     Delete,
     Get,
-    HttpCode,
-    HttpStatus,
     Param,
     Patch,
     Post,
     Query,
     Req,
     Res,
+    HttpCode,
+    HttpStatus,
     UploadedFile,
-    UseInterceptors,
-  } from '@nestjs/common';
-  import { UsersService } from './users.service';
-  import { CreateUserDto } from './dto/create-user.dto';
-  import { ApiBody, ApiOperation } from '@nestjs/swagger';
-  import { Response } from 'express';
-  import { storeLocalFile } from 'src/utils/storageProcess/storage';
-  import { FileInterceptor } from '@nestjs/platform-express';
-  import { createUserBody } from './dto/create-user.body';
-  import { UpdateUserDto } from './dto/update-user.dto';
-  import { ControllerWrapper } from 'src/decorators/controller-wrapper.decorator';
-  import { CreateUpdateWrapper } from 'src/decorators/create-update-wrapper.decorator';
-  import { Request } from 'express';
-  import { updateUserBody } from './dto/update-user.body';
-  import { MembersOnly } from 'src/decorators/members.decorator';
-  import { AdminsOnly } from 'src/decorators/admins.decorator';
-  import { LoginUserDto } from './dto/login-user.dto';
-  import { FullTokenPayload } from 'src/types/token-payload.type';
-  import { GetAllWrapper } from 'src/decorators/get-all-wrapper.decorator';
-  import { UserFields } from 'src/enums/shared/tables-fields.enum';
-  import {
+} from "@nestjs/common";
+import { ApiBody, ApiOperation } from "@nestjs/swagger";
+import { DeleteResult, UpdateResult } from "typeorm";
+import { Request, Response } from "express";
+import { FileInterceptor } from "@nestjs/platform-express";
+
+import {
+    EditorsWrapper,
+    MembersOnly,
+    GetAllWrapper,
+    AdminsOnly,
     GetConditionsProps,
     GetQueryProps,
-  } from 'src/types/get-operators.type';
-  import { AppService } from 'src/app.service';
-  import { CustomResponseType } from 'src/types/custom-response.type';
-  import { User } from './entities/user.entity';
-  import { UpdateResult } from 'typeorm';
-  
-  @ControllerWrapper('users')
-  export class UsersController {
-    constructor(
-      private readonly usersService: UsersService,
-      private readonly appService: AppService,
-    ) {}
-  
-    getUserTokenData(req: Request): FullTokenPayload {
-      return this.usersService.getUserTokenData(req);
+    CustomResponseType,
+    ControllerWrapper,
+    validateGetConditions,
+} from "@mustafa-alhasanat/eagle-nest/lib";
+
+import { User } from "src/entities/user.entity";
+import { UsersService } from "./users.service";
+import { CreateUserDto } from "src/dto/users/create-user.dto";
+import { UpdateUserDto } from "src/dto/users/update-user.dto";
+import { LoginUserDto } from "src/dto/users/login-user.dto";
+import { UserFields } from "src/enums/tables-data.enum";
+import { FullTokenPayload } from "src/types/token-payload.type";
+
+@ControllerWrapper("users")
+export class UsersController {
+    constructor(private readonly usersService: UsersService) {}
+
+    private getUserTokenData(
+        req: Request<Record<string, any>>
+    ): FullTokenPayload {
+        return this.usersService.getUserTokenData(req);
     }
-  
+
+    // --- Basic REST endpoints ---
+
     @Get()
     // @AdminsOnly()
     @GetAllWrapper({
-      fieldsEnum: UserFields,
+        fieldsEnum: UserFields,
     })
     async getUsers(
-      @Query()
-      query: GetQueryProps<UserFields>,
-      @Res() res: Response,
+        @Query()
+        query: GetQueryProps<UserFields>,
+        @Res() res: Response
     ) {
-      const { sortBy, reverse, page, conditions } = query;
-      const parsed: GetConditionsProps<UserFields>[] =
-        this.appService.validateGetConditions<UserFields>(conditions);
-  
-      const response: CustomResponseType<any> = await this.usersService.getUsers({
-        sortBy: sortBy || UserFields.USERNAME,
-        reverse: reverse === 'true',
-        page: Number(page),
-        conditions: parsed || [],
-      });
-      return res.status(response.status).json(response);
+        const { sortBy, reverse, page, conditions } = query;
+        const parsed: GetConditionsProps<UserFields>[] =
+            validateGetConditions<UserFields>(conditions);
+
+        const response: CustomResponseType<any> =
+            await this.usersService.getUsers({
+                sortBy: sortBy || UserFields.USERNAME,
+                reverse: reverse === "true",
+                page: Number(page),
+                conditions: parsed || [],
+            });
+        return res.status(response.status).json(response);
     }
-  
-    @Get(':id')
+
+    @Get(":id")
     @MembersOnly()
-    @ApiOperation({ summary: 'get a single user using its ID' })
-    async getUserById(@Param('id') id: string, @Res() res: Response) {
-      const response: CustomResponseType<any> =
-        await this.usersService.getUserById(id);
-  
-      return res.status(response.status).json(response);
+    @ApiOperation({ summary: "get a single user using its ID" })
+    async getUserById(@Param("id") id: string, @Res() res: Response) {
+        const response: CustomResponseType<any> =
+            await this.usersService.getUserById(id);
+
+        return res.status(response.status).json(response);
     }
-  
+
     @Post()
-    @CreateUpdateWrapper(
-      CreateUserDto,
-      createUserBody,
-      'create a new user',
-      FileInterceptor('avatar', storeLocalFile('users')),
+    @MembersOnly()
+    @EditorsWrapper(
+        CreateUserDto,
+        "create a new user",
+        FileInterceptor("avatar")
     )
     async createUser(
-      @UploadedFile() avatar: Express.Multer.File,
-      @Body() createUserDto: CreateUserDto,
-      @Req() req: Request,
-      @Res() res: Response,
+        @UploadedFile() avatar: Express.Multer.File,
+        @Body() createUserDto: CreateUserDto,
+        @Req() req: Request,
+        @Res() res: Response
     ) {
-      const response: CustomResponseType<User> =
-        await this.usersService.createUser(
-          {
-            ...createUserDto,
-            avatar,
-          },
-          this.getUserTokenData(req),
-        );
-  
-      return res.status(response.status).json(response);
+        const response: CustomResponseType<User> =
+            await this.usersService.createUser(
+                {
+                    ...createUserDto,
+                    avatar,
+                },
+                this.getUserTokenData(req)
+            );
+
+        return res.status(response.status).json(response);
     }
-  
-    @Patch(':id')
+
+    @Patch(":id")
     @MembersOnly()
-    @CreateUpdateWrapper(UpdateUserDto, updateUserBody, 'update a user')
-    @UseInterceptors(FileInterceptor('avatar', storeLocalFile('users')))
+    @EditorsWrapper(UpdateUserDto, "update a user", FileInterceptor("avatar"))
     async updateUser(
-      @Param('id') id: string,
-      @Body() updateUserDto: UpdateUserDto,
-      @UploadedFile() avatar: Express.Multer.File,
-      @Req() req: Request,
-      @Res() res: Response,
+        @Param("id") id: string,
+        @UploadedFile() avatar: Express.Multer.File,
+        @Body() updateUserDto: UpdateUserDto,
+        @Req() req: Request,
+        @Res() res: Response
     ) {
-      const response: CustomResponseType<UpdateResult> =
-        await this.usersService.updateUser(
-          id,
-          {
-            ...updateUserDto,
-            avatar,
-          },
-          this.getUserTokenData(req),
-        );
-  
-      return res.status(response.status).json(response);
+        const response: CustomResponseType<UpdateResult> =
+            await this.usersService.updateUser(
+                id,
+                {
+                    ...updateUserDto,
+                    avatar,
+                },
+                this.getUserTokenData(req)
+            );
+
+        return res.status(response.status).json(response);
     }
-  
-    @Delete('wipe')
+
+    @Delete("wipe")
     @AdminsOnly()
-    @ApiOperation({ summary: 'delete all users' })
+    @ApiOperation({ summary: "delete all users" })
     async deleteAllUsers(@Res() res: Response) {
-      const response = await this.usersService.deleteAllUsers();
-      return res.status(response.status).json(response);
+        const response: CustomResponseType<DeleteResult> =
+            await this.usersService.deleteAllUsers();
+        return res.status(response.status).json(response);
     }
-  
-    @Delete(':id')
+
+    @Delete(":id")
     @MembersOnly()
-    @ApiOperation({ summary: 'delete a user' })
+    @ApiOperation({ summary: "delete a user" })
     async deleteUser(
-      @Param('id') id: string,
-      @Req() req: Request,
-      @Res() res: Response,
+        @Param("id") id: string,
+        @Req() req: Request,
+        @Res() res: Response
     ) {
-      const response = await this.usersService.deleteUser(
-        id,
-        this.getUserTokenData(req),
-      );
-      return res.status(response.status).json(response);
+        const response: CustomResponseType<DeleteResult> =
+            await this.usersService.deleteUser(id, this.getUserTokenData(req));
+        return res.status(response.status).json(response);
     }
-  
-    // -------------------------------------------------------------------
-    // authentication endpoints
-  
-    @Get('login/isAuth')
-    @ApiOperation({ summary: 'check if you are authenticated or not' })
+
+    // --- Authentication endpoints ---
+
+    @Get("auth/isAuth")
+    @ApiOperation({ summary: "check if you are authenticated or not" })
     getProfile(@Req() req: Request, @Res() res: Response) {
-      const token = this.getUserTokenData(req);
-      return res.status(200).json({
-        message: `User is ${token ? 'authenticated' : 'unauthenticated'}`,
-        data: token,
-        status: 200,
-      });
+        const token = this.getUserTokenData(req);
+        return res.status(200).json({
+            message: `User is ${token ? "authenticated" : "unauthenticated"}`,
+            data: token,
+            status: 200,
+        });
     }
-  
-    @Post('login/getToken')
-    @ApiOperation({ summary: 'log in to create an auth token' })
+
+    @Post("auth/login")
+    @ApiOperation({ summary: "log in to create an auth token" })
     @HttpCode(HttpStatus.OK)
     @ApiBody({ type: LoginUserDto })
     async logIn(@Body() body: LoginUserDto, @Res() res: Response) {
-      const { email, password } = body;
-      const response = await this.usersService.logIn(email, password);
-      return res.status(response.status).json(response);
+        const { email, password } = body;
+        const response = await this.usersService.logIn(email, password);
+        return res.status(response.status).json(response);
     }
-  
-    @Get('resetPassword/request/')
+
+    @Get("auth/passwordRequest")
     @ApiOperation({
-      summary:
-        'request a password reset if you forgot yours providing your identifier (email or username)',
+        summary:
+            "request a password reset if you forgot yours providing your identifier (email or username)",
     })
     @HttpCode(HttpStatus.OK)
     async requestPasswordReset(
-      @Query('identifier') identifier: string,
-      @Res() res: Response,
+        @Query("identifier") identifier: string,
+        @Res() res: Response
     ) {
-      const response = await this.usersService.requestPasswordReset(identifier);
-      return res.status(response.status).json(response);
+        const response =
+            await this.usersService.requestPasswordReset(identifier);
+        return res.status(response.status).json(response);
     }
-  
+
     // ----------------------------
     // TODO: add a guard to allow only the authorized people to reset their password
     // ----------------------------
-    @Post('resetPassword/reset/')
+    @Post("auth/passwordReset")
     @ApiOperation({
-      summary:
-        'reset your password providing your identifier (email or username)',
+        summary:
+            "reset your password providing your identifier (email or username)",
     })
     @HttpCode(HttpStatus.OK)
     async resetPassword(
-      @Query('identifier') identifier: string,
-      @Query('newPass') newPass: string,
-      @Res() res: Response,
+        @Query("identifier") identifier: string,
+        @Query("newPass") newPass: string,
+        @Res() res: Response
     ) {
-      const response = await this.usersService.resetPassword(identifier, newPass);
-      return res.status(response.status).json(response);
+        const response = await this.usersService.resetPassword(
+            identifier,
+            newPass
+        );
+        return res.status(response.status).json(response);
     }
-  }
+}

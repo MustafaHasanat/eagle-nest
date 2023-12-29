@@ -1,7 +1,6 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { GetConditionsProps } from "../types/getOperators.js";
-import CustomResponseType from "../types/customResponseType.js";
 
 function validateGetConditions<FieldType>(
     conditions: any
@@ -21,13 +20,7 @@ function validateGetConditions<FieldType>(
     }
 }
 
-async function validateNewInstance({
-    dto,
-    data,
-}: {
-    dto: any;
-    data: any;
-}): Promise<CustomResponseType<string[]>> {
+async function validateNewInstance({ dto, data }: { dto: any; data: any }) {
     try {
         const dtoClass = plainToInstance(dto, data);
         const errors = await validate(dtoClass);
@@ -42,23 +35,22 @@ async function validateNewInstance({
             }
         });
 
-        return {
-            message:
-                errorsArray.length === 0
-                    ? "No errors"
-                    : "Validation error occurred",
-            data: [],
-            status: errorsArray.length === 0 ? 200 : 500,
-            errors: errorsArray,
-        };
+        if (errorsArray.length !== 0) {
+            throw new Error(
+                `Validation error occurred:\n${errorsArray.join(",\n")}`
+            );
+        }
     } catch (error: any) {
         console.log(error);
-        return {
-            message: "Error occurred",
-            status: 500,
-            data: error,
-        };
     }
 }
 
-export { validateNewInstance, validateGetConditions };
+const emailValidator = (email: string): boolean => {
+    return !!String(email)
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
+
+export { emailValidator, validateNewInstance, validateGetConditions };

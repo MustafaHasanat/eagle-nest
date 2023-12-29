@@ -53,6 +53,12 @@ import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
       nullable: true,
     })
     phoneNumber?: string;
+
+    @Length(1, 255)
+    @Column({
+      nullable: true,
+    })
+    address?: string;
   
     @IsEnum(UserGender)
     @Column({

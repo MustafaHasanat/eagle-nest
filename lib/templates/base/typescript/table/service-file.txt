@@ -5,13 +5,12 @@ import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import {
   foundRes,
   notFoundRes,
-  createUpdateRes,
+  newInstanceRes,
   deletedRes,
   errorRes,
   filterNullsObject,
   GetAllProps,
   CustomResponseType,
-  validationError,
   filteredGetQuery,
   validateNewInstance,
 } from '@mustafa-alhasanat/eagle-nest';
@@ -19,7 +18,7 @@ import {
 import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";
 import { CreateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
 import { UpdateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
-import { TABLE_UPPER_NAMEFields } from '../../enums/tables-columns.enum';
+import { TABLE_UPPER_NAMEFields } from '../../enums/tables-data.enum';
 
 @Injectable()
 export class TABLE_PLURAL_UPPER_NAMEService {
@@ -81,23 +80,15 @@ export class TABLE_PLURAL_UPPER_NAMEService {
         createTABLE_UPPER_NAMEDto: CreateTABLE_UPPER_NAMEDto
     ): Promise<CustomResponseType<TABLE_UPPER_NAME>> {
         try {
+            // filter any nulls
             const filteredData =
                 filterNullsObject<CreateTABLE_UPPER_NAMEDto>(createTABLE_UPPER_NAMEDto);
-
-            const validationErrors = await validateNewInstance(
-                {
-                    dto: CreateTABLE_UPPER_NAMEDto,
-                    data: filteredData,
-                }
-            );
-
-            if (validationErrors.status !== 200) {
-                return validationError(
-                    validationErrors.message,
-                    validationErrors.errors
-                );
-            }
-
+            // validate the provided fields
+            await validateNewInstance({
+                dto: CreateTABLE_UPPER_NAMEDto,
+                data: filteredData,
+            });
+            // deconstruction
             const {
                 // --- DUMMY_TABLE_NAME_CREATE ---
                 ...rest
@@ -109,10 +100,14 @@ export class TABLE_PLURAL_UPPER_NAMEService {
 
             // ----------------------
 
+            // create the object and save it in the DB
             const newTABLE_UPPER_NAME = this.TABLE_LOWER_NAMERepository.create(TABLE_LOWER_NAMEObj);
             const response = await this.TABLE_LOWER_NAMERepository.save(newTABLE_UPPER_NAME);
-
-            return createUpdateRes<TABLE_UPPER_NAME>(
+            // --- Post-response - create ---
+            
+            // ----------------------
+            // return the response
+            return newInstanceRes<TABLE_UPPER_NAME>(
                 "TABLE_UPPER_NAME has been created successfully",
                 response
             );
@@ -126,28 +121,22 @@ export class TABLE_PLURAL_UPPER_NAMEService {
         updateTABLE_UPPER_NAMEDto: UpdateTABLE_UPPER_NAMEDto
     ): Promise<CustomResponseType<UpdateResult>> {
         try {
+            // filter any nulls
             const filteredData =
                 filterNullsObject<UpdateTABLE_UPPER_NAMEDto>(updateTABLE_UPPER_NAMEDto);
-
-            const validationErrors = await validateNewInstance(
+            // validate the provided fields
+            await validateNewInstance(
                 {
                     dto: UpdateTABLE_UPPER_NAMEDto,
                     data: filteredData,
                 }
             );
-
-            if (validationErrors.status !== 200) {
-                return validationError(
-                    validationErrors.message,
-                    validationErrors.errors
-                );
-            }
-
+            // check if the id exists
             const TABLE_LOWER_NAME = await this.getTABLE_UPPER_NAMEById(id);
             if (!TABLE_LOWER_NAME) {
                 return notFoundRes(`TABLE_UPPER_NAME does not exist`);
             }
-
+            // deconstruction
             const {
                 // --- DUMMY_TABLE_NAME_UPDATE ---
                 ...rest
@@ -159,14 +148,18 @@ export class TABLE_PLURAL_UPPER_NAMEService {
 
             // ----------------------
 
+            // create the object and save it in the DB
             const response = await this.TABLE_LOWER_NAMERepository.update(
                 {
                     id,
                 },
                 TABLE_LOWER_NAMEObj
             );
-
-            return createUpdateRes<UpdateResult>(
+            // --- Post-response - update ---
+            
+            // ----------------------
+            // return the response
+            return newInstanceRes<UpdateResult>(
                 "TABLE_UPPER_NAME has been updated successfully",
                 response
             );

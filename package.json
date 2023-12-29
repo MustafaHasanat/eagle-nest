@@ -1,6 +1,6 @@
 {
     "name": "@mustafa-alhasanat/eagle-nest",
-    "version": "0.0.0",
+    "version": "0.1.1",
     "description": "Build Nest.js common blocks and files insanely faster!",
     "author": "Mustafa Alhasanat",
     "license": "ISC",
@@ -54,10 +54,12 @@
     "files": [
         "lib/templates",
         "lib/external",
-        "lib/index.js",
+        "lib/index.ts",
+        "lib/**/*.(ts|js|txt)",
         "index.js"
     ],
     "dependencies": {
+        "@nestjs-modules/mailer": "^1.10.3",
         "@nestjs/common": "^10.2.9",
         "@nestjs/platform-express": "^10.2.9",
         "@nestjs/swagger": "^7.1.16",
@@ -69,6 +71,7 @@
         "figlet": "^1.7.0",
         "fs": "^0.0.1-security",
         "inquirer": "^9.2.11",
+        "nodemailer": "^6.9.7",
         "rimraf": "^5.0.5",
         "semantic-release": "^22.0.6",
         "typeorm": "^0.3.17"
@@ -80,6 +83,7 @@
         "@types/inquirer": "^9.0.6",
         "@types/jest": "^29.5.7",
         "@types/node": "^20.8.10",
+        "@types/nodemailer": "^6.4.14",
         "@typescript-eslint/eslint-plugin": "^6.15.0",
         "@typescript-eslint/parser": "^6.15.0",
         "babel-cli": "^6.26.0",

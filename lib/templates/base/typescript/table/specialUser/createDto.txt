@@ -52,6 +52,15 @@ export class CreateUserDto extends PartialType(LoginUserDto) {
   phoneNumber?: string;
 
   @IsOptional()
+  @Length(1, 255)
+  @ApiProperty({
+    example: 'example st.',
+    description: 'Address of the user',
+    required: true,
+  })
+  address?: string;
+
+  @IsOptional()
   @IsEnum(UserGender)
   @ApiProperty({ example: UserGender.MALE, default: UserGender.NOT_SPECIFIED })
   gender?: UserGender;

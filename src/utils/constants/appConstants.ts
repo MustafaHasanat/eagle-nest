@@ -69,6 +69,10 @@ const appConstants: AppProps = {
                     description:
                         "Add the '.prettierrc' and '.eslintrc.js' files to the app.",
                 },
+                aws: {
+                    flags: "--aws",
+                    description: "Add the AWS service to the app.",
+                },
                 special: {
                     flags: "--special <table-name>",
                     description: "Create a special type of tables.",

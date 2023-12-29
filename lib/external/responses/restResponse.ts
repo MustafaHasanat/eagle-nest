@@ -14,7 +14,7 @@ function notFoundRes(message: string) {
     };
 }
 
-function createUpdateRes<DataType>(message: string, data: DataType) {
+function newInstanceRes<DataType>(message: string, data: DataType) {
     return {
         message,
         data,
@@ -45,7 +45,7 @@ function errorRes(error: any) {
 export {
     foundRes,
     notFoundRes,
-    createUpdateRes,
+    newInstanceRes,
     forbiddenRes,
     deletedRes,
     errorRes,

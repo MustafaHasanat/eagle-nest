@@ -36,6 +36,10 @@ const {
                     flags: createFlagsFormat,
                     description: createDescriptionFormat,
                 },
+                aws: {
+                    flags: createFlagsAWS,
+                    description: createDescriptionAWS,
+                },
                 special: {
                     flags: createFlagsSpecial,
                     description: createDescriptionSpecial,
@@ -78,6 +82,7 @@ export default function InitAction() {
         )
         .addOption(new Option(createFlagsGuard, createDescriptionGuard))
         .addOption(new Option(createFlagsFormat, createDescriptionFormat))
+        .addOption(new Option(createFlagsAWS, createDescriptionAWS))
         .addOption(
             new Option(createFlagsSpecial, createDescriptionSpecial).choices(
                 Object.values(CreateSpecialArgument)

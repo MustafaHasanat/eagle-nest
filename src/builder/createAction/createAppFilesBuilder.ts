@@ -13,8 +13,11 @@ import { MemoCategory } from "../../enums/actions.js";
 /**
  * This function will be fired by the --create-app-files option
  */
-const createAppFilesBuilder = async (memoValues: MemoValues, options: OptionValues) => {
-    const { guard: isUserGuard, format: isFormat } = options;
+const createAppFilesBuilder = async (
+    memoValues: MemoValues,
+    options: OptionValues
+) => {
+    const { guard: isUserGuard, format: isFormat, aws: isAWS } = options;
 
     inquirer
         .prompt([
@@ -26,13 +29,15 @@ const createAppFilesBuilder = async (memoValues: MemoValues, options: OptionValu
                 "src/app.module.ts",
                 "src/app.controller.ts",
                 "src/app.service.ts",
-                ...(isUserGuard
+                ...(isUserGuard ? ["src/guards/user-auth.guard.ts"] : []),
+                ...(isFormat ? [".prettierrc", ".eslintrc.js"] : []),
+                ...(isAWS
                     ? [
-                          "src/guards/user-auth.guard.ts",
-                          "src/enums/user-role.enum.ts",
+                          "src/aws/aws.module.ts",
+                          "src/aws/aws.controller.ts",
+                          "src/aws/aws.service.ts",
                       ]
                     : []),
-                ...(isFormat ? [".prettierrc", ".eslintrc.js"] : []),
             ]),
         ])
         .then(async ({ overwrite, appDest, rootDir }) => {
@@ -44,12 +49,14 @@ const createAppFilesBuilder = async (memoValues: MemoValues, options: OptionValu
                     rootDir,
                     isUserGuard,
                     isFormat,
+                    isAWS,
                 }),
                 injectionCommands: createAppFilesInjection({
                     appDest,
                     rootDir,
                     isUserGuard,
                     isFormat,
+                    isAWS,
                 }),
                 memo: {
                     pairs: { appDest, rootDir },

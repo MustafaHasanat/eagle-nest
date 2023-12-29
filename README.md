@@ -96,16 +96,17 @@ Create the necessary files and directories for the selected 'files-set'.
 ### Available options
 
 | Option  | Files Set | Description                       | Details                      |
-| :------ | :------- | :-------------------------------- | :--------------------------- |
-| guard   | app      | Add a user-role guard to the app. | member, admin, plus          |
-| format  | app      | Add the format files to the app.  | .prettierrc and .eslintrc.js |
-| special | table    | Create a special type of tables.  | user, product, notification  |
+| :------ | :-------- | :-------------------------------- | :--------------------------- |
+| guard   | app       | Add a user-role guard to the app. | member, admin, plus          |
+| format  | app       | Add the format files to the app.  | .prettierrc and .eslintrc.js |
+| aws     | app       | Add the AWS service to the app.   | s3 bucket                    |
+| special | table     | Create a special type of tables.  | user, product, notification  |
 
 ### Examples
 
-- ```eaglenest create main```
-- ```eaglenest create --guard --format app```
-- ```eaglenest create --special user table```
+-   `eaglenest create main`
+-   `eaglenest create --guard --format app`
+-   `eaglenest create --special user table`
 
 # Specifications
 

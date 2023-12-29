@@ -4,42 +4,43 @@ import { InjectTemplate } from "../../../types/injectTemplate.js";
 import { CloneTemplate } from "../../../types/cloneTemplate.js";
 import { CreateSpecialArgument } from "../../../enums/actions.js";
 import { join } from "path";
+import { SpecialTableType } from "../../../enums/createAction.js";
 
 const createSpecialTableCloning = ({
     nameVariant: { camelCaseName, pluralLowerCaseName },
-    paths: { entitiesPath, dtoPath, enumsPath, schemasPath },
+    paths: { entitiesPath, dtoPath, enumsPath, schemasPath, typesPath },
     tableName,
 }: CreateTableProps & {
     tableName: CreateSpecialArgument;
 }): CloneTemplate[] => {
-    const sharedClones = (dirName: string): CloneTemplate[] => [
+    const sharedClones = (specialType: SpecialTableType): CloneTemplate[] => [
         {
-            target: `base/typescript/table/${dirName}/entity.txt`,
+            target: `base/typescript/table/${specialType}/entity.txt`,
             destination: entitiesPath,
             newFileName: camelCaseName + ".entity.ts",
         },
         {
-            target: `base/typescript/table/${dirName}/createDto.txt`,
+            target: `base/typescript/table/${specialType}/createDto.txt`,
             destination: dtoPath,
             newFileName: `create-${camelCaseName}.dto.ts`,
         },
         {
-            target: `base/typescript/table/${dirName}/updateDto.txt`,
+            target: `base/typescript/table/${specialType}/updateDto.txt`,
             destination: dtoPath,
             newFileName: `update-${camelCaseName}.dto.ts`,
         },
         {
-            target: `base/typescript/table/${dirName}/module.txt`,
+            target: `base/typescript/table/${specialType}/module.txt`,
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.module.ts`,
         },
         {
-            target: `base/typescript/table/${dirName}/controller.txt`,
+            target: `base/typescript/table/${specialType}/controller.txt`,
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.controller.ts`,
         },
         {
-            target: `base/typescript/table/${dirName}/service.txt`,
+            target: `base/typescript/table/${specialType}/service.txt`,
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.service.ts`,
         },
@@ -47,7 +48,7 @@ const createSpecialTableCloning = ({
 
     if (tableName === CreateSpecialArgument.USER)
         return [
-            ...sharedClones("specialUser"),
+            ...sharedClones(SpecialTableType.USER),
             {
                 target: "base/typescript/table/specialUser/loginDto.txt",
                 destination: dtoPath,
@@ -58,11 +59,16 @@ const createSpecialTableCloning = ({
                 destination: enumsPath,
                 newFileName: "users.enum.ts",
             },
+            {
+                target: "base/typescript/table/specialUser/token-payload.txt",
+                destination: typesPath,
+                newFileName: "token-payload.type.ts",
+            },
         ];
     else if (tableName === CreateSpecialArgument.PRODUCT)
-        return sharedClones("specialProduct");
+        return sharedClones(SpecialTableType.PRODUCT);
     else if (tableName === CreateSpecialArgument.NOTIFICATION)
-        return sharedClones("specialNotification");
+        return sharedClones(SpecialTableType.NOTIFICATION);
     else return [];
 };
 
@@ -72,13 +78,14 @@ const createSpecialTableInjection = ({
         upperCaseName,
         pluralUpperCaseName,
         pluralLowerCaseName,
+        upperSnakeCaseName,
     },
     paths: { mainPath, enumsPath, entitiesPath },
     tableName,
 }: CreateTableProps & {
     tableName: CreateSpecialArgument;
 }): InjectTemplate[] => {
-    const sharedInjects: InjectTemplate[] = [
+    const sharedInjects = (specialType: SpecialTableType): InjectTemplate[] => [
         {
             injectable: join(mainPath, "app.module.ts"),
             additions: [
@@ -126,14 +133,20 @@ const createSpecialTableInjection = ({
             ],
         },
         {
-            injectable: join(enumsPath, "tables-columns.enum.ts"),
+            injectable: join(enumsPath, "tables-data.enum.ts"),
             additions: [
                 {
                     addition: {
-                        base: `export enum ${upperCaseName}Fields {}\n\n`,
-                        additionIsFile: false,
+                        base: `base/typescript/table/${specialType}/fields-enum.txt`,
                     },
                     keyword: "*",
+                },
+                {
+                    addition: {
+                        base: `\n${upperSnakeCaseName} = '${camelCaseName}', `,
+                        additionIsFile: false,
+                    },
+                    keyword: "TablesNames {",
                 },
                 {
                     addition: {
@@ -151,10 +164,12 @@ const createSpecialTableInjection = ({
         },
     ];
 
-    if (tableName === CreateSpecialArgument.USER) return sharedInjects;
-    else if (tableName === CreateSpecialArgument.PRODUCT) return sharedInjects;
+    if (tableName === CreateSpecialArgument.USER)
+        return sharedInjects(SpecialTableType.USER);
+    else if (tableName === CreateSpecialArgument.PRODUCT)
+        return sharedInjects(SpecialTableType.PRODUCT);
     else if (tableName === CreateSpecialArgument.NOTIFICATION)
-        return sharedInjects;
+        return sharedInjects(SpecialTableType.NOTIFICATION);
     else return [];
 };
 export { createSpecialTableCloning, createSpecialTableInjection };

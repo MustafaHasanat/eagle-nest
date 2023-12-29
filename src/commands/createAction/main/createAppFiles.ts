@@ -8,6 +8,7 @@ interface CreateAppFilesProps {
     rootDir: string;
     isUserGuard: boolean;
     isFormat: boolean;
+    isAWS: boolean;
 }
 
 const createAppFilesCloning = ({
@@ -15,6 +16,7 @@ const createAppFilesCloning = ({
     isUserGuard,
     isFormat,
     rootDir,
+    isAWS,
 }: CreateAppFilesProps): CloneTemplate[] => [
     {
         target: "base/typescript/app/module-file.txt",
@@ -38,11 +40,6 @@ const createAppFilesCloning = ({
                   destination: join(appDest, "guards"),
                   newFileName: "user-auth.guard.ts",
               },
-              {
-                  target: "base/typescript/enum/user-role.txt",
-                  destination: join(appDest, "enums"),
-                  newFileName: "user-role.enum.ts",
-              },
           ]
         : []),
     ...(isFormat
@@ -59,6 +56,25 @@ const createAppFilesCloning = ({
               },
           ]
         : []),
+    ...(isAWS
+        ? [
+              {
+                  target: "base/typescript/aws/aws.module.txt",
+                  destination: join(appDest, "aws"),
+                  newFileName: "aws.module.ts",
+              },
+              {
+                  target: "base/typescript/aws/aws.controller.txt",
+                  destination: join(appDest, "aws"),
+                  newFileName: "aws.controller.ts",
+              },
+              {
+                  target: "base/typescript/aws/aws.service.txt",
+                  destination: join(appDest, "aws"),
+                  newFileName: "aws.service.ts",
+              },
+          ]
+        : []),
 ];
 
 const createAppFilesInjection = ({
@@ -66,6 +82,7 @@ const createAppFilesInjection = ({
     rootDir,
     isUserGuard,
     isFormat,
+    isAWS,
 }: CreateAppFilesProps): InjectTemplate[] =>
     [
         ...(isFormat
@@ -127,6 +144,29 @@ const createAppFilesInjection = ({
                                       data: "JWT_SECRET",
                                   },
                               },
+                          },
+                      ],
+                  },
+              ]
+            : []),
+        ...(isAWS
+            ? [
+                  {
+                      injectable: join(appDest, "app.module.ts"),
+                      additions: [
+                          {
+                              addition: {
+                                  base: 'import { S3Module } from "./aws/aws.module";\n',
+                                  additionIsFile: false,
+                              },
+                              keyword: "*",
+                          },
+                          {
+                              addition: {
+                                  base: "\nS3Module,",
+                                  additionIsFile: false,
+                              },
+                              keyword: "// ===== services =====",
                           },
                       ],
                   },

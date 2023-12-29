@@ -24,9 +24,7 @@
     "include": [
         "**/*.ts",
         "src/*.(ts|txt)",
-        "lib/templates/**/*.txt",
-        "lib/external/**/*.ts",
-        "lib/index.ts",
+        "lib/**/*.(ts|js|txt)",
     ],
     "exclude": ["node_modules", "dist"],
     "files": ["index.ts"]

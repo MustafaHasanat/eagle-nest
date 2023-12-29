@@ -1,3 +1,9 @@
+export enum SpecialTableType {
+    USER = "specialUser",
+    PRODUCT = "specialProduct",
+    NOTIFICATION = "specialNotification",
+}
+
 export enum ColumnTypeChoice {
     STRING = "string",
     BOOLEAN = "boolean",

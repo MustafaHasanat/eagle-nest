@@ -100,12 +100,12 @@ const createColumnInjection = ({
             ],
         },
         {
-            injectable: join(enumsPath, "tables-columns.enum.ts"),
+            injectable: join(enumsPath, "tables-data.enum.ts"),
             additions: [
                 {
                     keyword: `${upperCaseName}Fields {`,
                     addition: {
-                        base: ` ${upperSnakeCaseName} = '${columnName}', `,
+                        base: `\n${upperSnakeCaseName} = '${columnName}', `,
                         additionIsFile: false,
                     },
                 },

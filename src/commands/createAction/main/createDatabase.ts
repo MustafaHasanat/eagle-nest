@@ -12,9 +12,9 @@ const createDatabaseCloning = (
         newFileName: "index.ts",
     },
     {
-        target: "base/typescript/enum/tables-columns.txt",
+        target: "base/typescript/enum/tables-data.txt",
         destination: enumsDest,
-        newFileName: "tables-columns.enum.ts",
+        newFileName: "tables-data.enum.ts",
     },
 ];
 

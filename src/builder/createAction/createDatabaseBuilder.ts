@@ -24,7 +24,7 @@ const createDatabaseBuilder = async (memoValues: MemoValues) => {
             constants.shared.overwrite([
                 "app.module.ts",
                 "entities/index.ts",
-                "enums/tables-columns.enum.ts",
+                "enums/tables-data.enum.ts",
                 ".env",
             ]),
         ])

@@ -28,7 +28,7 @@ import { TABLE_PLURAL_UPPER_NAMEService } from "./TABLE_PLURAL_LOWER_NAME.servic
 import { TABLE_UPPER_NAME } from "../../entities/TABLE_LOWER_NAME.entity";
 import { CreateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/create-TABLE_LOWER_NAME.dto";
 import { UpdateTABLE_UPPER_NAMEDto } from "../../dto/TABLE_PLURAL_LOWER_NAME/update-TABLE_LOWER_NAME.dto";
-import { TABLE_UPPER_NAMEFields } from '../../enums/tables-columns.enum';
+import { TABLE_UPPER_NAMEFields } from '../../enums/tables-data.enum';
 
 @ControllerWrapper("TABLE_PLURAL_UPPER_NAME")
 export class TABLE_PLURAL_UPPER_NAMEController {
@@ -82,7 +82,7 @@ export class TABLE_PLURAL_UPPER_NAMEController {
     @MembersOnly()
     @EditorsWrapper(
         CreateTABLE_UPPER_NAMEDto,
-        "create a TABLE_LOWER_NAME"
+        "create a new TABLE_LOWER_NAME"
     )
     async createTABLE_UPPER_NAME(
         @Body() createTABLE_UPPER_NAMEDto: CreateTABLE_UPPER_NAMEDto,

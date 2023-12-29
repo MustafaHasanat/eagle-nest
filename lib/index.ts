@@ -6,19 +6,19 @@ import ControllerWrapper from "./external/decorators/controller-wrapper.js";
 import EditorsWrapper from "./external/decorators/editors-wrapper.js";
 import { MembersOnly } from "./external/decorators/members.js";
 import { FilterOperator, SortDirection } from "./external/enums/filters.js";
-import { filteredGetQuery } from "./external/helpers/filters.js";
 import {
-    filterNullsArray,
+    filteredGetQuery,
     filterNullsObject,
-} from "./external/helpers/filterNulls.js";
+    filterNullsArray,
+} from "./external/helpers/filters.js";
 import {
     foundRes,
     notFoundRes,
-    createUpdateRes,
+    newInstanceRes,
     forbiddenRes,
     deletedRes,
     errorRes,
-} from "./external/responses/crudResponse.js";
+} from "./external/responses/restResponse.js";
 import {
     validRes,
     invalidRes,
@@ -35,9 +35,23 @@ import GetAllWrapper from "./external/decorators/get-all-wrapper.js";
 import {
     validateNewInstance,
     validateGetConditions,
+    emailValidator,
 } from "./external/helpers/validators.js";
+import {
+    sendEmail,
+    passwordRemover,
+    checkForUniqueness,
+} from "./external/helpers/services.js";
+import { EmailOptions } from "./external/types/services.js";
+import { mailing } from "./external/constants/services.js";
 
 export {
+    mailing,
+    sendEmail,
+    passwordRemover,
+    checkForUniqueness,
+    emailValidator,
+    EmailOptions,
     AdminsOnly,
     MembersOnly,
     ControllerWrapper,
@@ -52,7 +66,7 @@ export {
     filterNullsArray,
     foundRes,
     notFoundRes,
-    createUpdateRes,
+    newInstanceRes,
     forbiddenRes,
     deletedRes,
     errorRes,
