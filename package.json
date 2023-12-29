@@ -54,7 +54,6 @@
     "files": [
         "lib/templates",
         "lib/external",
-        "lib/external.ts",
         "lib/**/*.(ts|js|txt)",
         "index.js"
     ],

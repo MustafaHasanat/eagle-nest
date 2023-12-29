@@ -1,4 +1,4 @@
-import { CloneTemplate } from "types/cloneTemplate";
+import { CloneTemplate } from "../types/cloneTemplate";
 import { InjectTemplate } from "../types/injectTemplate.js";
 import { logNumberedList, specialLog } from "../utils/helpers/logHelpers.js";
 import injectTemplates from "./injector.js";

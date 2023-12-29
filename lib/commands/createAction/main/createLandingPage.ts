@@ -1,4 +1,4 @@
-import { CloneTemplate } from "types/cloneTemplate.js";
+import { CloneTemplate } from "../../../types/cloneTemplate.js";
 
 const createLandingPageCloning = (
     mainDest: string,
