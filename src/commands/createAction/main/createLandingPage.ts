@@ -5,6 +5,7 @@ const createLandingPageCloning = (
     name: string
 ): CloneTemplate[] => [
     {
+        signature: "public/index.html",
         target: "base/html/landing-page.txt",
         destination: mainDest,
         newFileName: "index.html",
@@ -16,6 +17,7 @@ const createLandingPageCloning = (
         ],
     },
     {
+        signature: "public/styles.css",
         target: "base/css/landing-page.txt",
         destination: mainDest,
         newFileName: "styles.css",

@@ -21,6 +21,7 @@ const createColumnInjection = ({
 
     return [
         {
+            signature: "TABLE.entity.ts",
             injectable: join(entitiesPath, `${camelCaseName}.entity.ts`),
             additions: [
                 decoratorsImports
@@ -50,6 +51,7 @@ const createColumnInjection = ({
             ],
         },
         {
+            signature: "create-TABLE.dto.ts",
             injectable: join(dtoPath, `create-${camelCaseName}.dto.ts`),
             additions: [
                 {
@@ -79,6 +81,7 @@ const createColumnInjection = ({
             ],
         },
         {
+            signature: "update-TABLE.dto.ts",
             injectable: join(dtoPath, `update-${camelCaseName}.dto.ts`),
             additions: [
                 {
@@ -100,6 +103,7 @@ const createColumnInjection = ({
             ],
         },
         {
+            signature: "tables-data.enum.ts",
             injectable: join(enumsPath, "tables-data.enum.ts"),
             additions: [
                 {
@@ -112,6 +116,7 @@ const createColumnInjection = ({
             ],
         },
         {
+            signature: "TABLE.service.ts",
             injectable: `${schemasPath}/${pluralLowerCaseName}.service.ts`,
             deletions: [
                 {

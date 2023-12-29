@@ -37,21 +37,14 @@ import {
     validateGetConditions,
     emailValidator,
 } from "./external/helpers/validators.js";
-import {
-    sendEmail,
-    passwordRemover,
-    checkForUniqueness,
-} from "./external/helpers/services.js";
-import { EmailOptions } from "./external/types/services.js";
+import { sendEmail, checkForUniqueness } from "./external/helpers/services.js";
 import { mailing } from "./external/constants/services.js";
 
 export {
     mailing,
     sendEmail,
-    passwordRemover,
     checkForUniqueness,
     emailValidator,
-    EmailOptions,
     AdminsOnly,
     MembersOnly,
     ControllerWrapper,

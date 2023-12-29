@@ -26,24 +26,20 @@ const createAppFilesBuilder = async (
                 constants.createAppFiles.rootDir,
             ] as QuestionQuery[]),
             constants.shared.overwrite([
-                "src/app.module.ts",
-                "src/app.controller.ts",
-                "src/app.service.ts",
-                ...(isUserGuard ? ["src/guards/user-auth.guard.ts"] : []),
-                ...(isFormat ? [".prettierrc", ".eslintrc.js"] : []),
+                "app.module.ts",
+                "app.controller.ts",
+                "app.service.ts",
+                ...(isUserGuard ? ["user-auth.guard.ts", ".env"] : []),
+                ...(isFormat
+                    ? [".prettierrc", ".eslintrc.js", "package.json"]
+                    : []),
                 ...(isAWS
-                    ? [
-                          "src/aws/aws.module.ts",
-                          "src/aws/aws.controller.ts",
-                          "src/aws/aws.service.ts",
-                      ]
+                    ? ["aws.module.ts", "aws.controller.ts", "aws.service.ts"]
                     : []),
             ]),
         ])
         .then(async ({ overwrite, appDest, rootDir }) => {
-            if (!overwrite) return;
-
-            manipulator({
+            await manipulator({
                 cloningCommands: createAppFilesCloning({
                     appDest,
                     rootDir,
@@ -62,6 +58,7 @@ const createAppFilesBuilder = async (
                     pairs: { appDest, rootDir },
                     category: MemoCategory.EAGLE_NEST,
                 },
+                overwrite,
             });
         });
 };

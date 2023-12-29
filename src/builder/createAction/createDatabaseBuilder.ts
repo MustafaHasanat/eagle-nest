@@ -24,14 +24,12 @@ const createDatabaseBuilder = async (memoValues: MemoValues) => {
             constants.shared.overwrite([
                 "app.module.ts",
                 "entities/index.ts",
-                "enums/tables-data.enum.ts",
+                "tables-data.enum.ts",
                 ".env",
             ]),
         ])
         .then(async ({ overwrite, rootDir, appDest }) => {
-            if (!overwrite) return;
-
-            manipulator({
+            await manipulator({
                 cloningCommands: createDatabaseCloning(
                     pathConvertor(appDest, "entities"),
                     pathConvertor(appDest, "enums")
@@ -48,6 +46,7 @@ const createDatabaseBuilder = async (memoValues: MemoValues) => {
                     pairs: { rootDir, appDest },
                     category: MemoCategory.EAGLE_NEST,
                 },
+                overwrite
             });
         });
 };

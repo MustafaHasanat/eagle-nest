@@ -22,15 +22,14 @@ const createMainBuilder = async (memoValues: MemoValues) => {
             constants.shared.overwrite(["main.ts", ".env"]),
         ])
         .then(async ({ mainDest, projectName, overwrite }) => {
-            if (!overwrite) return;
-
-            manipulator({
+            await manipulator({
                 cloningCommands: createMainCloning(mainDest, projectName),
                 injectionCommands: createMainInjection(".env"),
                 memo: {
                     pairs: { mainDest, projectName },
                     category: MemoCategory.EAGLE_NEST,
                 },
+                overwrite,
             });
         });
 };

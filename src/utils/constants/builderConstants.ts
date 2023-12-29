@@ -5,7 +5,6 @@ import {
     relationChoices,
 } from "./builderChoices.js";
 import { BuilderConstantsProps } from "../../interfaces/constants.js";
-import { logNumberedList } from "../../utils/helpers/logHelpers.js";
 import {
     checkboxValidator,
     inputValidator,
@@ -243,13 +242,17 @@ const builderConstants: BuilderConstantsProps = {
     // shared constants
     shared: {
         overwrite: (files: string[]) => ({
-            type: "confirm",
+            ...sharedAttrs.checkbox.multiple,
             name: "overwrite",
-            message: `May we overwrite the following files? They must exist at the given directory before proceeding!\n${logNumberedList(
-                files,
-                false
-            )}\n(If we can't overwrite, then the command will be terminated)`,
-            default: true,
+            type: "checkbox",
+            message:
+                "Select the files you want us to override (selecting all is recommended)",
+            choices: files.map((fileName) => ({
+                name: fileName,
+                value: fileName,
+                description: fileName,
+            })),
+            default: files,
         }),
     },
 };

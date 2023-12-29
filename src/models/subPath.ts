@@ -35,7 +35,7 @@ class SubPath {
             pathConvertor(mainDir, "enums"),
             pathConvertor(mainDir, `schemas/${pluralLowerCaseName}`),
             pathConvertor(mainDir, `dto/${pluralLowerCaseName}`),
-            pathConvertor(mainDir, `types/${pluralLowerCaseName}`),
+            pathConvertor(mainDir, `types`),
         ];
 
         // create the paths if they don't exist

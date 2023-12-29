@@ -14,6 +14,7 @@ const createTableCloning = ({
 }: CreateTableProps): CloneTemplate[] => {
     return [
         {
+            signature: "TABLE.entity.ts",
             target: "base/typescript/db/entity.txt",
             destination: entitiesPath,
             newFileName: camelCaseName + ".entity.ts",
@@ -25,6 +26,7 @@ const createTableCloning = ({
             ],
         },
         {
+            signature: "create-TABLE-dto.ts",
             target: "base/typescript/dto/create-dto.txt",
             destination: dtoPath,
             newFileName: `create-${camelCaseName}.dto.ts`,
@@ -36,6 +38,7 @@ const createTableCloning = ({
             ],
         },
         {
+            signature: "update-TABLE-dto.ts",
             target: "base/typescript/dto/update-dto.txt",
             destination: dtoPath,
             newFileName: `update-${camelCaseName}.dto.ts`,
@@ -51,6 +54,7 @@ const createTableCloning = ({
             ],
         },
         {
+            signature: "TABLE.module.ts",
             target: "base/typescript/table/module-file.txt",
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.module.ts`,
@@ -74,6 +78,7 @@ const createTableCloning = ({
             ],
         },
         {
+            signature: "TABLE.controller.ts",
             target: "base/typescript/table/controller-file.txt",
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.controller.ts`,
@@ -97,6 +102,7 @@ const createTableCloning = ({
             ],
         },
         {
+            signature: "TABLE.serviceP.ts",
             target: "base/typescript/table/service-file.txt",
             destination: schemasPath,
             newFileName: `${pluralLowerCaseName}.service.ts`,
@@ -133,6 +139,7 @@ const createTableInjection = ({
     },
 }: CreateTableProps): InjectTemplate[] => [
     {
+        signature: "entities/index.ts",
         injectable: join(entitiesPath, "index.ts"),
         additions: [
             {
@@ -160,6 +167,7 @@ const createTableInjection = ({
         ],
     },
     {
+        signature: "app.module.ts",
         injectable: join(appModulePath, "app.module.ts"),
         additions: [
             {
@@ -179,6 +187,7 @@ const createTableInjection = ({
         ],
     },
     {
+        signature: "tables-data.enum.ts",
         injectable: join(enumsPath, "tables-data.enum.ts"),
         additions: [
             {

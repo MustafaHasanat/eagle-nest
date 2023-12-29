@@ -17,10 +17,12 @@ const columnBuilder = async ({
     mainDest,
     prevTableName = "",
     memo,
+    overwrite,
 }: {
     mainDest: string;
     prevTableName?: string;
     memo: MemorizerProps;
+    overwrite: string[];
 }) => {
     await inquirer
         .prompt([
@@ -30,54 +32,55 @@ const columnBuilder = async ({
             constants.createColumn.columnProperties,
             constants.createColumn.columnDecorators,
         ])
-        .then(async (answers) => {
-            const {
+        .then(
+            async ({
                 tableName,
                 columnName,
                 columnType,
                 columnProperties,
                 columnDecorators,
-            } = answers;
-
-            // get the names variants and the paths
-            const tableNameVariantObj = new NameVariant(tableName);
-            const columnNameVariantObj = new NameVariant(columnName);
-            const subPathObj = new SubPath({
-                mainDir: mainDest,
-                nameVariant: tableNameVariantObj,
-            });
-
-            const isDone = await manipulator({
-                injectionCommands: createColumnInjection({
-                    columnData: await addSpecialItems({
-                        columnName,
-                        columnType: columnType[0],
-                        ...getColumnAttributes({
-                            columnProperties,
-                            columnDecorators,
-                        }),
-                    }),
-                    paths: subPathObj,
-                    tableNameVariants: tableNameVariantObj,
-                    columNameVariants: columnNameVariantObj,
-                }),
-                memo,
-            });
-
-            if (!isDone) return;
-
-            // ask the user if they want to add another column
-            await inquirer
-                .prompt([constants.createColumn.newColumn])
-                .then(async ({ newColumn }) => {
-                    if (newColumn)
-                        await columnBuilder({
-                            mainDest,
-                            prevTableName: tableName,
-                            memo,
-                        });
+            }) => {
+                // get the names variants and the paths
+                const tableNameVariantObj = new NameVariant(tableName);
+                const columnNameVariantObj = new NameVariant(columnName);
+                const subPathObj = new SubPath({
+                    mainDir: mainDest,
+                    nameVariant: tableNameVariantObj,
                 });
-        });
+
+                const isDone = await manipulator({
+                    injectionCommands: createColumnInjection({
+                        columnData: await addSpecialItems({
+                            columnName,
+                            columnType: columnType[0],
+                            ...getColumnAttributes({
+                                columnProperties,
+                                columnDecorators,
+                            }),
+                        }),
+                        paths: subPathObj,
+                        tableNameVariants: tableNameVariantObj,
+                        columNameVariants: columnNameVariantObj,
+                    }),
+                    memo,
+                    overwrite,
+                });
+                if (!isDone) return;
+
+                // ask the user if they want to add another column
+                await inquirer
+                    .prompt([constants.createColumn.newColumn])
+                    .then(async ({ newColumn }) => {
+                        if (newColumn)
+                            await columnBuilder({
+                                mainDest,
+                                prevTableName: tableName,
+                                memo,
+                                overwrite,
+                            });
+                    });
+            }
+        );
 };
 
 /**
@@ -90,21 +93,21 @@ const createColumnBuilder = async (memoValues: MemoValues) => {
                 constants.createColumn.mainDest,
             ] as QuestionQuery[]),
             constants.shared.overwrite([
-                "src/entities/TABLE.entity.ts",
-                "src/dto/create-TABLE.dto.ts",
-                "src/dto/update-TABLE.dto.ts",
-                "src/enums/tables-data.enum.ts",
+                "TABLE.entity.ts",
+                "create-TABLE.dto.ts",
+                "update-TABLE.dto.ts",
+                "tables-data.enum.ts",
+                "TABLE.service.ts"
             ]),
         ])
         .then(async ({ mainDest, overwrite }) => {
-            if (!overwrite) return;
-
             await columnBuilder({
                 mainDest,
                 memo: {
                     pairs: { mainDest },
                     category: MemoCategory.EAGLE_NEST,
                 },
+                overwrite,
             });
         });
 };

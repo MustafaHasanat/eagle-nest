@@ -23,9 +23,7 @@ const createLandingPageBuilder = async (memoValues: MemoValues) => {
             ]),
         ])
         .then(async ({ projectName, publicDir, overwrite }) => {
-            if (!overwrite) return;
-
-            manipulator({
+            await manipulator({
                 cloningCommands: createLandingPageCloning(
                     pathConvertor(publicDir, "public"),
                     projectName
@@ -34,6 +32,7 @@ const createLandingPageBuilder = async (memoValues: MemoValues) => {
                     pairs: { publicDir, projectName },
                     category: MemoCategory.EAGLE_NEST,
                 },
+                overwrite,
             });
         });
 };

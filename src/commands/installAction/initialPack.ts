@@ -3,6 +3,7 @@ import { InjectTemplate } from "../../types/injectTemplate.js";
 
 const installInitCloning = (): CloneTemplate[] => [
     {
+        signature: "memo.json",
         target: "base/others/memo-json.txt",
         destination: ".",
         newFileName: "memo.json",
@@ -11,6 +12,7 @@ const installInitCloning = (): CloneTemplate[] => [
 
 const installInitInjection = (): InjectTemplate[] => [
     {
+        signature: ".gitignore",
         injectable: ".gitignore",
         additions: [
             {

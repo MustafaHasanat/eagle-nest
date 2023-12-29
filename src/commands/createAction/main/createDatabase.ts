@@ -7,11 +7,13 @@ const createDatabaseCloning = (
     enumsDest: string
 ): CloneTemplate[] => [
     {
+        signature: "entities/index.ts",
         target: "base/typescript/db/entities-file.txt",
         destination: entitiesDest,
         newFileName: "index.ts",
     },
     {
+        signature: "tables-data.enum.ts",
         target: "base/typescript/enum/tables-data.txt",
         destination: enumsDest,
         newFileName: "tables-data.enum.ts",
@@ -24,17 +26,26 @@ const createDatabaseInjection = ({
     pathToEntities,
 }: DatabaseProps): InjectTemplate[] => [
     {
+        signature: "app.module.ts",
         injectable: appModuleDest,
         additions: [
             {
                 addition: {
                     base: "components/typescript/db/config.txt",
+                    conditional: {
+                        type: "SUPPOSED_TO_BE_THERE",
+                        data: "// --- database ---",
+                    },
                 },
                 keyword: "// ===== configs =====",
             },
             {
                 addition: {
                     base: "components/typescript/db/imports.txt",
+                    conditional: {
+                        type: "SUPPOSED_TO_BE_THERE",
+                        data: "TypeOrmModule",
+                    },
                 },
                 keyword: "*",
                 replacements: [
@@ -47,11 +58,16 @@ const createDatabaseInjection = ({
         ],
     },
     {
+        signature: ".env",
         injectable: envLocation,
         additions: [
             {
                 addition: {
                     base: "components/others/db-env.txt",
+                    conditional: {
+                        type: "SUPPOSED_TO_BE_THERE",
+                        data: "DB_HOST",
+                    },
                 },
                 keyword: "*",
             },

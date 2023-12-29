@@ -1,15 +1,8 @@
 import CustomResponseType from "../types/customResponseType.js";
-import { EmailOptions } from "../types/services.js";
 import { SentMessageInfo } from "nodemailer";
-import { MailerService } from "@nestjs-modules/mailer";
+import { ISendMailOptions, MailerService } from "@nestjs-modules/mailer";
 import { FilteredTermDataType } from "../types/getOperators.js";
 import { FilterOperator } from "../enums/filters.js";
-
-const passwordRemover = (obj: { [key: string]: unknown }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...rest } = obj;
-    return rest;
-};
 
 async function checkForUniqueness<TableFields, TableEntity>(
     getterFunc: ({
@@ -48,7 +41,7 @@ async function checkForUniqueness<TableFields, TableEntity>(
 }
 
 const sendEmail = async (
-    options: EmailOptions,
+    options: ISendMailOptions,
     mailerService: MailerService
 ): Promise<CustomResponseType<SentMessageInfo>> => {
     try {
@@ -69,4 +62,4 @@ const sendEmail = async (
     }
 };
 
-export { sendEmail, passwordRemover, checkForUniqueness };
+export { sendEmail, checkForUniqueness };

@@ -19,16 +19,19 @@ const createAppFilesCloning = ({
     isAWS,
 }: CreateAppFilesProps): CloneTemplate[] => [
     {
+        signature: "app.module.ts",
         target: "base/typescript/app/module-file.txt",
         destination: appDest,
         newFileName: "app.module.ts",
     },
     {
+        signature: "app.controller.ts",
         target: "base/typescript/app/controller-file.txt",
         destination: appDest,
         newFileName: "app.controller.ts",
     },
     {
+        signature: "app.service.ts",
         target: "base/typescript/app/service-file.txt",
         destination: appDest,
         newFileName: "app.service.ts",
@@ -36,6 +39,7 @@ const createAppFilesCloning = ({
     ...(isUserGuard
         ? [
               {
+                  signature: "user-auth.guard.ts",
                   target: "base/typescript/jwt/auth-guard-file.txt",
                   destination: join(appDest, "guards"),
                   newFileName: "user-auth.guard.ts",
@@ -45,11 +49,13 @@ const createAppFilesCloning = ({
     ...(isFormat
         ? [
               {
+                  signature: ".prettierrc",
                   target: "base/others/prettierrc-file.txt",
                   destination: rootDir,
                   newFileName: ".prettierrc",
               },
               {
+                  signature: ".eslintrc.js",
                   target: "base/others/eslintrc-file.txt",
                   destination: rootDir,
                   newFileName: ".eslintrc.js",
@@ -59,16 +65,19 @@ const createAppFilesCloning = ({
     ...(isAWS
         ? [
               {
+                  signature: "aws.module.ts",
                   target: "base/typescript/aws/aws.module.txt",
                   destination: join(appDest, "aws"),
                   newFileName: "aws.module.ts",
               },
               {
+                  signature: "aws.controller.ts",
                   target: "base/typescript/aws/aws.controller.txt",
                   destination: join(appDest, "aws"),
                   newFileName: "aws.controller.ts",
               },
               {
+                  signature: "aws.service.ts",
                   target: "base/typescript/aws/aws.service.txt",
                   destination: join(appDest, "aws"),
                   newFileName: "aws.service.ts",
@@ -88,6 +97,7 @@ const createAppFilesInjection = ({
         ...(isFormat
             ? [
                   {
+                      signature: "package.json",
                       injectable: join(rootDir, "package.json"),
                       deletions: [
                           {
@@ -107,6 +117,7 @@ const createAppFilesInjection = ({
         ...(isUserGuard
             ? [
                   {
+                      signature: "app.module.ts",
                       injectable: join(appDest, "app.module.ts"),
                       additions: [
                           {
@@ -132,6 +143,7 @@ const createAppFilesInjection = ({
                       ],
                   },
                   {
+                      signature: ".env",
                       injectable: join(rootDir, ".env"),
                       additions: [
                           {
@@ -152,6 +164,7 @@ const createAppFilesInjection = ({
         ...(isAWS
             ? [
                   {
+                      signature: "app.module.ts",
                       injectable: join(appDest, "app.module.ts"),
                       additions: [
                           {

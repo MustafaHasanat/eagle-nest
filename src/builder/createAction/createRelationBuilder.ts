@@ -14,9 +14,11 @@ import { MemoCategory } from "../../enums/actions.js";
 const relationBuilder = async ({
     mainDest,
     memo,
+    overwrite,
 }: {
     mainDest: string;
     memo: MemorizerProps;
+    overwrite: string[];
 }) => {
     await inquirer
         .prompt([
@@ -39,7 +41,7 @@ const relationBuilder = async ({
                 nameVariant: tableNameVariantObj2,
             });
 
-            manipulator({
+            const isDone = await manipulator({
                 injectionCommands: createRelationInjection({
                     relationType: relationType[0],
                     table1: {
@@ -53,13 +55,16 @@ const relationBuilder = async ({
                     },
                 }),
                 memo,
+                overwrite,
             });
+            if (!isDone) return;
 
             // ask the user if they want to add another relation
             await inquirer
                 .prompt([constants.createRelation.newRelation])
                 .then(async ({ newRelation }) => {
-                    if (newRelation) await relationBuilder({ mainDest, memo });
+                    if (newRelation)
+                        await relationBuilder({ mainDest, memo, overwrite });
                 });
         });
 };
@@ -74,22 +79,25 @@ const createRelationBuilder = async (memoValues: MemoValues) => {
                 constants.createRelation.mainDest,
             ] as QuestionQuery[]),
             constants.shared.overwrite([
-                "src/entities/TABLE1.entity.ts",
-                "src/entities/TABLE2.entity.ts",
-                "src/schemas/TABLE2.service.ts",
-                "src/schemas/TABLE2.controller.ts",
-                "src/dto/create-TABLE2.dto.ts",
-                "src/dto/update-TABLE2.dto.ts",
+                "TABLE1.entity.ts",
+                "TABLE1.service.ts",
+                "TABLE1.controller.ts",
+                "TABLE2.entity.ts",
+                "TABLE2.module.ts",
+                "TABLE2.service.ts",
+                "TABLE2.controller.ts",
+                "create-TABLE2.dto.ts",
+                "update-TABLE2.dto.ts",
             ]),
         ])
         .then(async ({ overwrite, mainDest }) => {
-            if (!overwrite) return;
             await relationBuilder({
                 mainDest,
                 memo: {
                     pairs: { mainDest },
                     category: MemoCategory.EAGLE_NEST,
                 },
+                overwrite,
             });
         });
 };

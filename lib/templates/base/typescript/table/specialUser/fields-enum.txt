@@ -1,3 +1,4 @@
+
 export enum UserFields {
     USERNAME = 'username',
     FIRST_NAME = 'firstName',

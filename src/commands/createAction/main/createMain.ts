@@ -3,6 +3,7 @@ import { InjectTemplate } from "../../../types/injectTemplate.js";
 
 const createMainCloning = (mainDest: string, name: string): CloneTemplate[] => [
     {
+        signature: "main.ts",
         target: "base/typescript/app/main-file.txt",
         destination: mainDest,
         newFileName: "main.ts",
@@ -17,6 +18,7 @@ const createMainCloning = (mainDest: string, name: string): CloneTemplate[] => [
 
 const createMainInjection = (envLocation: string): InjectTemplate[] => [
     {
+        signature: ".env",
         injectable: envLocation,
         additions: [
             {

@@ -31,6 +31,7 @@ type InjectionDeletionAction = {
 };
 
 type InjectTemplate = {
+    signature: string;
     injectable: string;
     additions?: InjectionAdditionAction[];
     deletions?: InjectionDeletionAction[];

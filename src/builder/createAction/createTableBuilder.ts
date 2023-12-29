@@ -32,14 +32,23 @@ const createTableBuilder = async (
             constants.createTable.mainDest,
         ] as QuestionQuery[]),
         constants.shared.overwrite([
-            "/entities/index.ts",
-            "/entities/TABLE.entity.ts",
-            "/dto/create-TABLE-dto.ts",
-            "/dto/update-TABLE-dto.ts",
-            "/schemas/TABLE/TABLE.module.ts",
-            "/schemas/TABLE/TABLE.controller.ts",
-            "/schemas/TABLE/TABLE.service.ts",
-            "/enums/TABLE-fields.enum.ts",
+            "app.module.ts",
+            "tables-data.enum.ts",
+            "entities/index.ts",
+            "TABLE.entity.ts",
+            "create-TABLE-dto.ts",
+            "update-TABLE-dto.ts",
+            "TABLE.module.ts",
+            "TABLE.controller.ts",
+            "TABLE.service.ts",
+            "TABLE-fields.enum.ts",
+            ...(isSpecialTable && special === "user"
+                ? [
+                      "login-user.dto.ts",
+                      "users.enum.ts",
+                      "token-payload.type.ts",
+                  ]
+                : []),
         ]),
     ];
 
@@ -49,8 +58,6 @@ const createTableBuilder = async (
     await inquirer
         .prompt(questions)
         .then(async ({ overwrite, tableName, mainDest }) => {
-            if (!overwrite) return;
-
             // if the user entered a special table name,
             // ask them if they want to proceed as if '--special' is active
             if (
@@ -74,7 +81,7 @@ const createTableBuilder = async (
                 nameVariant: nameVariantObj,
             };
 
-            manipulator({
+            await manipulator({
                 cloningCommands: isSpecialTable
                     ? createSpecialTableCloning({
                           ...createTableObj,
@@ -91,6 +98,7 @@ const createTableBuilder = async (
                     pairs: { mainDest },
                     category: MemoCategory.EAGLE_NEST,
                 },
+                overwrite,
             });
         });
 };

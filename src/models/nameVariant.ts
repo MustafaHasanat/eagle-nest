@@ -12,13 +12,15 @@ class NameVariant {
         this.pluralName = this.getPluralName(name);
         this.pluralUpperCaseName = this.getPluralUpperCaseName(this.pluralName);
         this.pluralLowerCaseName = this.getPluralLowerCaseName(this.pluralName);
+        this.pluralUpperSnakeCaseName = this.getUpperSnakeCaseName(this.pluralName);
     }
     camelCaseName = "";
     upperCaseName = "";
     upperSnakeCaseName = "";
     pluralName = "";
-    pluralUpperCaseName = "";
     pluralLowerCaseName = "";
+    pluralUpperCaseName = "";
+    pluralUpperSnakeCaseName = "";
 
     private getUpperCaseName = (name: string) => firstCharToUpper(name);
 

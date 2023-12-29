@@ -28,6 +28,7 @@ const createRelationInjection = ({
     if (relationType === "OneToMany")
         return [
             {
+                signature: "TABLE1.entity.ts",
                 injectable: join(entitiesPath, `${camelCaseName1}.entity.ts`),
                 additions: [
                     {
@@ -58,6 +59,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.entity.ts",
                 injectable: join(entitiesPath, `${camelCaseName2}.entity.ts`),
                 additions: [
                     {
@@ -84,6 +86,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.module.ts",
                 injectable: `${schemasPath2}/${pluralLowerCaseName2}.module.ts`,
                 additions: [
                     {
@@ -103,6 +106,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.service.ts",
                 injectable: `${schemasPath2}/${pluralLowerCaseName2}.service.ts`,
                 additions: [
                     {
@@ -226,6 +230,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.controller.ts",
                 injectable: `${schemasPath2}/${pluralLowerCaseName2}.controller.ts`,
                 additions: [
                     {
@@ -259,6 +264,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "create-TABLE2.dto.ts",
                 injectable: `${dtoPath2}/create-${camelCaseName2}.dto.ts`,
                 additions: [
                     {
@@ -282,6 +288,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "update-TABLE2.dto.ts",
                 injectable: `${dtoPath2}/update-${camelCaseName2}.dto.ts`,
                 additions: [
                     {
@@ -309,6 +316,7 @@ const createRelationInjection = ({
     else if (relationType === "OneToOne")
         return [
             {
+                signature: "TABLE1.entity.ts",
                 injectable: join(entitiesPath, `${camelCaseName1}.entity.ts`),
                 additions: [
                     {
@@ -339,6 +347,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.entity.ts",
                 injectable: join(entitiesPath, `${camelCaseName2}.entity.ts`),
                 additions: [
                     {
@@ -365,6 +374,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE1.service.ts",
                 injectable: `${schemasPath1}/${pluralLowerCaseName1}.service.ts`,
                 additions: [
                     {
@@ -398,6 +408,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE1.controller.ts",
                 injectable: `${schemasPath1}/${pluralLowerCaseName1}.controller.ts`,
                 additions: [
                     {
@@ -431,6 +442,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.module.ts",
                 injectable: `${schemasPath2}/${pluralLowerCaseName2}.module.ts`,
                 additions: [
                     {
@@ -450,6 +462,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.service.ts",
                 injectable: `${schemasPath2}/${pluralLowerCaseName2}.service.ts`,
                 additions: [
                     {
@@ -537,6 +550,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "TABLE2.controller.ts",
                 injectable: `${schemasPath2}/${pluralLowerCaseName2}.controller.ts`,
                 additions: [
                     {
@@ -570,6 +584,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "create-TABLE2.dto.ts",
                 injectable: `${dtoPath2}/create-${camelCaseName2}.dto.ts`,
                 additions: [
                     {
@@ -593,6 +608,7 @@ const createRelationInjection = ({
                 ],
             },
             {
+                signature: "update-TABLE2.dto.ts",
                 injectable: `${dtoPath2}/update-${camelCaseName2}.dto.ts`,
                 additions: [
                     {
