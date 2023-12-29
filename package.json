@@ -1,6 +1,6 @@
 {
     "name": "@mustafa-alhasanat/eagle-nest",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Build Nest.js common blocks and files insanely faster!",
     "author": "Mustafa Alhasanat",
     "license": "ISC",
@@ -54,6 +54,7 @@
     "files": [
         "lib/templates",
         "lib/external",
+        "lib/external.ts",
         "lib/**/*.(ts|js|txt)",
         "index.js"
     ],
